@@ -14,7 +14,7 @@ balancers, etc.)
 
 ## Field value
 
-`base16(<version>)-<version_format>)`
+`base16(<version>)-<version_format>`
 
 The value will be US-ASCII encoded (which is UTF-8 compliant). Character `-` is
 used as a delimiter between fields.
