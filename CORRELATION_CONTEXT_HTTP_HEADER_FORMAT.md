@@ -8,7 +8,7 @@ A correlation context header is used to pass the name-value context properties f
 
 `Correlation-Context`
 
-Multiple correlation context headers are allowed. Values can be combined in a single header according to [rfc](https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2).
+Multiple correlation context headers are allowed. Values can be combined in a single header according to the [rfc](https://tools.ietf.org/html/rfc7230#page-24).
 
 ## Field value
 
@@ -18,6 +18,8 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 1. Maximum number of name-value pairs: `180`.
 2. Maximum number of bytes per a single name-value pair: `4096`.
 3. Maximum total length of all name-value pairs: `8192`.
+
+*See [CORRELATION_CONTEXT_HTTP_HEADER_FORMAT_RATIONALE.md#Limits] for rationale of these limits.*
 
 ## Name format
 
