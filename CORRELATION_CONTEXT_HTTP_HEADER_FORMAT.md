@@ -1,6 +1,6 @@
 # Correlation Context HTTP Header Format
 
-A correlation context header is used to pass the name-value context properties (also known as tags) for the trace. This is a companion header for the `Trace-Context`. The values are intended for control of logging systems and should be passed along to any child requests. 
+A correlation context header is used to pass the name-value context properties for the trace. This is a companion header for the `Trace-Context`. The values should be passed along to any child requests. Note that uniqueness of the key within the `Correlation-Context` is not guaranteed. Context received from upstream service may be altered before passing it along.
 
 # Format
 
@@ -14,13 +14,22 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 
 `name1=value1[;type=(number|bool|string)], name2=value2[;type=(number|bool|string)]`
 
-Overall Correlation-Context length MUST NOT exceed `1024` bytes. Key and value length should stay well under the combined limit of `1024` bytes. 
+**Limits:**
+1. Maximum number of name-value pairs: `180`.
+2. Maximum number of bytes per a single name-value pair: `4096`.
+3. Maximum total length of all name-value pairs: `8192`.
+
+## Name format
+
+Url encoded string. Spaces should be trimmed from beginning and the end of the name. Names are case sensitive.
 
 ## Supported value types
 
+All spaces should be trimmed from the beginning and the end of the value.
+
 ### String
 
-Default value type. Represents a url encoded string value
+Default value type. Represents a url encoded string value. Value is case sensitive.
 
 **Examples**:
 
@@ -32,18 +41,18 @@ component=Front%3Dend
 
 ### Boolean
 
-Binary flag. Supported values `true` and `false`
+Binary flag. Supported values `1` for true and `0` for false.
 
 **Examples**:
 
 ```
-IsAuthenticated=true;type=bool
-IsAuthenticated=false;type=bool
+IsAuthenticated=1;type=bool
+IsAuthenticated=0;type=bool
 ```
 
 ### Number
 
-Numeric value in invariant culture (`.` as a decimal separator).
+Numeric value as described in IEEE 754-2008 binary64 (double precision) numbers [IEEE754](https://en.wikipedia.org/wiki/Double-precision_floating-point_format).
 
 **Examples**:
 
@@ -60,5 +69,5 @@ Correlation-Context: component=Frontend, flightName=DF:28, IsAuthenticated=true;
 
 ```
 Correlation-Context: component=Frontend
-Correlation-Context: flightName=DF:28, ExposurePercentage=33.33;type=number
+Correlation-Context: flight%3DName=DF:28, ExposurePercentage=33.33;type=number
 ```
