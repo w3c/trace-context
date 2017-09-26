@@ -10,7 +10,6 @@ Correlation context header is used to propagate properties not defined in `Trace
 
 - Should be human readable. Cryptic header will hide the fact of potential information disclosure.
 - Should be appende-able (comma-separated) https://tools.ietf.org/html/rfc7230#page-24 so nodes can add context properties without parsing an existing headers.
-- Some systems specify type of value. Most commonly the same set as JSON allows - boolean and numeric. Should allow to express this.
 - It is expected that the typical name will be a single word in latin and the value will be a short string in latin or a derivative of an url.
 
 ## Trimming of spaces

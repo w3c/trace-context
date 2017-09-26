@@ -10,9 +10,9 @@ A correlation context header is used to pass the name-value context properties f
 
 Multiple correlation context headers are allowed. Values can be combined in a single header according to the [rfc](https://tools.ietf.org/html/rfc7230#page-24).
 
-## Field value
+## Header value
 
-`name1=value1[;type=(number|bool|string)], name2=value2[;type=(number|bool|string)]`
+`name1=value1,name2=value2`
 
 **Limits:**
 1. Maximum number of name-value pairs: `180`.
@@ -25,51 +25,26 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 
 Url encoded string. Spaces should be trimmed from beginning and the end of the name. Names are case sensitive.
 
-## Supported value types
+## Value format
 
 All spaces should be trimmed from the beginning and the end of the value.
 
-### String
-
-Default value type. Represents a url encoded string value. Value is case sensitive.
+Value represents a url encoded string. Value is case sensitive.
 
 **Examples**:
 
 ```
 component=Frontend
-component=Frontend;type=string
 component=Front%3Dend
-```
-
-### Boolean
-
-Binary flag. Supported values `1` for true and `0` for false.
-
-**Examples**:
-
-```
-IsAuthenticated=1;type=bool
-IsAuthenticated=0;type=bool
-```
-
-### Number
-
-Numeric value as described in IEEE 754-2008 binary64 (double precision) numbers [IEEE754](https://en.wikipedia.org/wiki/Double-precision_floating-point_format).
-
-**Examples**:
-
-```
-ExposurePercentage=33.33;type=number
-Step=10;type=number
 ```
 
 # Examples of HTTP headers
 
 ```
-Correlation-Context: component=Frontend, flightName=DF:28, IsAuthenticated=true;type=bool
+Correlation-Context: component=Frontend, flightName=DF:28, IsAuthenticated=true
 ```
 
 ```
 Correlation-Context: component=Frontend
-Correlation-Context: flight%3DName=DF:28, ExposurePercentage=33.33;type=number
+Correlation-Context: flight%3DName=DF:28, ExposurePercentage=33.33
 ```
