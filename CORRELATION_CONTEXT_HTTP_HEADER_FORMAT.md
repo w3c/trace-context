@@ -12,7 +12,7 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 
 ## Header value
 
-`name1=value1,name2=value2`
+`name1=value1[;properties1],name2=value2[;properties2]`
 
 **Limits:**
 1. Maximum number of name-value pairs: `180`.
@@ -27,9 +27,7 @@ Url encoded string. Spaces should be trimmed from beginning and the end of the n
 
 ## Value format
 
-All spaces should be trimmed from the beginning and the end of the value.
-
-Value represents a url encoded string. Value is case sensitive.
+All spaces should be trimmed from the beginning and the end of the value. Value ends with the special character `;`, separator `,` or end of string. Value represents a url encoded string and case sensitive. 
 
 **Examples**:
 
