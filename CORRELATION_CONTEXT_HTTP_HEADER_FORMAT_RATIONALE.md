@@ -16,6 +16,12 @@ Correlation context header is used to propagate properties not defined in `Trace
 
 Header should be human readable and editable. Thus spaces are allowed before and after the comma separator.
 
+## Case sensitivity of names
+
+There are few considerations why the names should be case sensitive:
+- some keys may be a url query string parameters which are case sensitive
+- forcing lower case will decrease readability of the names written in camel case
+
 ## Strings encoding
 
 Url encoding is low-overhead way to encode unicode characters for non-latin characters in the values. Url encoding keeps a single words in latin unchanged and easy readable.
