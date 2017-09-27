@@ -2,13 +2,15 @@
 
 A correlation context header is used to pass the name-value context properties for the trace. This is a companion header for the `Trace-Context`. The values should be passed along to any child requests. Note that uniqueness of the key within the `Correlation-Context` is not guaranteed. Context received from upstream service may be altered before passing it along.
 
+*See [rationale document](CORRELATION_CONTEXT_HTTP_HEADER_FORMAT_RATIONALE.md) for details of decisions made for this format.*
+
 # Format
 
 ## Header name
 
 `Correlation-Context`
 
-Multiple correlation context headers are allowed. Values can be combined in a single header according to the [rfc](https://tools.ietf.org/html/rfc7230#page-24).
+Multiple correlation context headers are allowed. Values can be combined in a single header according to the [RFC 7230](https://tools.ietf.org/html/rfc7230#page-24).
 
 ## Header value
 
@@ -19,8 +21,6 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 2. Maximum number of bytes per a single name-value pair: `4096`.
 3. Maximum total length of all name-value pairs: `8192`.
 
-*See [CORRELATION_CONTEXT_HTTP_HEADER_FORMAT_RATIONALE.md#Limits] for rationale of these limits.*
-
 ## Name format
 
 Url encoded string. Spaces should be trimmed from beginning and the end of the name. Names are case sensitive.
@@ -29,12 +29,9 @@ Url encoded string. Spaces should be trimmed from beginning and the end of the n
 
 All spaces should be trimmed from the beginning and the end of the value. Value ends with the special character `;`, separator `,` or end of string. Value represents a url encoded string and case sensitive. 
 
-**Examples**:
+## Properties
 
-```
-component=Frontend
-component=Front%3Dend
-```
+Properties are expected to be in a format of keys & key-value pairs `;` delimited list `;k1=v1;k2;k3=v3`. All unknown property names and name-value pairs should be skipped.
 
 # Examples of HTTP headers
 
@@ -44,5 +41,5 @@ Correlation-Context: component=Frontend, flightName=DF:28, IsAuthenticated=true
 
 ```
 Correlation-Context: component=Frontend
-Correlation-Context: flight%3DName=DF:28, ExposurePercentage=33.33
+Correlation-Context: flight%3DName=DF28, ExposurePercentage=33.33
 ```

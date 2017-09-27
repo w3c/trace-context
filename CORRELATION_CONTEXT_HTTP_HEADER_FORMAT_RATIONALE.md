@@ -47,7 +47,7 @@ Url encoding is low-overhead way to encode unicode characters for non-latin char
 
 The idea behind limits is to provide trace vendors common safeguards so the content of the `Correlation-Context` header can be stored with the request. Thus the limits are defined on the number of keys, max pair length and the total size. The last limit is the most important in many scenarios as it allows to plan for the data storage limits.
 
-Another consideration was that cookies may be an alternative way to store and pass the correlation context fields. So the limits should make context name-value pairs fit the typical cookie limit.
+Another consideration was that HTTP cookies provide a similar way to pass custom data via HTTP headers. So the limits should make the correlation context name-value pairs fit the typical cookie limits.
 
 - *Maximum number of name-value pairs* - this limit was taken as a number of cookies allowed by Chrome.
 - *Maximum number of bytes per a single name-value pair* - the limit allows to store URL as a value with some extra details as a single context name-value pair. It is also a typical cookie size limitation.
