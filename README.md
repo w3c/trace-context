@@ -2,7 +2,7 @@
 Specification for TraceContext propagation format.
 
 ## Goal
-This specification defines formats to pass trace context information across systems for a HTTP request. Our goal is to share this with the community so that various tracing and diagnostics products can operate together, and so that services can pass context through them, even if they're not being traced (useful for load balancers, etc.).
+This specification defines formats to pass trace context information across systems. Our goal is to share this with the community so that various tracing and diagnostics products can operate together, and so that services can pass context through them, even if they're not being traced (useful for load balancers, etc.).
 
 ## HTTP Format
 The HTTP format is defined [here](https://github.com/TraceContext/tracecontext-spec/blob/master/HTTP_HEADER_FORMAT.md)
