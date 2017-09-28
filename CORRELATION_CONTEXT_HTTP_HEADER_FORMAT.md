@@ -35,11 +35,22 @@ Properties are expected to be in a format of keys & key-value pairs `;` delimite
 
 # Examples of HTTP headers
 
+Single header: 
+
 ```
-Correlation-Context: component=Frontend, flightName=DF:28, IsAuthenticated=true
+Correlation-Context: component=Frontend,flightName=DF:28,IsAuthenticated=true
 ```
+
+Context might be split into multiple headers:
 
 ```
 Correlation-Context: component=Frontend
-Correlation-Context: flight%3DName=DF28, ExposurePercentage=33.33
+Correlation-Context: flight%3DName=DF28,ExposurePercentage=33.33
+```
+
+Values and names might begin and end with spaces:
+
+```
+Correlation-Context: component =   Frontend
+Correlation-Context: flight%3DName = DF28, ExposurePercentage = 33.33
 ```
