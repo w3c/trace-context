@@ -31,23 +31,27 @@ Is a 1-byte representing a 8-bit unsigned integer. Version 255 reserved.
 
 All fields are required. Character `-` is used as a delimiter between fields.
 
-#### Trace-id
+#### `trace-id`
 
-Is the ID of the whole trace forest. It is represented as a 16-bytes array,
-e.g., `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes 0 is considered invalid.
+The `trace-id` represents the ID of the whole trace tree. It is represented as a sequence of one or more
+base-16 (i.e., hex-encoded) bytes. For example,
+`4bf92f3577b34da6a3ce929d0e0e4736`, `a3ce929d0e0e4736`, and `01` are all valid
+trace-ids. An all-zeroes value is considered invalid.
 
-Implementation may decide to completely ignore the trace-context if the trace-id
-is invalid.
+Implementation may decide to completely ignore the trace-context if the
+`trace-id` is invalid.
 
-#### Span-id
+#### `span-id`
 
-Is the ID of the caller span (parent). It is represented as a 8-bytes array,
-e.g., `00f067aa0ba902b7`. All bytes 0 is considered invalid.
+The `span-id` represents the ID of the caller span ("parent"). It is
+represented as a sequence of one or more base-16 (i.e., hex-encoded) bytes
+(i.e., precisely the same format as `trace-id`, including the definition of an
+invalid id).
 
-Implementation may decide to completely ignore the trace-context if the span-id
-is invalid.
+Implementation may decide to completely ignore the trace-context if the
+`span-id` is invalid.
 
-#### Trace-options
+#### `trace-options`
 
 Controls tracing options such as sampling, trace level etc. It is a 1-byte
 representing a 8-bit unsigned integer. The least significant bit provides
@@ -83,4 +87,3 @@ base16(<Version>) = 00
 base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(<SpanId>) = 00f067aa0ba902b7
 base16(<TraceOptions>) = 00  // not-sampled
-```
