@@ -9,11 +9,13 @@ they're not being traced (useful for load balancers, etc.)
 
 ## Header name
 
-```Trace-Context```
+`Trace-Context`
 
 ## Field value
 
-```base16(<version>)-<version_format>```
+```
+base16(<version>)-<version_format>
+```
 
 The value will be US-ASCII encoded (which is UTF-8 compliant). Character `-` is
 used as a delimiter between fields.
@@ -26,22 +28,24 @@ Is a 1-byte representing a 8-bit unsigned integer. Version 255 reserved.
 
 #### Format
 
-```base16(<trace-id>)-base16(<span-id>)[-base16(<trace-options>)]```
+```
+base16(<trace-id>)-base16(<span-id>)[-base16(<trace-options>)]
+```
 
-```trace-id``` and ```span-id``` are required. The ```trace-options``` is optional. Character `-`
+`trace-id` and `span-id` are required. The `trace-options` is optional. Character `-`
  is used as a delimiter between fields.
 
 #### Trace-id
 
 Is the ID of the whole trace forest. It is represented as a 16-bytes array, e.g., 
-```4bf92f3577b34da6a3ce929d0e0e4736```. All bytes 0 is considered invalid.
+`4bf92f3577b34da6a3ce929d0e0e4736`. All bytes 0 is considered invalid.
 
 Implementation may decide to completely ignore the trace-context if the trace-id is invalid.
 
 #### Span-id
 
 Is the ID of the caller span (parent). It is represented as a 8-bytes array, e.g., 
-```00f067aa0ba902b7```. All bytes 0 is considered invalid.
+`00f067aa0ba902b7`. All bytes 0 is considered invalid.
 
 Implementation may decide to completely ignore the trace-context if the span-id is invalid.
 
@@ -57,9 +61,9 @@ follow for 3 reasons:
 
 ##### Bits behavior definition (01234567):
 * The least significant bit (the 7th bit) provides recommendation whether the request should be 
-traced or not (```1``` recommends the request should be traced, ```0``` means the caller does not
-make a decision to trace and the decision might be deferred). When ```trace-options``` is missing
-the default value for this bit is ```0```
+traced or not (`1` recommends the request should be traced, `0` means the caller does not
+make a decision to trace and the decision might be deferred). When `trace-options` is missing
+the default value for this bit is `0`
 * The behavior of other bits is currently undefined.
 
 #### Examples of HTTP headers
