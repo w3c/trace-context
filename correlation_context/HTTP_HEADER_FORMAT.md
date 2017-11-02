@@ -38,19 +38,37 @@ Properties are expected to be in a format of keys & key-value pairs `;` delimite
 Single header: 
 
 ```
-Correlation-Context: component=Frontend,flightName=DF:28,IsAuthenticated=true
+Correlation-Context: userId=sergey,serverNode=DF:28,isProduction=false
 ```
 
 Context might be split into multiple headers:
 
 ```
-Correlation-Context: component=Frontend
-Correlation-Context: flight%3DName=DF28,ExposurePercentage=33.33
+Correlation-Context: userId=sergey
+Correlation-Context: serverNode=DF%3D28,isProduction=false
 ```
 
 Values and names might begin and end with spaces:
 
 ```
-Correlation-Context: component =   Frontend
-Correlation-Context: flight%3DName = DF28, ExposurePercentage = 33.33
+Correlation-Context: userId =   sergey
+Correlation-Context: serverNode = DF%3D28, isProduction = false
 ```
+
+## Example use case
+
+For example, if all of your data needs to be sent to a single node, you could propagate a property indicating that.
+```
+Correlation-Context: serverNode=DF:28
+```
+
+For example, if you need to log the original user ID when making transactions arbitrarily deep into a trace.
+```
+Correlation-Context: userId=sergey
+```
+
+For example, if you have non-production requests that flow through the same services as production requests.
+```
+Correlation-Context: isProduction=false
+```
+
