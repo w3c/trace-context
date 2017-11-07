@@ -8,7 +8,7 @@ together.
 
 ## Headers
 
-Trace context represented by set of name/value pairs describing identity of every http request. As a performance optimization measure few of these headers were promoted to a separate header. This header has fixed length and defined sequence of fields.
+Trace context represented by set of name/value pairs describing identity of every http request. As a performance optimization measure few of these pairs were promoted to a separate header. This header has fixed length and defined sequence of fields.
 
 Libraries and platforms SHOULD propagate `Trace-Context` and `Trace-Context-Ext` headers to guarantee that trace will not be broken. `Correlation-Context` header is a companion header representing user-defined baggage associated with the trace.
 
