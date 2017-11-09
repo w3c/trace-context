@@ -14,7 +14,9 @@ short string in latin or a derivative of an url.
 
 Header should be small so providers can satisfy the requirement to pass the value all the time.
 
-2 Kb is a common URL limit. Which in many cases enough to address the resource in rest API. So perhaps can be enough for this header.
+512 bytes looks like a reasonable compromise.
+
+TODO: put more thoughts into it
 
 ## Trimming of spaces
 
