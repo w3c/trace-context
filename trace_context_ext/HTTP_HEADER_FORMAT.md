@@ -40,13 +40,13 @@ Properties are expected to be in a format of keys & key-value pairs `;` delimite
 Single header: 
 
 ```
-Trace-Context-Ext: epoch=123234
+Trace-Context-Ext: parent_application_id = 123
 ```
 
 Context might be split into multiple headers:
 
 ```
-Trace-Context-Ext: ms_h_id=1.2.2
-Trace-Context-Ext: epoch=123234
+Trace-Context-Ext: parent_application_id = 123
+Trace-Context-Ext: trace_roads = App1%7cApp2%7cApp
 ```
 
