@@ -10,6 +10,12 @@ can add context properties without parsing an existing headers.
 - It is expected that the typical name will be a single word in latin and the value will be a 
 short string in latin or a derivative of an url.
 
+## Size limits
+
+Header should be small so providers can satisfy the requirement to pass the value all the time.
+
+2 Kb is a common URL limit. Which in many cases enough to address the resource in rest API. So perhaps can be enough for this header.
+
 ## Trimming of spaces
 
 Header should be human readable and editable. Thus spaces are allowed before and after the comma 
