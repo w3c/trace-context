@@ -17,7 +17,7 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 `name1[=value1[;properties1]],name2[=value2[;properties2]]`
 
 **Limits:**
-Maximum length of a combined header MUST be less than 512 characters. 
+Maximum length of a combined header MUST be less than 512 bytes. 
 
 ## Name format
 
