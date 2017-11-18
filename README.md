@@ -8,10 +8,15 @@ together.
 
 ## Headers
 
-TODO: explain why two headers here.
+Trace context represented by set of name/value pairs describing identity of every http request. As a performance optimization measure few of these pairs were promoted to a separate header. This header has fixed length and defined sequence of fields.
 
-* See [TraceContext Header](trace_context/README.md)
-* See [CorrelationContext Header](correlation_context/README.md)
+Libraries and platforms MUST propagate `Trace-Context` and `Trace-Context-Ext` headers to guarantee that trace will not be broken. `Correlation-Context` header is a companion header representing user-defined baggage associated with the trace. Libraries and platforms MAY propagate this header.
+
+TODO: Add details on behavior when one of the headers cannot be parsed
+
+* See [Trace-Context Header](trace_context/README.md)
+* See [Trace-Context-Ext Header](trace_context_ext/README.md)
+* See [Correlation-Context Header](correlation_context/README.md)
 
 ## Reference Implementations
 TODO: add link here
