@@ -27,6 +27,7 @@
                 super(props);
  
                 this.state = {
+                    // global state. fields that can be set
                     g: {
                         traceId: "4bf92f3577b34da6a3ce929d0e0e4736", //TODO: generate random
                         spanId: "00f067aa0ba902b7", //TODO: generate random
@@ -37,9 +38,11 @@
                         ],
                     },
 
+                    // temporary variables to allow to add new name/value pairs in collecitons
                     newExtProp: {name: "cluster-id", value: "3563577b34"},
                     newCorrelationProp: {name: "flight", value: "SDFLS"},
                     
+                    // calculated fields
                     calculated: {
                         traceContext: '',
                         traceContextExt: '',
@@ -49,6 +52,7 @@
                     },
                 };
 
+                // parse out global state from the URL. This allows to share examples
                 var hash = window.location.hash;
                 if (hash != "") {
                     hash = decodeURI(hash.substring(1));
@@ -57,17 +61,34 @@
 
                 this.updateHeaders(this.state);
             }
+
+
+            // =====================================================
+            // This is the main part of the file. Validation of fields and calculating of resulting headers happens here
+            //
  
             updateHeaders(state) {
+                if (state.calculated === undefined) {
+                    state.calculated = {};
+                }
+
                 var calculated = state.calculated;
 
                 calculated.success = true;
                 calculated.errorMessage = "";
 
-                // TODO: write more validators
+                // =====================================================
+                // Calculate Trace-Context header
+                //
+
                 if (state.g.traceId.length != 32) {
                     calculated.success = false;
                     calculated.errorMessage += "\ntrace-id should be 32 characters long";
+                }
+
+                if (!state.g.traceId.match("^[0-9a-f]*$")) {
+                    calculated.success = false;
+                    calculated.errorMessage += "\ntrace-id should only contain lowercase hex characters";
                 }
 
                 if (state.g.spanId.length != 16) {
@@ -75,25 +96,116 @@
                     calculated.errorMessage += "\nspan-id should be 16 characters long";
                 }
 
+                if (!state.g.spanId.match("^[0-9a-f]*$")) {
+                    calculated.success = false;
+                    calculated.errorMessage += "\nspan-id should only contain lowercase hex characters";
+                }
 
                 calculated.traceContext = "00-" + state.g.traceId + "-" + state.g.spanId + "-" + (state.g.sampled ? "01" : "00");
+
+                // =====================================================
+                // Calculate Trace-Context-Ext header                
+                //
+
                 calculated.traceContextExt = "";
                 state.g.ext.forEach(element => {
-                    var value = encodeURI(element.name.trim()) + "=" + encodeURI(element.value.trim()) + ";";
+                    var value = encodeURI(element.name) + "=" + encodeURI(element.value) + ";";
+
                     calculated.traceContextExt += value == "=;" ? "" : value;
                 });
+
                 calculated.traceContextExt = calculated.traceContextExt.substring(0, calculated.traceContextExt.length - 1);
+
+                if (calculated.traceContextExt.length > 512) {
+                    calculated.success = false;
+                    calculated.errorMessage += "\nTrace-Context-Ext header maximum length should be less than 512 characters";
+                }
                 
+
+                // =====================================================
+                // Calculate Correlation-Context header             
+                //
+
+                if (state.g.correlation.length > 180) {
+                    calculated.success = false;
+                    calculated.errorMessage += "\nCorrelation context should not have more than 180 name/value pairs";
+                }
+
                 calculated.correlationContext = "";
                 state.g.correlation.forEach(element => {
-                    var value = encodeURI(element.name.trim()) + "=" + encodeURI(element.value.trim()) + ";";
+                    var value = encodeURI(element.name) + "=" + encodeURI(element.value) + ";";
+
+                    if (value.length > 4096)
+                    {
+                        calculated.success = false;
+                        calculated.errorMessage += "\nMaximum number of bytes per a single name-value pair: `4096`";
+                    }
+
                     calculated.correlationContext += value == "=;" ? "" : value;
                 });
                 calculated.correlationContext = calculated.correlationContext.substring(0, calculated.correlationContext.length - 1);
 
+                if (calculated.correlationContext.length > 8192) {
+                    calculated.success = false;
+                    calculated.errorMessage += "\nTrace-Context-Ext header maximum length should be less than 512 characters";
+                }
 
+
+                // Update URL so it can be shared as an example
                 window.location.hash = encodeURI(JSON.stringify(state.g));
                 return state;
+            }
+
+            // =====================================================
+            // Examples
+            //
+
+            showExampleMinimum(event) {
+                this.setState(this.updateHeaders({
+                    g : {
+                        traceId: "4bf92f3577b34da6a3ce929d0e0e4736",
+                        spanId: "00f067aa0ba902b7",
+                        sampled: false,
+                        ext: [
+                        ],
+                        correlation: [
+                        ],
+                    }
+                }));
+            }
+
+            showExampleExtUsed(event) {
+                this.setState(this.updateHeaders({
+                    g : {
+                        traceId: "4bf92f3577b34da6a3ce929d0e0e4736",
+                        spanId: "00f067aa0ba902b7",
+                        sampled: false,
+                        ext: [
+                            {name: "h-id", value: ".3.2.4"},
+                            {name: "cluster-id", value: "76b52714-820c-4bd3-a9f5-14d73e4c9bba"},
+                        ],
+                        correlation: [
+                        ],
+                    }
+                }));
+            }
+
+            showExampleCorrelationUsed(event) {
+                this.setState(this.updateHeaders({
+                    g : {
+                        traceId: "4bf92f3577b34da6a3ce929d0e0e4736",
+                        spanId: "00f067aa0ba902b7",
+                        sampled: false,
+                        ext: [
+                            {name: "h-id", value: ".3.2.4"},
+                            {name: "cluster-id", value: "76b52714-820c-4bd3-a9f5-14d73e4c9bba"},
+                        ],
+                        correlation: [
+                            {name: "user-id", value: "sergey"},
+                            {name: "flight", value: "pVKBWu3OG0GG8tDvuOsTtQ=="},
+                        ],
+                    }
+                }));
             }
        
             handleTraceIdChange(event) {
@@ -220,7 +332,7 @@
                         Trace Context consists is split into three http headers. Each header represent a semantically different set of fields. Required fields, extended tracing fields and user defined context.
 
                         <div className={this.state.calculated.success ? "alert alert-success" : "alert alert-danger"} role="alert">
-                            <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Error: {this.state.calculated.errorMessage}</p>
+                            <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.errorMessage}</p>
 
                             <h4 className="alert-heading">Headers:</h4>
                             <p>Trace-Context: {this.state.calculated.traceContext}</p>
@@ -266,7 +378,19 @@
                             <input key="new_correlation" type="button" value="Add" onClick={this.addCorrelationProp.bind(this)} />
                         </li>
                     </ul>
- 
+
+                    <h2>Examples</h2>
+                        <ul>
+                            <li>
+                                <a href="#" onClick={this.showExampleMinimum.bind(this)}>Minimum header</a>
+                                </li>
+                                <li>
+                            <a href="#" onClick={this.showExampleExtUsed.bind(this)}>Extended header used</a>
+                            </li>
+                            <li>
+                            <a href="#" onClick={this.showExampleCorrelationUsed.bind(this)}>Correlation context used</a>
+                            </li>
+                            </ul>
                     </form>
                 );
             }
