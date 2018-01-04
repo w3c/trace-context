@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
+    <title>Trace Context</title>
+ 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+</head>
+<body>
+    <div id="root"></div>
+       
+    <!--bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+ 
+    <!--react-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script type="text/babel">
+ 
+        class TraceContextForm extends React.Component {
+            constructor(props) {
+                super(props);
+ 
+                this.state = {
+                    g: {
+                        traceId: "4bf92f3577b34da6a3ce929d0e0e4736", //TODO: generate random
+                        spanId: "00f067aa0ba902b7", //TODO: generate random
+                        sampled: false,
+                        ext: [
+                        ],
+                        correlation: [
+                        ],
+                    },
+
+                    newExtProp: {name: "cluster-id", value: "3563577b34"},
+                    newCorrelationProp: {name: "flight", value: "SDFLS"},
+                    
+                    calculated: {
+                        traceContext: '',
+                        traceContextExt: '',
+                        correlationContext: '',
+                        success: true,
+                        errorMessage: "",
+                    },
+                };
+
+                var hash = window.location.hash;
+                if (hash != "") {
+                    hash = decodeURI(hash.substring(1));
+                    this.state.g = JSON.parse(hash);
+                }
+
+                this.updateHeaders(this.state);
+            }
+ 
+            updateHeaders(state) {
+                var calculated = state.calculated;
+
+                calculated.success = true;
+                calculated.errorMessage = "";
+
+                // TODO: write more validators
+                if (state.g.traceId.length != 32) {
+                    calculated.success = false;
+                    calculated.errorMessage += "\ntrace-id should be 32 characters long";
+                }
+
+                if (state.g.spanId.length != 16) {
+                    calculated.success = false;
+                    calculated.errorMessage += "\nspan-id should be 16 characters long";
+                }
+
+
+                calculated.traceContext = "00-" + state.g.traceId + "-" + state.g.spanId + "-" + (state.g.sampled ? "01" : "00");
+                calculated.traceContextExt = "";
+                state.g.ext.forEach(element => {
+                    var value = encodeURI(element.name.trim()) + "=" + encodeURI(element.value.trim()) + ";";
+                    calculated.traceContextExt += value == "=;" ? "" : value;
+                });
+                calculated.traceContextExt = calculated.traceContextExt.substring(0, calculated.traceContextExt.length - 1);
+                
+                calculated.correlationContext = "";
+                state.g.correlation.forEach(element => {
+                    var value = encodeURI(element.name.trim()) + "=" + encodeURI(element.value.trim()) + ";";
+                    calculated.correlationContext += value == "=;" ? "" : value;
+                });
+                calculated.correlationContext = calculated.correlationContext.substring(0, calculated.correlationContext.length - 1);
+
+
+                window.location.hash = encodeURI(JSON.stringify(state.g));
+                return state;
+            }
+       
+            handleTraceIdChange(event) {
+                var traceId = event.target.value;
+                this.setState((state) => {state.g.traceId = traceId; return this.updateHeaders(state);});
+            }
+ 
+            handleSpanIdChange(event) {
+                var spanId = event.target.value;
+                this.setState((state) => {state.g.spanId = spanId; return this.updateHeaders(state);});
+            }
+
+            handleSampledChange(event) {
+                var sampled = event.target.checked;
+                this.setState((state) => {state.g.sampled = sampled; return this.updateHeaders(state);});
+            }
+
+            handleChangeExtPropName(index) {
+                return (event) =>
+                {
+                    var extPropName = event.target.value;
+                    this.setState((state) => {state.g.ext[index].name = extPropName; return this.updateHeaders(state);});
+                }
+            }
+ 
+            handleChangeExtPropValue(index) {
+                return (event) =>
+                {
+                    var extPropValue = event.target.value;
+                    this.setState((state) => {state.g.ext[index].value = extPropValue; return this.updateHeaders(state);});
+                }
+            }
+
+            handleNewExtPropName(event) {
+                var newExtPropName = event.target.value;
+                this.setState((state) => {state.newExtProp.name = newExtPropName; return this.updateHeaders(state);});
+            }
+           
+            handleNewExtPropValue(event) {
+                var newExtPropValue = event.target.value;
+                this.setState((state) => {state.newExtProp.value = newExtPropValue; return this.updateHeaders(state);});
+            }
+        
+            addExtProp() {
+                this.setState((state) => {
+                    state.g.ext.push(state.newExtProp);
+                    state.newExtProp = {name: "", value: ""};
+                    return this.updateHeaders(state);
+                });
+            }
+
+            removeExtProp(index) {
+                return (event) =>
+                {
+                    this.setState((state) => {state.g.ext.splice(index, 1); return this.updateHeaders(state);});
+                }
+            }
+
+            handleChangeCorrelationPropName(index) {
+                return (event) =>
+                {
+                    var correlationPropName = event.target.value;
+                    this.setState((state) => {state.g.correlation[index].name = correlationPropName; return this.updateHeaders(state);});
+                }
+            }
+ 
+            handleChangeCorrelationPropValue(index) {
+                return (event) =>
+                {
+                    var correlationPropValue = event.target.value;
+                    this.setState((state) => {state.g.correlation[index].value = correlationPropValue; return this.updateHeaders(state);});
+                }
+            }
+
+            handleNewCorrelationPropName(event) {
+                var newCorrelationPropName = event.target.value;
+                this.setState((state) => {state.newCorrelationProp.name = newCorrelationPropName; return this.updateHeaders(state);});
+            }
+           
+            handleNewCorrelationPropValue(event) {
+                var newCorrelationPropValue = event.target.value;
+                this.setState((state) => {state.newCorrelationProp.value = newCorrelationPropValue; return this.updateHeaders(state);});
+            }
+        
+            addCorrelationProp() {
+                this.setState((state) => {
+                    state.g.correlation.push(state.newCorrelationProp);
+                    state.newCorrelationProp = {name: "", value: ""};
+                    return this.updateHeaders(state);
+                });
+            }
+
+            removeCorrelationProp(index) {
+                return (event) =>
+                {
+                    this.setState((state) => {state.g.correlation.splice(index, 1); return this.updateHeaders(state);});
+                }
+            }
+
+       
+            render() {
+                const traceContextExtProps = this.state.g.ext.map((prop, index) =>
+                    <li key={"ext_" + index}>
+                        <label> Name: <input key={"ext_" + index + "_name"} type="text" value={this.state.g.ext[index].name} onChange={this.handleChangeExtPropName(index).bind(this)} /></label>
+                        <label> Value: <input key={"ext_" + index + "_value"} type="text" value={this.state.g.ext[index].value} onChange={this.handleChangeExtPropValue(index).bind(this)} /></label>
+                        <a href="#" onClick={this.removeExtProp(index).bind(this)} key={"remove_" + index}>
+                            <span className="glyphicon glyphicon-remove" /> Remove
+                        </a>
+                    </li>
+                );
+ 
+                const correlationContextProps = this.state.g.correlation.map((prop, index) =>
+                    <li key={"correlation_" + index}>
+                        <label> Name: <input key={"correlation_" + index + "_name"} type="text" value={this.state.g.correlation[index].name} onChange={this.handleChangeCorrelationPropName(index).bind(this)} /></label>
+                        <label> Value: <input key={"correlation_" + index + "_value"} type="text" value={this.state.g.correlation[index].value} onChange={this.handleChangeCorrelationPropValue(index).bind(this)} /></label>
+                        <a href="#" key={"remove_" + index} onClick={this.removeCorrelationProp(index).bind(this)} >Remove</a>
+                    </li>
+                );
+                const correlationContextExtProps = [];
+ 
+                return (
+                    <form onSubmit = {this.handleSubmit}>
+                        <h1>Trace Context</h1>
+                        Trace Context consists is split into three http headers. Each header represent a semantically different set of fields. Required fields, extended tracing fields and user defined context.
+
+                        <div className={this.state.calculated.success ? "alert alert-success" : "alert alert-danger"} role="alert">
+                            <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Error: {this.state.calculated.errorMessage}</p>
+
+                            <h4 className="alert-heading">Headers:</h4>
+                            <p>Trace-Context: {this.state.calculated.traceContext}</p>
+                            <p style={{display: this.state.calculated.traceContextExt.length != 0 ? 'block' : 'none' }}>Trace-Context-Ext: {this.state.calculated.traceContextExt}</p>
+                            <p style={{display: this.state.calculated.correlationContext.length != 0 ? 'block' : 'none' }}>Correlation-Context: {this.state.calculated.correlationContext}</p>
+                        </div>
+                        
+                        <h2>Requered fields:</h2>
+                    <label>
+                        trace-id:
+                        <input type="text" value={this.state.g.traceId} onChange={this.handleTraceIdChange.bind(this)} />
+                    </label>
+                    <br/>
+
+                    <label>
+                        span-id:
+                        <input type="text" value={this.state.g.spanId} onChange={this.handleSpanIdChange.bind(this)} />
+                    </label>
+                    <br/>
+ 
+                    <label>
+                        sampled:
+                        <input type="checkbox" value={this.state.g.sampled} onChange={this.handleSampledChange.bind(this)} />
+                    </label>
+                    <br/>
+
+                    <h2>Extended fields:</h2>
+                    <ul>
+                        {traceContextExtProps}
+                        <li>
+                            <label> New Name: <input key={"ext_new_name"} type="text" value={this.state.newExtProp.name} onChange={this.handleNewExtPropName.bind(this)} /></label>
+                            <label> New Value: <input key={"ext_new_value"} type="text" value={this.state.newExtProp.value} onChange={this.handleNewExtPropValue.bind(this)} /></label>
+                            <input key="new_ext" type="button" value="Add" onClick={this.addExtProp.bind(this)} />
+                        </li>
+                    </ul>
+ 
+                    <h2>User-defined fields:</h2>
+                    <ul>
+                        {correlationContextProps}
+                        <li>
+                            <label> New Name: <input key={"correlation_new_name"} type="text" value={this.state.newCorrelationProp.name} onChange={this.handleNewCorrelationPropName.bind(this)} /></label>
+                            <label> New Value: <input key={"correlation_new_value"} type="text" value={this.state.newCorrelationProp.value} onChange={this.handleNewCorrelationPropValue.bind(this)} /></label>
+                            <input key="new_correlation" type="button" value="Add" onClick={this.addCorrelationProp.bind(this)} />
+                        </li>
+                    </ul>
+ 
+                    </form>
+                );
+            }
+        }
+       
+        ReactDOM.render(
+            <TraceContextForm />,
+            document.getElementById('root')
+        );
+    </script>
+</body>
+ 
+</html>
+
+
+
+ 

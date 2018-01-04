@@ -1,0 +1,1 @@
+This is a first version of specification discussed and approved at Distributed Tracing workshop by: <b>TODO</b> add participants.
