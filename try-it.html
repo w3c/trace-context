@@ -9,7 +9,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 </head>
 <body>
-    <div id="root"></div>
+    <div class="container">
+        <h1>Trace Context Demo</h1>
+
+        <p>
+            Trace Context consists is split into three http headers. Each header represent a semantically different set of fields. Required fields, extended tracing fields and user defined context.
+        </p>
+
+        <div id="root"></div>
+    </div>
        
     <!--bootstrap-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -328,9 +336,6 @@
  
                 return (
                     <form onSubmit = {this.handleSubmit}>
-                        <h1>Trace Context</h1>
-                        Trace Context consists is split into three http headers. Each header represent a semantically different set of fields. Required fields, extended tracing fields and user defined context.
-
                         <div className={this.state.calculated.success ? "alert alert-success" : "alert alert-danger"} role="alert">
                             <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.errorMessage}</p>
 
@@ -339,45 +344,89 @@
                             <p style={{display: this.state.calculated.traceContextExt.length != 0 ? 'block' : 'none' }}>Trace-Context-Ext: {this.state.calculated.traceContextExt}</p>
                             <p style={{display: this.state.calculated.correlationContext.length != 0 ? 'block' : 'none' }}>Correlation-Context: {this.state.calculated.correlationContext}</p>
                         </div>
-                        
-                        <h2>Requered fields:</h2>
-                    <label>
-                        trace-id:
-                        <input type="text" value={this.state.g.traceId} onChange={this.handleTraceIdChange.bind(this)} />
-                    </label>
-                    <br/>
 
-                    <label>
-                        span-id:
-                        <input type="text" value={this.state.g.spanId} onChange={this.handleSpanIdChange.bind(this)} />
-                    </label>
-                    <br/>
- 
-                    <label>
-                        sampled:
-                        <input type="checkbox" value={this.state.g.sampled} onChange={this.handleSampledChange.bind(this)} />
-                    </label>
-                    <br/>
+                        <div className="card">
+                            <div className="card-body">
+                                <h3 className="card-title">Requered fields</h3>
+                                <div className="row">
+                                    <div className="col-md-1">
+                                        trace-id
+                                    </div>
+                                    <div className="col">
+                                        <input type="text" id="trace-id" className="form-control" placeholder="00000000000000000000000000000000" value={this.state.g.traceId} onChange={this.handleTraceIdChange.bind(this)} />
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-1">
+                                        span-id
+                                    </div>
+                                    <div className="col">
+                                        <input type="text" className="form-control" placeholder="00000000000000" value={this.state.g.spanId} onChange={this.handleSpanIdChange.bind(this)} /> 
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-1">
+                                        sampled
+                                    </div>
+                                    <div className="col">
+                                        <input type="checkbox" className="form-check-input" value={this.state.g.sampled} onChange={this.handleSampledChange.bind(this)} /> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <h2>Extended fields:</h2>
-                    <ul>
-                        {traceContextExtProps}
-                        <li>
-                            <label> New Name: <input key={"ext_new_name"} type="text" value={this.state.newExtProp.name} onChange={this.handleNewExtPropName.bind(this)} /></label>
-                            <label> New Value: <input key={"ext_new_value"} type="text" value={this.state.newExtProp.value} onChange={this.handleNewExtPropValue.bind(this)} /></label>
-                            <input key="new_ext" type="button" value="Add" onClick={this.addExtProp.bind(this)} />
-                        </li>
-                    </ul>
+                    <div className="card">
+                        <div className="card-body">
+                            <h3 className="card-title">Extended fields</h3>
+
+                            <ul>
+                                {traceContextExtProps}
+                            </ul>
+                            <div className="row">
+                                <div className="col-md-1">
+                                    Name
+                                </div>
+                                <div className="col">
+                                    <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.newExtProp.name} onChange={this.handleNewExtPropName.bind(this)} />
+                                </div>
+                                <div className="col-md-1">
+                                    Value
+                                </div>
+                                <div className="col">
+                                    <input key={"ext_new_value"} className="form-control" placeholder="value" type="text" value={this.state.newExtProp.value} onChange={this.handleNewExtPropValue.bind(this)} />
+                                </div>
+                                <div className="col">
+                                    <a href="#" key="new_ext" onClick={this.addExtProp.bind(this)}>Add</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
  
-                    <h2>User-defined fields:</h2>
-                    <ul>
-                        {correlationContextProps}
-                        <li>
-                            <label> New Name: <input key={"correlation_new_name"} type="text" value={this.state.newCorrelationProp.name} onChange={this.handleNewCorrelationPropName.bind(this)} /></label>
-                            <label> New Value: <input key={"correlation_new_value"} type="text" value={this.state.newCorrelationProp.value} onChange={this.handleNewCorrelationPropValue.bind(this)} /></label>
-                            <input key="new_correlation" type="button" value="Add" onClick={this.addCorrelationProp.bind(this)} />
-                        </li>
-                    </ul>
+                    <div className="card">
+                        <div className="card-body">
+                            <h3 className="card-title">User-defined fields</h3>
+                            <ul>
+                                {correlationContextProps}
+                            </ul>
+                            <div className="row">
+                                <div className="col-md-1">
+                                    Name
+                                </div>
+                                <div className="col">
+                                        <input key={"correlation_new_name"} className="form-control" placeholder="name" type="text" value={this.state.newCorrelationProp.name} onChange={this.handleNewCorrelationPropName.bind(this)} />
+                                </div>
+                                <div className="col-md-1">
+                                    Value
+                                </div>
+                                <div className="col">
+                                        <input key={"correlation_new_value"} className="form-control" placeholder="value" type="text" value={this.state.newCorrelationProp.value} onChange={this.handleNewCorrelationPropValue.bind(this)} />
+                                </div>
+                                <div className="col">
+                                    <a href="#" key="new_ext" onClick={this.addCorrelationProp.bind(this)}>Add</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <h2>Examples</h2>
                         <ul>
