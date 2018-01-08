@@ -75,7 +75,7 @@
           <li>Propagation of standardized tracing data across tiers using different tracing tools </li>
           <li>A standardized way to propagate vendor specific traceing information across tiers instrumented with
           different tracing tools </li>
-          <li>A standardized and extensible format to share trace data - full traces or fragments of traces - across tools for further interpretation <li>
+          <li>A standardized and extensible format to share trace data - full traces or fragments of traces - across tools for further interpretation </li>
         </ul>
 
       <div class="noprint">
@@ -147,13 +147,25 @@
 
       <section id="scope" class="scope">
         <h2>Scope</h2>
-        <p><i class="todo">Brief background of landscape, technology, and relationship to the Web, users, developers, implementers, and industry.</i></p>
+        <p>
+        Modern cloud-native applications are highly distributed and often span multiple technology and vendor boundaries. The complexity of these applications requires a detailed understand of how individual requests are exexuted. This is referred to as "tracing".
+        </p>
+        <p>
+        Tracing tools to collect this information have been available for quite some time. However, these tools have not been built with interoperability in mind. This leaves the developer with a number of challenges in getting an end-to-end trace of complex transactions:
+        <ul>
+          <li>Traces are often broken, because trace context informnation is lost in a contributing tier or the trace is restarted</li>
+          <li>Vendors cannot pass proprietary information across tiers instrumend with a different implemenation and therefore lose relevant information (e.g. step count, server information, ...)</li>
+          <li> End users don't have the ability to create complete end-to-end traces of application transactions which are monitored by different tools, as there is no defined data format and semantics for trace data</li>
+        </ul>  
+        </p>
 
         <div id="section-out-of-scope">
           <h3 id="out-of-scope">Out of Scope</h3>
             <p>The following features are out of scope, and will not be addressed by this Working group.</p>
 
             <ul class="out-of-scope">
+              <li>definition of (programming) language specific APIS for performance data collection; </li>
+              <li>performance data analysis techniques or algorithms.</li>
             </ul>
         </div>
 
