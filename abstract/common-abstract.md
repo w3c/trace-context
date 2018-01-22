@@ -1,4 +1,4 @@
-Distributed tracing is a set of tools and practices to monitor the health and reliability of a distributed application. Distributed application is an application consists of multiple components deployed and operated separately. It is also known as micro-service. 
+Distributed tracing is a set of tools and practices to monitor the health and reliability of a distributed application. Distributed application is an application that consists of multiple components deployed and operated separately. It is also known as micro-service. 
 
 The main concept of a distributed tracing is telemetry correlation. Telemetry correlation is a way to correlate events from one component to the events from another. It allows to find the cause-effect relationship for these events. For instance – find which user action in browser caused the failure in business logic layer. 
 

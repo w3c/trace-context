@@ -23,7 +23,7 @@ Maximum length of a combined header MUST be less than 512 bytes.
 
 Url encoded string. Spaces MUST be trimmed from beginning and the end of the name. Names are case sensitive. Vendor libraries encouraged to use namespaced names of the properties to avoid conflicts.
 
-Names `id`, `span-id`, `trace-id`, `sampled` are reserved. These properties defined in `Trace-Context` header.
+Names `id`, `span-id`, `trace-id`, `sampled` are reserved. These properties are defined in `Trace-Context` header.
 
 ## Value format
 
