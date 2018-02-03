@@ -1,4 +1,6 @@
-This is a first version of specification discussed and endorsed at Distributed Tracing workshop by: 
+This is a first draft of specification. This draft was discussed at Distributed Tracing workshop. There was a general agreement with the format, scope and semantics of this specification. 
+
+Attendees:
 
 - Abhishek Singh, AWS
 - Adam Leftik AppDynamics
