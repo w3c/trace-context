@@ -7,7 +7,7 @@ Attendees:
 - Adrian Cole, Pivotal
 - Alois Reitbauer, Dynatrace
 - Anssi Alaranta, AWS
-- Ben Plotnick, Yelp
+- Ben Plotnick
 - Ben Sigelman, LightStep
 - Bharath Kumar, AWS
 - Bogdan Drutu, Google
