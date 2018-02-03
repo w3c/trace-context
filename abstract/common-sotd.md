@@ -1,4 +1,4 @@
-This is a first draft of specification. This draft was discussed at Distributed Tracing workshop. There was a general agreement with the format, scope and semantics of this specification. 
+This is a first draft of specification. This draft was discussed at Distributed Tracing workshop. There was an agreement with the format, scope and semantics of this specification. 
 
 Attendees:
 
