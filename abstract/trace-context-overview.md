@@ -1,7 +1,13 @@
 # Overview
 
-Trace context represented by set of name/value pairs describing identity of every http request. As a performance optimization measure few of these pairs were promoted to a separate header. This header has fixed length and defined sequence of fields.
+The trace identifies an http request and its position in a potentially distributed trace. It is represented by set of name/value properties. Semantic of some of these properties defined in this standard. These properties are promoted into a separate header. Separate header is also defined as performance optimization measure - header has fixed length and defined sequence of fields. It is easy to parse and mutate this header.
 
-Libraries and platforms MUST propagate `Trace-Context` and `Trace-Context-Ext` headers to guarantee that trace will not be broken. `Correlation-Context` header is a companion header representing user-defined baggage associated with the trace. Libraries and platforms MAY propagate this header.
+The use of trace context MUST be limited to the properties essential to trace correlation. `Correlation-Context` is a companion header representing user-defined baggage associated with the trace. This header defined in a separate [specification](https://github.com/w3c/distributed-tracing/blob/master/report-correlation-context.html). It should be used for non-essential and user-defined properties that may be dropped due to size concerns. 
 
-**TODO:** Add details on behavior when one of the headers cannot be parsed
+Libraries and platforms SHOULD strive to minimize the number and size of trace context properties. Shortening size of properties allows libraries implementing different scheme of trace correlation to append properties needed for that library. So different vendors may co-exist in the different components of the same distributed trace.
+
+Headers `Trace-Context` and `Trace-Context-Ext` can be used to pass http request identity information as the request and response headers. Libraries and platforms MAY mutate these headers according to the semantics described in corresponding sections. Libraries and platforms MUST propagate `Trace-Context` and `Trace-Context-Ext` request headers to all outgoing calls. Propagation of the header guarantees that trace correlation is not broken. Libraries and platforms operating as proxies or service mesh layers SHOULD propagate `Trace-Context` and `Trace-Context-Ext` response headers.
+
+Headers `Trace-Context` and `Trace-Context-Ext` may appear on request and response independently. Missing `Trace-Context-Ext` header means that there are no additional properties defined in the request. Missing `Trace-Context` header means that library or platform has not started the trace. This platform or library however may have some tracing related information. This information will be carried in `Trace-Context-Ext` header. See corresponding section for the examples of properties that can be used in `Trace-Context-Ext` header.
+
+If library or platform detects that `Trace-Context` and `Trace-Context-Ext` headers are in incorrect format - it MAY either drop these headers or pass them along unmodified. Specific mutating rules are defined in corresponding sections.
