@@ -1,12 +1,5 @@
 # Trace Context HTTP Header Format
 
-A trace context header is used to pass trace context information across systems for an HTTP 
-request. The goal is to share this with the community. So that various tracing and diagnostics 
-products can operate together, and so that services can pass context through them, even if 
-they're not being traced (useful for load balancers, etc.)
-
-# Format
-
 ## Header name
 
 `Trace-Context`
