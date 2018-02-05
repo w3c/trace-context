@@ -28,5 +28,5 @@ Attendees:
 - Sergey Kanzhelev, Microsoft
 - Ted Young, LightStep
 - Victor Soares, New Relic
-- Wu Sheng, Huawei & Skywalking
+- Wu Sheng, Huawei & SkyWalking
 - Yuri Shkuro, Uber
