@@ -1,4 +1,4 @@
-# Trace-Context Header
+# Trace-Parent Header
 
 ## HTTP Format
 The HTTP format is defined [here](HTTP_HEADER_FORMAT.md)

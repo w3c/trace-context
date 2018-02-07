@@ -9,7 +9,7 @@ they're not being traced (useful for load balancers, etc.)
 
 ## Header name
 
-`Trace-Context`
+`Trace-Parent`
 
 ## Field value
 
@@ -40,14 +40,14 @@ base16(<trace-id>)-base16(<span-id>)[-base16(<trace-options>)]
 Is the ID of the whole trace forest. It is represented as a 16-bytes array, e.g., 
 `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes 0 is considered invalid.
 
-Implementation may decide to completely ignore the trace-context if the trace-id is invalid.
+Implementation may decide to completely ignore the Trace-Parent if the trace-id is invalid.
 
 #### Span-id
 
 Is the ID of the caller span (parent). It is represented as a 8-bytes array, e.g., 
 `00f067aa0ba902b7`. All bytes 0 is considered invalid.
 
-Implementation may decide to completely ignore the trace-context if the span-id is invalid.
+Implementation may decide to completely ignore the Trace-Parent if the span-id is invalid.
 
 #### Trace-options
 
@@ -68,7 +68,7 @@ the default value for this bit is `0`
 
 #### Examples of HTTP headers
 
-*Valid sampled Trace-Context:*
+*Valid sampled Trace-Parent:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
@@ -78,7 +78,7 @@ base16(<SpanId>) = 00f067aa0ba902b7
 base16(<TraceOptions>) = 01  // sampled
 ```
 
-*Valid not-sampled Trace-Context:*
+*Valid not-sampled Trace-Parent:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
