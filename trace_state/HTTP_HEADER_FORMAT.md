@@ -21,7 +21,7 @@ Maximum length of a combined header MUST be less than 512 bytes.
 
 ## Name format
 
-Url encoded string. Spaces MUST be trimmed from beginning and the end of the name. Names are case sensitive. Vendor libraries encouraged to use namespaced names of the properties to avoid conflicts.
+Url encoded string. Spaces MUST be trimmed from the beginning and the end of the name. Names are case sensitive. Vendor libraries encouraged to use namespaced names of the properties to avoid conflicts.
 
 Names `id`, `span-id`, `trace-id`, `sampled` are reserved. These properties are defined in `Trace-Parent` header.
 
@@ -33,20 +33,20 @@ All spaces MUST be trimmed from the beginning and the end of the value. Value en
 
 Since name value pairs are well-known for vendor's library - it is not recommended to use properties for `Trace-Parent` key value pairs. Vendor-specific library would typically know how to parse and interpret the value for every name.
 
-Properties are expected to be in a format of keys & key-value pairs `;` delimited list `;k1=v1;k2;k3=v3`. All unknown property names and name-value pairs MUST be preserved. 
+Properties are expected to be in a format of keys & key-value pairs `;` delimited list `k1=v1;k2;k3=v3`. All unknown property names and name-value pairs MUST be preserved. 
 
 # Examples of HTTP headers
 
 Single header: 
 
 ```
-Trace-State: parent_application_id = 123
+Trace-State: parent_application_id=123
 ```
 
 Context might be split into multiple headers:
 
 ```
-Trace-State: parent_application_id = 123
-Trace-State: trace_roads = App1%7cApp2%7cApp
+Trace-State: parent_application_id=123
+Trace-State: trace_roads=App1%7cApp2%7cApp
 ```
 
