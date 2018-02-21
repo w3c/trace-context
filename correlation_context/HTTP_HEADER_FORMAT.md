@@ -23,15 +23,17 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 
 ## Name format
 
-Url encoded string. Spaces should be trimmed from beginning and the end of the name. Names are case sensitive.
+Url encoded string. Spaces are allows before and after the name. Header with the trimmed name and with spaces before and after name MUST be considered identical.
 
 ## Value format
 
-All spaces should be trimmed from the beginning and the end of the value. Value ends with the special character `;`, separator `,` or end of string. Value represents a url encoded string and case sensitive. 
+Value starts after equal sign and ends with the special character `;`, separator `,` or end of string. Value represents a url encoded string and case sensitive. Spaces are allowed in the beginning and the end of the value. Value with spaces before and after MUST be considered identical to the trimmed value. 
 
 ## Properties
 
-Properties are expected to be in a format of keys & key-value pairs `;` delimited list `;k1=v1;k2;k3=v3`. All unknown property names and name-value pairs should be skipped.
+Properties are expected to be in a format of keys & key-value pairs `;` delimited list `;k1=v1;k2;k3=v3`. Some properties may be known to the library or platform processing the header. Such properties may effect how library or platform processes corresponding name-value pair. Properties unknown to the library or platform MUST be preserved if name and/or value wasn't modified by the library or platform.
+
+Spaces are allowed between properties and before and after equal sign. Properties with spaces MUST be considered identical to properties with all spaces trimmed.
 
 # Examples of HTTP headers
 
