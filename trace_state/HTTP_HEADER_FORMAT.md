@@ -1,4 +1,4 @@
-# Trace Context Extended HTTP Header Format
+# Trace State HTTP Header Format
 
 A correlation context header is used to pass the name-value context properties for the trace. This is a companion header for the `Trace-Parent`. The values MUST be passed along to any child requests. Note that uniqueness of the key within the `Trace-State` is not guaranteed. Context received from upstream service may be altered before passing it along.
 

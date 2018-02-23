@@ -1,4 +1,4 @@
-# Trace Context HTTP Header Format
+# Trace Parent HTTP Header Format
 
 A trace context header is used to pass trace context information across systems for a HTTP 
 request. Our goal is to share this with the community so that various tracing and diagnostics 
