@@ -1,4 +1,4 @@
-#  Trace Context Extended HTTP Header Format Rationale
+#  Trace State HTTP Header Format Rationale
 
 This document provides rationale for the decisions made for the `Trace-State` header format.
 
