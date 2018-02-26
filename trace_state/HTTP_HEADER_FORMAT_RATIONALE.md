@@ -20,8 +20,8 @@ TODO: put more thoughts into it
 
 ## Trimming of spaces
 
-Header should be human readable and editable. Thus spaces are allowed before and after the comma 
-separator.
+Header should be human readable and editable. Thus spaces are allowed before and after the comma, equal sign, and semicolon 
+separators. It makes human-editing of headers less error-prone. It also allows better visual separation of fields when value modified manually.
 
 ## Case sensitivity of names
 
