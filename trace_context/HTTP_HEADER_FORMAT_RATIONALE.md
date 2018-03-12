@@ -18,30 +18,11 @@ integration beyond http at the cost of a conventional distraction.
 
 ## `tracestate`
 
-- Should be human readable. Cryptic header will hide the fact of potential information disclosure.
-- Should be appende-able (comma-separated) https://tools.ietf.org/html/rfc7230#page-24 so nodes 
-can add context properties without parsing an existing headers.
-- It is expected that the typical name will be a single word in latin and the value will be a 
-short string in latin or a derivative of an url.
-
-### Field name without value
-There is a special case allowed when the incoming trace state is fully
-described by the `traceparent` header. In this case, the `tracestate` value
-can be simplified to a single value representing the name of the trace graph.
-
-For example, the following:
-```
-trace-parent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-trace-state: yelp
-```
-
-Is shorthand for 
-```
-trace-parent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-trace-state: yelp=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-```
-
-This can help with header compression while still allowing branding, tenant, or otherwise custom labels to be used. These labels can help differentiate different systems that use the same format
+- The names should be human readable, but values opaque. Cryptic name can
+interfere with identification of the tracing system responsible for an entry.
+- Multiple entries permitted, but not across multiple headers. Order identifies which entry is associated with the `traceparent`. Arbitrary non-tracing system entries is a non use case.
+- The typical name will be a single word in latin and the value will be a
+copy of the `traceparent` format or an opaque string.
 
 ### Size limits
 
@@ -51,10 +32,11 @@ Header should be small so providers can satisfy the requirement to pass the valu
 
 TODO: put more thoughts into it
 
-### Trimming of spaces
+### Not trimming spaces
 
-Header should be human readable and editable. Thus spaces are allowed before and after the comma, equal sign, and semicolon 
-separators. It makes human-editing of headers less error-prone. It also allows better visual separation of fields when value modified manually.
+The `tracestate` header is not meant to be edited by hand, and the values
+are opaque. Thus, optimizations such as trimming spaces before and
+after the comma, equal sign, etc are not handled by this specification.
 
 ### Case sensitivity of names
 
@@ -62,7 +44,7 @@ There are few considerations why the names should be case sensitive:
 - some keys may be a url query string parameters which are case sensitive
 - forcing lower case will decrease readability of the names written in camel case
 
-### Strings encoding
+### String encoding of names
 
 Url encoding is low-overhead way to encode unicode characters for non-latin characters in the 
 values. Url encoding keeps a single words in latin unchanged and easy readable.

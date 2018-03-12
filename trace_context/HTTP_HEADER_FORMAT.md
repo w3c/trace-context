@@ -5,26 +5,45 @@ and `tracestate` http headers.
 
 ## Relationship between the headers
 
-The `tracestate` header is not an extension of the data in `traceparent`,
-rather it is the gold copy per vendor. For example, the below hints that there
-is only one trace graph and that is from the Congo service:
+The `traceparent` header represents the incoming request in a tracing system in
+a common format. The `tracestate` header includes the parent in a potentially
+vendor-specific format.
 
+For example, a client traced in the congo system adds the following headers
+to an outbound http request.
 ```
-trace-parent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-trace-state: congo=BleGNlZWRzIHRo
-ZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=
-```
-
-There is one exception to the "gold copy" rule, which is when the incoming
-trace is fully described in generic (`traceparent`) format. The value of
-`tracestate` can be left out in this case as an optimization.
-
-For example, the following is an example of a generic trace:
-```
-trace-parent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-trace-state: yelp
+traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+tracestate: congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4=
 ```
 
+If the receiving server is traced in the `rojo` tracing system, it carries
+the over the state it received and adds a new entry with the position in
+its trace.
+```
+traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
+```
+
+You'll notice that the `rojo` system reuses the value of `traceparent` in its
+entry in `tracestate`. This means it is a generic tracing system. Otherwise,
+`tracestate` entries are opaque.
+
+If the receiving server of the above is `congo` again, it continues from its
+last position, overwriting its entry with one representing the new parent.
+
+```
+traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
+tracestate: congo=Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWF=,rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+```
+
+Notice when `congo` wrote its `traceparent` entry, it reuses the last trace ID
+which helps in consistency for those doing correlation. However, the value of
+its entry `tracestate` is opaque and different. This is ok.
+
+Finally, you'll see `tracestate` retains an entry for `rojo` exactly as it was,
+except pushed to the right. The left-most position lets the next server know
+which tracing system corresponds with `traceparent`. In this case, since
+`congo` wrote `traceparent`, its `tracestate` entry should be left-most.
 
 *See [rationale document](HTTP_HEADER_FORMAT_RATIONALE.md) for details of decisions made for this format.*
 
@@ -117,43 +136,52 @@ base16(<TraceOptions>) = 00  // not-sampled
 
 `tracestate`
 
-As multiple trace graphs can be present, multiple trace state headers are
-allowed. Values can be combined in a single header according to the [RFC 7230](https://tools.ietf.org/html/rfc7230#page-24).
-
 ## Header value
 
-`name1[=value1[;properties1]],name2[=value2[;properties2]]`
+`vendorName1=opaqueValue1,vendorName2=opaqueValue2`
+
+The value a concatenation of trace graph name-state pairs. Only one entry per
+name is allowed because the entry represents that last position in the trace.
+Hence implementors must overwrite their entry upon reentry to their tracing
+system.
+
+For example, if tracing system name is `congo`, and a trace started in their
+system, went through a system named `rojo` and later returned to `congo`, the
+`tracestate` value would not be:
+
+`congo=congosFirstPosition,rojo=rojosFirstPosition,congo=congosSecondPosition`
+
+Rather, the entry would be rewritten to only include the most recent position:
+`congo=congosSecondPosition,rojo=rojosFirstPosition`
 
 **Limits:**
 Maximum length of a combined header MUST be less than 512 bytes. 
 
 ## Name format
 
-Url encoded string. Spaces are allows before and after the name. Header with the trimmed name and with spaces before and after name MUST be considered identical.
-
-Names `id`, `span-id`, `trace-id`, `sampled` are reserved. These properties are defined in `traceparent` header.
+Name starts with the beginning of the string or separator `,` and ends with the
+equal sign `=`. The contents of the name are any url encoded string that does
+not contain an equal sign `=`. Names should intuitively identify a the tracing
+system even if multiple systems per vendor are present.
 
 ## Value format
 
-Value starts after equal sign and ends with the special character `;`, separator `,` or end of string. Value represents a url encoded string and case sensitive. Spaces are allowed in the beginning and the end of the value. Value with spaces before and after MUST be considered identical to the trimmed value. 
-
-## Properties
-
-Properties are expected to be in a format of keys & key-value pairs `;` delimited list `;k1=v1;k2;k3=v3`. Some properties may be known to the library or platform processing the header. Such properties may effect how library or platform processes corresponding name-value pair. Properties unknown to the library or platform MUST be preserved if name and/or value wasn't modified by the library or platform.
-
-Spaces are allowed between properties and before and after equal sign. Properties with spaces MUST be considered identical to properties with all spaces trimmed.
+Value starts after equal sign and ends with a separator `,` or end of string.
+In the case of a generic tracing system, it contains the same data as the most
+recent `traceparent` value. Other systems may have different formatting, such
+as Base64 encoded opaque values.
 
 # Examples of HTTP headers
 
-Single header: 
+Single tracing system (generic format): 
 
 ```
-tracestate: parent_application_id = 123
+tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 ```
 
-Context might be split into multiple headers:
+Multiple tracing systems (with different formatting):
 
 ```
-tracestate: parent_application_id = 123
-tracestate: trace_roads = App1%7cApp2%7cApp
+tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
+

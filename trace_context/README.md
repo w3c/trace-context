@@ -7,12 +7,11 @@ gateway in one service, and information from its direct upstream in another.
 Two propagation fields carry the common and vendor-specific properties that
 make up the trace context.
 
-* `Trace-Parent` describes the position of the incoming request in its trace graph in a portable, fixed-length format. Its design focuses on fast parsing.
+* `traceparent` describes the position of the incoming request in its trace graph in a portable, fixed-length format. Its design focuses on fast parsing.
 
-* `Trace-State` maps all graphs the incoming parent is a part of in potentially vendor-specific formats. For example, if an ancestor of this request was in a different trace, there will be a separate entry for the last position it was in that trace graph.
+* `tracestate` maps all graphs the incoming parent is a part of in potentially vendor-specific formats. For example, if a request crosses tracing systems, there will be one entry in `tracestate` for each system.
 
-Notably, the `Trace-State` field is unreliant on data in the `Trace-Parent`,
-except if the direct upstream is fully described by `Trace-Parent`.
+Notably, the `tracestate` field is unreliant on data in the `traceparent`.
 
 ## Relationship to `Correlation-Context`
 
