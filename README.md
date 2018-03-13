@@ -4,6 +4,14 @@ This repository is associated with the [Distributed Trace Context Community Grou
 
 Specification for tracing context propagation format.
 
+## Team Communication 
+
+Overview of team related communication channels
+
+* GitHub issues for any specification related issues
+* Mailing List for general discussions. Please subscribe to [public-trace-context@w3.org](public-trace-context@w3.org)
+* Gitter Channel to reach the team. [TraceContext/Lobby](https://gitter.im/TraceContext/Lobby)
+
 ## Goal
 
 This specification defines formats to pass trace context information across systems. Our goal is 
