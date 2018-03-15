@@ -86,7 +86,7 @@
                 calculated.errorMessage = "";
 
                 // =====================================================
-                // Calculate Trace-Parent header
+                // Calculate traceparent header
                 //
 
                 if (state.g.traceId.length != 32) {
@@ -112,7 +112,7 @@
                 calculated.traceContext = "00-" + state.g.traceId + "-" + state.g.spanId + "-" + (state.g.sampled ? "01" : "00");
 
                 // =====================================================
-                // Calculate Trace-State header                
+                // Calculate tracestate header                
                 //
 
                 calculated.traceContextExt = "";
@@ -126,7 +126,7 @@
 
                 if (calculated.traceContextExt.length > 512) {
                     calculated.success = false;
-                    calculated.errorMessage += "\nTrace-State header maximum length should be less than 512 characters";
+                    calculated.errorMessage += "\ntracestate header maximum length should be less than 512 characters";
                 }
                 
 
@@ -155,7 +155,7 @@
 
                 if (calculated.correlationContext.length > 8192) {
                     calculated.success = false;
-                    calculated.errorMessage += "\nTrace-State header maximum length should be less than 512 characters";
+                    calculated.errorMessage += "\ntracestate header maximum length should be less than 512 characters";
                 }
 
 
@@ -340,8 +340,8 @@
                             <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.errorMessage}</p>
 
                             <h4 className="alert-heading">Headers:</h4>
-                            <p>Trace-Parent: {this.state.calculated.traceContext}</p>
-                            <p style={{display: this.state.calculated.traceContextExt.length != 0 ? 'block' : 'none' }}>Trace-State: {this.state.calculated.traceContextExt}</p>
+                            <p>traceparent: {this.state.calculated.traceContext}</p>
+                            <p style={{display: this.state.calculated.traceContextExt.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.traceContextExt}</p>
                             <p style={{display: this.state.calculated.correlationContext.length != 0 ? 'block' : 'none' }}>Correlation-Context: {this.state.calculated.correlationContext}</p>
                         </div>
 
