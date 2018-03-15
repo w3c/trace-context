@@ -47,7 +47,7 @@ which tracing system corresponds with `traceparent`. In this case, since
 
 *See [rationale document](HTTP_HEADER_FORMAT_RATIONALE.md) for details of decisions made for this format.*
 
-# Trace-Parent Field
+# TraceParent Field
 
 ## Header name
 
@@ -56,7 +56,7 @@ which tracing system corresponds with `traceparent`. In this case, since
 ## Field value
 
 ```
-base16(<version>)-<version_format>
+base16(<version>)-< version_format >
 ```
 
 The value will be US-ASCII encoded (which is UTF-8 compliant). Character `-` is
@@ -130,7 +130,7 @@ base16(<SpanId>) = 00f067aa0ba902b7
 base16(<TraceOptions>) = 00  // not-sampled
 ```
 
-# Trace-State Field
+# TraceState Field
 
 ## Header name
 
