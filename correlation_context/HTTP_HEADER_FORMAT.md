@@ -1,6 +1,6 @@
 # Correlation Context HTTP Header Format
 
-A correlation context header is used to pass the name-value context properties for the trace. This is a companion header for the `Trace-Parent`. The values should be passed along to any child requests. Note that uniqueness of the key within the `Correlation-Context` is not guaranteed. Context received from upstream service may be altered before passing it along.
+A correlation context header is used to pass the name-value context properties for the trace. This is a companion header for the `traceparent`. The values should be passed along to any child requests. Note that uniqueness of the key within the `Correlation-Context` is not guaranteed. Context received from upstream service may be altered before passing it along.
 
 *See [rationale document](HTTP_HEADER_FORMAT_RATIONALE.md) for details of decisions made for this format.*
 
