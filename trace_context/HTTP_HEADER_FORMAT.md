@@ -152,7 +152,7 @@ Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
 Recommend APM/Tracer vendors and open source project teams register your name in 
-`tracestate`, in order to avoid the conficts. [TraceState Registry](TRACE_STATE_REGISTRY)
+`tracestate`, in order to avoid the conficts. [TraceState Registry](TRACE_STATE_REGISTRY.md)
 
 **Limits:**
 Maximum length of a combined header MUST be less than 512 bytes. 
