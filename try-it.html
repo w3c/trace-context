@@ -49,8 +49,8 @@
                     
                     // calculated fields
                     calculated: {
-                        traceContext: '',
-                        traceContextExt: '',
+                        traceparent: '',
+                        tracestate: '',
                         success: true,
                         errorMessage: "",
                     },
@@ -105,22 +105,22 @@
                     calculated.errorMessage += "\nspan-id should only contain lowercase hex characters";
                 }
 
-                calculated.traceContext = "00-" + state.g.traceId + "-" + state.g.spanId + "-" + (state.g.sampled ? "01" : "00");
+                calculated.traceparent = "00-" + state.g.traceId + "-" + state.g.spanId + "-" + (state.g.sampled ? "01" : "00");
 
                 // =====================================================
                 // Calculate tracestate header                
                 //
 
-                calculated.traceContextExt = "";
+                calculated.tracestate = "";
                 state.g.ext.forEach(element => {
                     var value = encodeURI(element.name) + "=" + encodeURI(element.value) + ";";
 
-                    calculated.traceContextExt += value == "=;" ? "" : value;
+                    calculated.tracestate += value == "=;" ? "" : value;
                 });
 
-                calculated.traceContextExt = calculated.traceContextExt.substring(0, calculated.traceContextExt.length - 1);
+                calculated.tracestate = calculated.tracestate.substring(0, calculated.tracestate.length - 1);
 
-                if (calculated.traceContextExt.length > 512) {
+                if (calculated.tracestate.length > 512) {traceparent
                     calculated.success = false;
                     calculated.errorMessage += "\ntracestate header maximum length should be less than 512 characters";
                 }
@@ -219,7 +219,7 @@
             }
 
             render() {
-                const traceContextExtProps = this.state.g.ext.map((prop, index) =>
+                const tracestateProps = this.state.g.ext.map((prop, index) =>
                     <li key={"ext_" + index}>
                         <label> Name: <input key={"ext_" + index + "_name"} type="text" className="form-control" value={this.state.g.ext[index].name} onChange={this.handleChangeExtPropName(index).bind(this)} /></label>
                         <label> Value: <input key={"ext_" + index + "_value"} type="text" className="form-control" value={this.state.g.ext[index].value} onChange={this.handleChangeExtPropValue(index).bind(this)} /></label>
@@ -235,8 +235,8 @@
                             <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.errorMessage}</p>
 
                             <h4 className="alert-heading">Headers:</h4>
-                            <p>traceparent: {this.state.calculated.traceContext}</p>
-                            <p style={{display: this.state.calculated.traceContextExt.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.traceContextExt}</p>
+                            <p>traceparent: {this.state.calculated.traceparent}</p>
+                            <p style={{display: this.state.calculated.tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.tracestate}</p>
                         </div>
 
                         <div className="card">
@@ -274,7 +274,7 @@
                             <h3 className="card-title">Trace state</h3>
 
                             <ul>
-                                {traceContextExtProps}
+                                {tracestateProps}
                             </ul>
                             <div className="row">
                                 <div className="col-md-1">
