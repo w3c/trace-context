@@ -13,7 +13,7 @@
         <h1>Trace Context Demo</h1>
 
         <p>
-            Trace Context consists is split into three http headers. Each header represent a semantically different set of fields. Required fields, extended tracing fields and user defined context.
+            Trace Context consists of two http headers. Each header represent a semantically different set of fields. Required id fields in traceparent, extended tracing fields in tracestate.
         </p>
 
         <div id="root"></div>
@@ -41,20 +41,16 @@
                         spanId: "00f067aa0ba902b7", //TODO: generate random
                         sampled: false,
                         ext: [
-                        ],
-                        correlation: [
-                        ],
+                        ]
                     },
 
                     // temporary variables to allow to add new name/value pairs in collecitons
                     newExtProp: {name: "cluster-id", value: "3563577b34"},
-                    newCorrelationProp: {name: "flight", value: "SDFLS"},
                     
                     // calculated fields
                     calculated: {
                         traceContext: '',
                         traceContextExt: '',
-                        correlationContext: '',
                         success: true,
                         errorMessage: "",
                     },
@@ -130,35 +126,6 @@
                 }
                 
 
-                // =====================================================
-                // Calculate Correlation-Context header             
-                //
-
-                if (state.g.correlation.length > 180) {
-                    calculated.success = false;
-                    calculated.errorMessage += "\nCorrelation context should not have more than 180 name/value pairs";
-                }
-
-                calculated.correlationContext = "";
-                state.g.correlation.forEach(element => {
-                    var value = encodeURI(element.name) + "=" + encodeURI(element.value) + ";";
-
-                    if (value.length > 4096)
-                    {
-                        calculated.success = false;
-                        calculated.errorMessage += "\nMaximum number of bytes per a single name-value pair: `4096`";
-                    }
-
-                    calculated.correlationContext += value == "=;" ? "" : value;
-                });
-                calculated.correlationContext = calculated.correlationContext.substring(0, calculated.correlationContext.length - 1);
-
-                if (calculated.correlationContext.length > 8192) {
-                    calculated.success = false;
-                    calculated.errorMessage += "\ntracestate header maximum length should be less than 512 characters";
-                }
-
-
                 // Update URL so it can be shared as an example
                 window.location.hash = encodeURI(JSON.stringify(state.g));
                 return state;
@@ -176,8 +143,6 @@
                         sampled: false,
                         ext: [
                         ],
-                        correlation: [
-                        ],
                     }
                 }));
             }
@@ -192,30 +157,11 @@
                             {name: "h-id", value: ".3.2.4"},
                             {name: "cluster-id", value: "76b52714-820c-4bd3-a9f5-14d73e4c9bba"},
                         ],
-                        correlation: [
-                        ],
                     }
                 }));
             }
 
-            showExampleCorrelationUsed(event) {
-                this.setState(this.updateHeaders({
-                    g : {
-                        traceId: "4bf92f3577b34da6a3ce929d0e0e4736",
-                        spanId: "00f067aa0ba902b7",
-                        sampled: false,
-                        ext: [
-                            {name: "h-id", value: ".3.2.4"},
-                            {name: "cluster-id", value: "76b52714-820c-4bd3-a9f5-14d73e4c9bba"},
-                        ],
-                        correlation: [
-                            {name: "user-id", value: "sergey"},
-                            {name: "flight", value: "pVKBWu3OG0GG8tDvuOsTtQ=="},
-                        ],
-                    }
-                }));
-            }
-       
+      
             handleTraceIdChange(event) {
                 var traceId = event.target.value;
                 this.setState((state) => {state.g.traceId = traceId; return this.updateHeaders(state);});
@@ -272,67 +218,16 @@
                 }
             }
 
-            handleChangeCorrelationPropName(index) {
-                return (event) =>
-                {
-                    var correlationPropName = event.target.value;
-                    this.setState((state) => {state.g.correlation[index].name = correlationPropName; return this.updateHeaders(state);});
-                }
-            }
- 
-            handleChangeCorrelationPropValue(index) {
-                return (event) =>
-                {
-                    var correlationPropValue = event.target.value;
-                    this.setState((state) => {state.g.correlation[index].value = correlationPropValue; return this.updateHeaders(state);});
-                }
-            }
-
-            handleNewCorrelationPropName(event) {
-                var newCorrelationPropName = event.target.value;
-                this.setState((state) => {state.newCorrelationProp.name = newCorrelationPropName; return this.updateHeaders(state);});
-            }
-           
-            handleNewCorrelationPropValue(event) {
-                var newCorrelationPropValue = event.target.value;
-                this.setState((state) => {state.newCorrelationProp.value = newCorrelationPropValue; return this.updateHeaders(state);});
-            }
-        
-            addCorrelationProp() {
-                this.setState((state) => {
-                    state.g.correlation.push(state.newCorrelationProp);
-                    state.newCorrelationProp = {name: "", value: ""};
-                    return this.updateHeaders(state);
-                });
-            }
-
-            removeCorrelationProp(index) {
-                return (event) =>
-                {
-                    this.setState((state) => {state.g.correlation.splice(index, 1); return this.updateHeaders(state);});
-                }
-            }
-
-       
             render() {
                 const traceContextExtProps = this.state.g.ext.map((prop, index) =>
                     <li key={"ext_" + index}>
-                        <label> Name: <input key={"ext_" + index + "_name"} type="text" value={this.state.g.ext[index].name} onChange={this.handleChangeExtPropName(index).bind(this)} /></label>
-                        <label> Value: <input key={"ext_" + index + "_value"} type="text" value={this.state.g.ext[index].value} onChange={this.handleChangeExtPropValue(index).bind(this)} /></label>
+                        <label> Name: <input key={"ext_" + index + "_name"} type="text" className="form-control" value={this.state.g.ext[index].name} onChange={this.handleChangeExtPropName(index).bind(this)} /></label>
+                        <label> Value: <input key={"ext_" + index + "_value"} type="text" className="form-control" value={this.state.g.ext[index].value} onChange={this.handleChangeExtPropValue(index).bind(this)} /></label>
                         <a href="#" onClick={this.removeExtProp(index).bind(this)} key={"remove_" + index}>
                             <span className="glyphicon glyphicon-remove" /> Remove
                         </a>
                     </li>
                 );
- 
-                const correlationContextProps = this.state.g.correlation.map((prop, index) =>
-                    <li key={"correlation_" + index}>
-                        <label> Name: <input key={"correlation_" + index + "_name"} type="text" value={this.state.g.correlation[index].name} onChange={this.handleChangeCorrelationPropName(index).bind(this)} /></label>
-                        <label> Value: <input key={"correlation_" + index + "_value"} type="text" value={this.state.g.correlation[index].value} onChange={this.handleChangeCorrelationPropValue(index).bind(this)} /></label>
-                        <a href="#" key={"remove_" + index} onClick={this.removeCorrelationProp(index).bind(this)} >Remove</a>
-                    </li>
-                );
-                const correlationContextExtProps = [];
  
                 return (
                     <form onSubmit = {this.handleSubmit}>
@@ -342,12 +237,11 @@
                             <h4 className="alert-heading">Headers:</h4>
                             <p>traceparent: {this.state.calculated.traceContext}</p>
                             <p style={{display: this.state.calculated.traceContextExt.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.traceContextExt}</p>
-                            <p style={{display: this.state.calculated.correlationContext.length != 0 ? 'block' : 'none' }}>Correlation-Context: {this.state.calculated.correlationContext}</p>
                         </div>
 
                         <div className="card">
                             <div className="card-body">
-                                <h3 className="card-title">Requered fields</h3>
+                                <h3 className="card-title">Trace parent</h3>
                                 <div className="row">
                                     <div className="col-md-1">
                                         trace-id
@@ -377,7 +271,7 @@
 
                     <div className="card">
                         <div className="card-body">
-                            <h3 className="card-title">Extended fields</h3>
+                            <h3 className="card-title">Trace state</h3>
 
                             <ul>
                                 {traceContextExtProps}
@@ -402,44 +296,15 @@
                         </div>
                     </div>
  
-                    <div className="card">
-                        <div className="card-body">
-                            <h3 className="card-title">User-defined fields</h3>
-                            <ul>
-                                {correlationContextProps}
-                            </ul>
-                            <div className="row">
-                                <div className="col-md-1">
-                                    Name
-                                </div>
-                                <div className="col">
-                                        <input key={"correlation_new_name"} className="form-control" placeholder="name" type="text" value={this.state.newCorrelationProp.name} onChange={this.handleNewCorrelationPropName.bind(this)} />
-                                </div>
-                                <div className="col-md-1">
-                                    Value
-                                </div>
-                                <div className="col">
-                                        <input key={"correlation_new_value"} className="form-control" placeholder="value" type="text" value={this.state.newCorrelationProp.value} onChange={this.handleNewCorrelationPropValue.bind(this)} />
-                                </div>
-                                <div className="col">
-                                    <a href="#" key="new_ext" onClick={this.addCorrelationProp.bind(this)}>Add</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <h2>Examples</h2>
                         <ul>
                             <li>
                                 <a href="#" onClick={this.showExampleMinimum.bind(this)}>Minimum header</a>
-                                </li>
-                                <li>
-                            <a href="#" onClick={this.showExampleExtUsed.bind(this)}>Extended header used</a>
                             </li>
                             <li>
-                            <a href="#" onClick={this.showExampleCorrelationUsed.bind(this)}>Correlation context used</a>
+                                <a href="#" onClick={this.showExampleExtUsed.bind(this)}>Full trace state</a>
                             </li>
-                            </ul>
+                        </ul>
                     </form>
                 );
             }
