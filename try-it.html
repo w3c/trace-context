@@ -37,10 +37,19 @@
                 this.state = {
                     // global state. fields that can be set
                     g: {
-                        traceId: "4bf92f3577b34da6a3ce929d0e0e4736", //TODO: generate random
-                        spanId: "00f067aa0ba902b7", //TODO: generate random
-                        sampled: false,
-                        ext: [
+                        traceparent: "",
+                        tracestate: "",
+                        m: [
+                            {
+                                type: "restart",
+                                args: {
+                                    traceId: "4bf92f3577b34da6a3ce929d0e0e4736", //TODO: generate random
+                                    spanId: "00f067aa0ba902b7", //TODO: generate random
+                                    sampled: false,
+                                    ext: [
+                                    ],
+                                }
+                            }
                         ]
                     },
 
@@ -49,10 +58,16 @@
                     
                     // calculated fields
                     calculated: {
-                        traceparent: '',
-                        tracestate: '',
                         success: true,
                         errorMessage: "",
+                        m:[
+                            {
+                                traceparent: '',
+                                tracestate: '',
+                                success: true,
+                                errorMessage: "",
+                            }
+                        ]
                     },
                 };
 
@@ -67,64 +82,77 @@
             }
 
 
+            getTraceContext(initialTraceParent, type, args, result) {
+                result.success = true;
+                result.errorMessage = "";
+                result.traceparent = "";
+                result.tracestate = "";
+
+                if (type == "restart") {
+                    // =====================================================
+                    // Calculate traceparent header
+                    //
+                    if (args.traceId.length != 32) {
+                        result.success = false;
+                        result.errorMessage += "\ntrace-id should be 32 characters long";
+                    }
+
+                    if (!args.traceId.match("^[0-9a-f]*$")) {
+                        result.success = false;
+                        result.errorMessage += "\ntrace-id should only contain lowercase hex characters";
+                    }
+
+                    if (args.spanId.length != 16) {
+                        result.success = false;
+                        result.errorMessage += "\nspan-id should be 16 characters long";
+                    }
+
+                    if (!args.spanId.match("^[0-9a-f]*$")) {
+                        result.success = false;
+                        result.errorMessage += "\nspan-id should only contain lowercase hex characters";
+                    }
+
+                    result.traceparent = "00-" + args.traceId + "-" + args.spanId + "-" + (args.sampled ? "01" : "00");
+
+
+                    // =====================================================
+                    // Calculate tracestate header                
+                    //
+
+                    result.tracestate = "";
+                    args.ext.forEach(element => {
+                        var value = encodeURI(element.name) + "=" + encodeURI(element.value) + ";";
+
+                        result.tracestate += value == "=;" ? "" : value;
+                    });
+
+                    result.tracestate = result.tracestate.substring(0, result.tracestate.length - 1);
+
+                    if (result.tracestate.length > 512) {
+                        result.success = false;
+                        result.errorMessage += "\ntracestate header maximum length should be less than 512 characters";
+                    }
+                }
+            }
+
             // =====================================================
             // This is the main part of the file. Validation of fields and calculating of resulting headers happens here
             //
  
             updateHeaders(state) {
                 if (state.calculated === undefined) {
-                    state.calculated = {};
+                    state.calculated = {m:[{}]};
                 }
 
-                var calculated = state.calculated;
+                var traceparent = state.g.traceparent;
+                var tracestate = state.g.tracestate;
 
-                calculated.success = true;
-                calculated.errorMessage = "";
-
-                // =====================================================
-                // Calculate traceparent header
-                //
-
-                if (state.g.traceId.length != 32) {
-                    calculated.success = false;
-                    calculated.errorMessage += "\ntrace-id should be 32 characters long";
+                var modifications = state.g.m;
+                for (var i = 0; i < modifications.length; i++) {
+                    this.getTraceContext(traceparent, modifications[i].type, modifications[i].args, state.calculated.m[i]);
+                    traceparent = state.calculated.m[i].traceparent;
+                    tracestate = state.calculated.m[i].tracestate;
                 }
-
-                if (!state.g.traceId.match("^[0-9a-f]*$")) {
-                    calculated.success = false;
-                    calculated.errorMessage += "\ntrace-id should only contain lowercase hex characters";
-                }
-
-                if (state.g.spanId.length != 16) {
-                    calculated.success = false;
-                    calculated.errorMessage += "\nspan-id should be 16 characters long";
-                }
-
-                if (!state.g.spanId.match("^[0-9a-f]*$")) {
-                    calculated.success = false;
-                    calculated.errorMessage += "\nspan-id should only contain lowercase hex characters";
-                }
-
-                calculated.traceparent = "00-" + state.g.traceId + "-" + state.g.spanId + "-" + (state.g.sampled ? "01" : "00");
-
-                // =====================================================
-                // Calculate tracestate header                
-                //
-
-                calculated.tracestate = "";
-                state.g.ext.forEach(element => {
-                    var value = encodeURI(element.name) + "=" + encodeURI(element.value) + ";";
-
-                    calculated.tracestate += value == "=;" ? "" : value;
-                });
-
-                calculated.tracestate = calculated.tracestate.substring(0, calculated.tracestate.length - 1);
-
-                if (calculated.tracestate.length > 512) {traceparent
-                    calculated.success = false;
-                    calculated.errorMessage += "\ntracestate header maximum length should be less than 512 characters";
-                }
-                
 
                 // Update URL so it can be shared as an example
                 window.location.hash = encodeURI(JSON.stringify(state.g));
@@ -161,35 +189,51 @@
                 }));
             }
 
-      
-            handleTraceIdChange(event) {
-                var traceId = event.target.value;
-                this.setState((state) => {state.g.traceId = traceId; return this.updateHeaders(state);});
+            handleTraceParentChange(event) {
+                var traceparent = event.target.value;
+                this.setState((state) => {state.g.traceparent = traceparent; return this.updateHeaders(state);});
+            }
+
+            handleTraceStateChange(event) {
+                var tracestate = event.target.value;
+                this.setState((state) => {state.g.tracestate = tracestate; return this.updateHeaders(state);});
             }
  
-            handleSpanIdChange(event) {
-                var spanId = event.target.value;
-                this.setState((state) => {state.g.spanId = spanId; return this.updateHeaders(state);});
-            }
-
-            handleSampledChange(event) {
-                var sampled = event.target.checked;
-                this.setState((state) => {state.g.sampled = sampled; return this.updateHeaders(state);});
-            }
-
-            handleChangeExtPropName(index) {
-                return (event) =>
+            handleTraceIdChange(index) {
+                return (event) => 
                 {
-                    var extPropName = event.target.value;
-                    this.setState((state) => {state.g.ext[index].name = extPropName; return this.updateHeaders(state);});
+                    var traceId = event.target.value;
+                    this.setState((state) => {state.g.m[index].args.traceId = traceId; return this.updateHeaders(state);});
                 }
             }
  
-            handleChangeExtPropValue(index) {
+            handleSpanIdChange(index) {
+                return (event) => {
+                    var spanId = event.target.value;
+                    this.setState((state) => {state.g.m[index].args.spanId = spanId; return this.updateHeaders(state);});
+                }
+            }
+
+            handleSampledChange(index) {
+                return (event) => {
+                    var sampled = event.target.checked;
+                    this.setState((state) => {state.g.m[index].args.sampled = sampled; return this.updateHeaders(state);});
+                }
+            }
+
+            handleChangeExtPropName(index, extIdx) {
+                return (event) =>
+                {
+                    var extPropName = event.target.value;
+                    this.setState((state) => {state.g.m[index].args.ext[extIdx].name = extPropName; return this.updateHeaders(state);});
+                }
+            }
+ 
+            handleChangeExtPropValue(index, extIdx) {
                 return (event) =>
                 {
                     var extPropValue = event.target.value;
-                    this.setState((state) => {state.g.ext[index].value = extPropValue; return this.updateHeaders(state);});
+                    this.setState((state) => {state.g.m[index].args.ext[extIdx].value = extPropValue; return this.updateHeaders(state);});
                 }
             }
 
@@ -203,27 +247,29 @@
                 this.setState((state) => {state.newExtProp.value = newExtPropValue; return this.updateHeaders(state);});
             }
         
-            addExtProp() {
-                this.setState((state) => {
-                    state.g.ext.push(state.newExtProp);
-                    state.newExtProp = {name: "", value: ""};
-                    return this.updateHeaders(state);
-                });
+            addExtProp(index) {
+                return (event) => {
+                    this.setState((state) => {
+                        state.g.m[index].args.ext.push(state.newExtProp);
+                        state.newExtProp = {name: "", value: ""};
+                        return this.updateHeaders(state);
+                    });
+                }
             }
 
-            removeExtProp(index) {
+            removeExtProp(index, extIdx) {
                 return (event) =>
                 {
-                    this.setState((state) => {state.g.ext.splice(index, 1); return this.updateHeaders(state);});
+                    this.setState((state) => {state.g.m[index].args.ext.splice(extIdx, 1); return this.updateHeaders(state);});
                 }
             }
 
             render() {
-                const tracestateProps = this.state.g.ext.map((prop, index) =>
+                const tracestateProps = this.state.g.m[0].args.ext.map((prop, index) =>
                     <li key={"ext_" + index}>
-                        <label> Name: <input key={"ext_" + index + "_name"} type="text" className="form-control" value={this.state.g.ext[index].name} onChange={this.handleChangeExtPropName(index).bind(this)} /></label>
-                        <label> Value: <input key={"ext_" + index + "_value"} type="text" className="form-control" value={this.state.g.ext[index].value} onChange={this.handleChangeExtPropValue(index).bind(this)} /></label>
-                        <a href="#" onClick={this.removeExtProp(index).bind(this)} key={"remove_" + index}>
+                        <label> Name: <input key={"ext_" + index + "_name"} type="text" className="form-control" value={this.state.g.m[0].args.ext[index].name} onChange={this.handleChangeExtPropName(0, index).bind(this)} /></label>
+                        <label> Value: <input key={"ext_" + index + "_value"} type="text" className="form-control" value={this.state.g.m[0].args.ext[index].value} onChange={this.handleChangeExtPropValue(0, index).bind(this)} /></label>
+                        <a href="#" onClick={this.removeExtProp(0, index).bind(this)} key={"remove_" + index}>
                             <span className="glyphicon glyphicon-remove" /> Remove
                         </a>
                     </li>
@@ -231,23 +277,36 @@
  
                 return (
                     <form onSubmit = {this.handleSubmit}>
+
                         <div className={this.state.calculated.success ? "alert alert-success" : "alert alert-danger"} role="alert">
                             <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.errorMessage}</p>
 
                             <h4 className="alert-heading">Headers:</h4>
-                            <p>traceparent: {this.state.calculated.traceparent}</p>
-                            <p style={{display: this.state.calculated.tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.tracestate}</p>
+                            <p>traceparent:
+                                    <div className="col">
+                                        <input type="text" id="traceparent" className="form-control" placeholder="01-00000000000000000000000000000000-00000000000000-00" value={this.state.g.traceparent} onChange={this.handleTraceParentChange.bind(this)} />
+                                    </div>
+                            </p>
+                            <p>tracestate: 
+                                <div className="col">
+                                        <input type="text" id="tracestate" className="form-control" placeholder="tc" value={this.state.g.tracestate} onChange={this.handleTraceStateChange.bind(this)} />
+                                    </div>
+                            </p>
                         </div>
 
                         <div className="card">
                             <div className="card-body">
-                                <h3 className="card-title">Trace parent</h3>
+                                <h3 className="card-title">Modification: restart trace</h3>
+                        
+                        <div className="card">
+                            <div className="card-body">
+                                <h4 className="card-title">Trace parent</h4>
                                 <div className="row">
                                     <div className="col-md-1">
                                         trace-id
                                     </div>
                                     <div className="col">
-                                        <input type="text" id="trace-id" className="form-control" placeholder="00000000000000000000000000000000" value={this.state.g.traceId} onChange={this.handleTraceIdChange.bind(this)} />
+                                        <input type="text" id="trace-id" className="form-control" placeholder="00000000000000000000000000000000" value={this.state.g.m[0].args.traceId} onChange={this.handleTraceIdChange(0).bind(this)} />
                                     </div>
                                 </div>
                                 <div className="row">
@@ -255,7 +314,7 @@
                                         span-id
                                     </div>
                                     <div className="col">
-                                        <input type="text" className="form-control" placeholder="00000000000000" value={this.state.g.spanId} onChange={this.handleSpanIdChange.bind(this)} /> 
+                                        <input type="text" className="form-control" placeholder="00000000000000" value={this.state.g.m[0].args.spanId} onChange={this.handleSpanIdChange(0).bind(this)} /> 
                                     </div>
                                 </div>
                                 <div className="row">
@@ -263,7 +322,7 @@
                                         sampled
                                     </div>
                                     <div className="col">
-                                        <input type="checkbox" className="form-check-input" value={this.state.g.sampled} onChange={this.handleSampledChange.bind(this)} /> 
+                                        <input type="checkbox" className="form-check-input" value={this.state.g.m[0].args.sampled} onChange={this.handleSampledChange(0).bind(this)} /> 
                                     </div>
                                 </div>
                             </div>
@@ -271,7 +330,7 @@
 
                     <div className="card">
                         <div className="card-body">
-                            <h3 className="card-title">Trace state</h3>
+                            <h4 className="card-title">Trace state</h4>
 
                             <ul>
                                 {tracestateProps}
@@ -290,11 +349,23 @@
                                     <input key={"ext_new_value"} className="form-control" placeholder="value" type="text" value={this.state.newExtProp.value} onChange={this.handleNewExtPropValue.bind(this)} />
                                 </div>
                                 <div className="col">
-                                    <a href="#" key="new_ext" onClick={this.addExtProp.bind(this)}>Add</a>
+                                    <a href="#" key="new_ext" onClick={this.addExtProp(0).bind(this)}>Add</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    </div>
+                    </div>
+
+                    <div className={this.state.calculated.m[0].success ? "alert alert-success" : "alert alert-danger"} role="alert">
+                        <p style={{display: this.state.calculated.m[0].errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.m[0].errorMessage}</p>
+
+                        <h4 className="alert-heading">Headers:</h4>
+                        <p>traceparent: {this.state.calculated.m[0].traceparent}</p>
+                        <p style={{display: this.state.calculated.m[0].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[0].tracestate}</p>
+                    </div>
+                    
  
                     <h2>Examples</h2>
                         <ul>
