@@ -37,19 +37,9 @@
                 this.state = {
                     // global state. fields that can be set
                     g: {
-                        traceparent: "",
-                        tracestate: "",
+                        traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
+                        tracestate: "tc",
                         m: [
-                            {
-                                type: "restart",
-                                args: {
-                                    traceId: "4bf92f3577b34da6a3ce929d0e0e4736", //TODO: generate random
-                                    spanId: "00f067aa0ba902b7", //TODO: generate random
-                                    sampled: false,
-                                    ext: [
-                                    ],
-                                }
-                            }
                         ]
                     },
 
@@ -81,58 +71,137 @@
                 this.updateHeaders(this.state);
             }
 
+            getTraceParent(args, result) {
+                // =====================================================
+                // Calculate traceparent header
+                //
+                if (args.traceId.length != 32) {
+                    result.success = false;
+                    result.errorMessage += "\ntrace-id should be 32 characters long";
+                }
 
-            getTraceContext(initialTraceParent, type, args, result) {
+                if (!args.traceId.match("^[0-9a-f]*$")) {
+                    result.success = false;
+                    result.errorMessage += "\ntrace-id should only contain lowercase hex characters";
+                }
+
+                if (args.spanId.length != 16) {
+                    result.success = false;
+                    result.errorMessage += "\nspan-id should be 16 characters long";
+                }
+
+                if (!args.spanId.match("^[0-9a-f]*$")) {
+                    result.success = false;
+                    result.errorMessage += "\nspan-id should only contain lowercase hex characters";
+                }
+
+                return "00-" + args.traceId + "-" + args.spanId + "-" + (args.sampled ? "01" : "00");
+            }
+
+            getTraceState(args, result) {
+                result.tracestate = "";
+                args.ext.forEach(element => {
+                    var value = element.name + (element.value.length > 0 ?  "=" + element.value : "") + ",";
+
+                    result.tracestate += value == "=," ? "" : value;
+                });
+
+                var tracestate = result.tracestate.substring(0, result.tracestate.length - 1);
+
+                if (result.tracestate.length > 512) {
+                    result.success = false;
+                    result.errorMessage += "\ntracestate header maximum length should be less than 512 characters";
+                }
+
+                return tracestate;
+            }
+
+
+            getTraceContext(initialTraceContext, type, args, result) {
                 result.success = true;
                 result.errorMessage = "";
                 result.traceparent = "";
                 result.tracestate = "";
 
+                var traceId = initialTraceContext.traceId;
+                var spanId = initialTraceContext.spanId;
+                var sampled = initialTraceContext.sampled;
+                var ext = initialTraceContext.ext;
+                initialTraceContext = {};
+
                 if (type == "restart") {
-                    // =====================================================
-                    // Calculate traceparent header
-                    //
-                    if (args.traceId.length != 32) {
-                        result.success = false;
-                        result.errorMessage += "\ntrace-id should be 32 characters long";
-                    }
-
-                    if (!args.traceId.match("^[0-9a-f]*$")) {
-                        result.success = false;
-                        result.errorMessage += "\ntrace-id should only contain lowercase hex characters";
-                    }
-
-                    if (args.spanId.length != 16) {
-                        result.success = false;
-                        result.errorMessage += "\nspan-id should be 16 characters long";
-                    }
-
-                    if (!args.spanId.match("^[0-9a-f]*$")) {
-                        result.success = false;
-                        result.errorMessage += "\nspan-id should only contain lowercase hex characters";
-                    }
-
-                    result.traceparent = "00-" + args.traceId + "-" + args.spanId + "-" + (args.sampled ? "01" : "00");
-
-
-                    // =====================================================
-                    // Calculate tracestate header                
-                    //
-
-                    result.tracestate = "";
-                    args.ext.forEach(element => {
-                        var value = encodeURI(element.name) + "=" + encodeURI(element.value) + ";";
-
-                        result.tracestate += value == "=;" ? "" : value;
-                    });
-
-                    result.tracestate = result.tracestate.substring(0, result.tracestate.length - 1);
-
-                    if (result.tracestate.length > 512) {
-                        result.success = false;
-                        result.errorMessage += "\ntracestate header maximum length should be less than 512 characters";
-                    }
+                    initialTraceContext.traceId = args.traceId;
+                    initialTraceContext.spanId = args.spanId;
+                    initialTraceContext.sampled = args.sampled;
+                    initialTraceContext.ext = args.ext;
+                } else if (type == "next step") {
+                    initialTraceContext.traceId = traceId;
+                    initialTraceContext.spanId = args.spanId;
+                    initialTraceContext.sampled = sampled;
+                    initialTraceContext.ext = ext;
                 }
+
+                result.traceparent = this.getTraceParent(initialTraceContext, result);
+                initialTraceContext.traceparent = result.traceparent;
+
+                result.tracestate = this.getTraceState(initialTraceContext, result);
+                initialTraceContext.tracestate = result.tracestate;
+
+                return initialTraceContext;
+            }
+
+            parseTrtaceContext(args, result) {
+                result.success = true;
+                result.errorMessage = "";
+                result.traceparent = "";
+                result.tracestate = "";
+
+                var initialTraceContext = {};
+
+                
+                var str = args.traceparent;
+                str = str.substring(str.indexOf("-") + 1);
+                //TODO: validate version
+                
+                var traceId = str.substring(0, str.indexOf("-"));
+                str = str.substring(str.indexOf("-") + 1);
+
+                var spanId = str.substring(0, str.indexOf("-"));
+                str = str.substring(str.indexOf("-") + 1);
+
+                var sampled = false;
+                if (str != "00") {
+                    sampled = true;
+                }
+
+
+                var str = args.tracestate;
+                var ext = [];
+                while (str.length > 0) {
+                    var pair = str.indexOf(",") > 0 ? str.substring(0, str.indexOf(",")) : str;
+                    if (pair.trim().length > 0) {
+                        var idx = str.indexOf("=");
+                        var name = idx > 0 ? pair.substring(0, idx) : pair;
+                        var value = idx > 0 ? pair.substring(idx + 1) : "";
+                        ext.push( {name: name, value: value} );
+                    }
+
+                    str = str.indexOf(",") > 0 ? str.substring(str.indexOf(",") + 1) : "";
+                }
+                
+
+                initialTraceContext.traceId = traceId;
+                initialTraceContext.spanId = spanId;
+                initialTraceContext.sampled = sampled;
+                initialTraceContext.ext = ext;
+
+                result.traceparent = args.traceparent;
+                initialTraceContext.traceparent = result.traceparent;
+
+                result.tracestate = args.tracestate;
+                initialTraceContext.tracestate = result.tracestate;
+
+                return initialTraceContext;
             }
 
             // =====================================================
@@ -141,52 +210,20 @@
  
             updateHeaders(state) {
                 if (state.calculated === undefined) {
-                    state.calculated = {m:[{}]};
+                    state.calculated = {m:[]};
                 }
 
-                var traceparent = state.g.traceparent;
-                var tracestate = state.g.tracestate;
+                var initialTraceContext = this.parseTrtaceContext(state.g, state.calculated);
 
                 var modifications = state.g.m;
                 for (var i = 0; i < modifications.length; i++) {
-                    this.getTraceContext(traceparent, modifications[i].type, modifications[i].args, state.calculated.m[i]);
-                    traceparent = state.calculated.m[i].traceparent;
-                    tracestate = state.calculated.m[i].tracestate;
+                    state.calculated.m.push({});
+                    initialTraceContext = this.getTraceContext(initialTraceContext, modifications[i].type, modifications[i].args, state.calculated.m[i]);
                 }
 
                 // Update URL so it can be shared as an example
                 window.location.hash = encodeURI(JSON.stringify(state.g));
                 return state;
-            }
-
-            // =====================================================
-            // Examples
-            //
-
-            showExampleMinimum(event) {
-                this.setState(this.updateHeaders({
-                    g : {
-                        traceId: "4bf92f3577b34da6a3ce929d0e0e4736",
-                        spanId: "00f067aa0ba902b7",
-                        sampled: false,
-                        ext: [
-                        ],
-                    }
-                }));
-            }
-
-            showExampleExtUsed(event) {
-                this.setState(this.updateHeaders({
-                    g : {
-                        traceId: "4bf92f3577b34da6a3ce929d0e0e4736",
-                        spanId: "00f067aa0ba902b7",
-                        sampled: false,
-                        ext: [
-                            {name: "h-id", value: ".3.2.4"},
-                            {name: "cluster-id", value: "76b52714-820c-4bd3-a9f5-14d73e4c9bba"},
-                        ],
-                    }
-                }));
             }
 
             handleTraceParentChange(event) {
@@ -264,6 +301,33 @@
                 }
             }
 
+            handleAddModificationProp(type) {
+                return (event) => {
+                    this.setState((state) => {
+                        if (type == "restart") {
+                            state.g.m.push({
+                                type: "restart", 
+                                args: {
+                                    traceId: "4bf92f3577b34da6a3ce929d0e0e4736", //TODO: generate random
+                                    spanId: "00f067aa0ba902b7", //TODO: generate random
+                                    sampled: false,
+                                    ext: [
+                                    ],
+                                }
+                            });
+                        } else if (type == "next step") {
+                            state.g.m.push({
+                                type: "next step", 
+                                args: {
+                                    spanId: "00f067aa0ba902b7", //TODO: generate random
+                                }
+                            });
+                        }
+                        return this.updateHeaders(state);
+                    });
+                }
+            }
+
             getTraceStateProps(index) {
                 var result = this.state.g.m[index].args.ext.map((prop, extIdx) =>
                     <li key={"ext_" + extIdx}>
@@ -297,17 +361,12 @@
                             </div>);
             }
 
-            getModificationName(index) {
-                if (this.state.g.m[index].type == "restart") {
-                    return "restart trace"
-                }
-            }
-
             getModifications() {
-                return this.state.g.m.map((prop, index) =>(
-                <div className="card">
+                return this.state.g.m.map((prop, index) => {
+                    if (this.state.g.m[index].type == "restart") {
+                        return (<div className="card">
                     <div className="card-body">
-                        <h3 className="card-title">Modification: {this.getModificationName(index)}</h3>
+                        <h3 className="card-title">Modification: "restart trace"</h3>
                         
                         <div className="card">
                             <div className="card-body">
@@ -357,9 +416,39 @@
                         <p>traceparent: {this.state.calculated.m[index].traceparent}</p>
                         <p style={{display: this.state.calculated.m[index].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[index].tracestate}</p>
                     </div>
-                </div>
+                </div>)
 
-                ));
+                    } else if (this.state.g.m[index].type == "next step") {
+                        return (<div className="card">
+                    <div className="card-body">
+                        <h3 className="card-title">Modification: next step</h3>
+                        
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="row">
+                                    <div className="col-md-1">
+                                        span-id
+                                    </div>
+                                    <div className="col">
+                                        <input type="text" className="form-control" placeholder="00000000000000" value={this.state.g.m[index].args.spanId} onChange={this.handleSpanIdChange(index).bind(this)} /> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div className={this.state.calculated.m[index].success ? "alert alert-success" : "alert alert-danger"} role="alert">
+                        <p style={{display: this.state.calculated.m[index].errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.m[index].errorMessage}</p>
+
+                        <h4 className="alert-heading">Headers:</h4>
+                        <p>traceparent: {this.state.calculated.m[index].traceparent}</p>
+                        <p style={{display: this.state.calculated.m[index].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[index].tracestate}</p>
+                    </div>
+                </div>)
+
+                    }
+                    
+                    });
             }
 
             render() {
@@ -372,7 +461,7 @@
                             <h4 className="alert-heading">Headers:</h4>
                             <p>traceparent:
                                     <div className="col">
-                                        <input type="text" id="traceparent" className="form-control" placeholder="01-00000000000000000000000000000000-00000000000000-00" value={this.state.g.traceparent} onChange={this.handleTraceParentChange.bind(this)} />
+                                        <input type="text" id="traceparent" className="form-control" placeholder="00-00000000000000000000000000000000-00000000000000-00" value={this.state.g.traceparent} onChange={this.handleTraceParentChange.bind(this)} />
                                     </div>
                             </p>
                             <p>tracestate: 
@@ -382,16 +471,10 @@
                             </p>
                         </div>
                         {this.getModifications()}
+
+                        <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("next step").bind(this)}>next step</button>
+                        <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("restart").bind(this)}>restart</button>
                     
-                    <h2>Examples</h2>
-                        <ul>
-                            <li>
-                                <a href="#" onClick={this.showExampleMinimum.bind(this)}>Minimum header</a>
-                            </li>
-                            <li>
-                                <a href="#" onClick={this.showExampleExtUsed.bind(this)}>Full trace state</a>
-                            </li>
-                        </ul>
                     </form>
                 );
             }
