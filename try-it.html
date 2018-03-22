@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
 </head>
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <h1>Trace Context Demo</h1>
 
         <p>
@@ -426,35 +426,38 @@
 
             getTraceStateProps(index) {
                 var result = this.state.g.m[index].args.ext.map((prop, extIdx) =>
-                    <li key={"ext_" + extIdx}>
-                        <label> Name: <input key={"ext_" + extIdx + "_name"} type="text" className="form-control" value={this.state.g.m[index].args.ext[extIdx].name} onChange={this.handleChangeExtPropName(index, extIdx).bind(this)} /></label>
-                        <label> Value: <input key={"ext_" + extIdx + "_value"} type="text" className="form-control" value={this.state.g.m[index].args.ext[extIdx].value} onChange={this.handleChangeExtPropValue(index, extIdx).bind(this)} /></label>
-                        <a href="#" onClick={this.removeExtProp(index, extIdx).bind(this)} key={"remove_" + extIdx}>
-                            <span className="glyphicon glyphicon-remove" /> Remove
-                        </a>
-                    </li>
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Name</label>
+                        <div className="col-sm-3">
+                            <input key={"ext_" + extIdx + "_name"} type="text" className="form-control" value={this.state.g.m[index].args.ext[extIdx].name} onChange={this.handleChangeExtPropName(index, extIdx).bind(this)} />
+                        </div>
+                        <label className="col-sm-2 col-form-label">Value</label>
+                        <div className="col-sm-3">
+                            <input key={"ext_" + extIdx + "_value"} type="text" className="form-control" value={this.state.g.m[index].args.ext[extIdx].value} onChange={this.handleChangeExtPropValue(index, extIdx).bind(this)} />
+                        </div>
+                        <div className="col-sm-2">
+                            <a href="#" onClick={this.removeExtProp(index, extIdx).bind(this)} key={"remove_" + extIdx}><span className="glyphicon glyphicon-remove" /> Remove</a>
+                        </div>
+                    </div>
                 );
                 return result;
             }
 
             getTraceStatePropsNew(index) {
-                return (<div className="row">
-                                <div className="col-md-1">
-                                    Name
-                                </div>
-                                <div className="col">
-                                    <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.g.m[index].args.name} onChange={this.handleNewExtPropName(index).bind(this)} />
-                                </div>
-                                <div className="col-md-1">
-                                    Value
-                                </div>
-                                <div className="col">
-                                    <input key={"ext_new_value"} className="form-control" placeholder="value" type="text" value={this.state.g.m[index].args.value} onChange={this.handleNewExtPropValue(index).bind(this)} />
-                                </div>
-                                <div className="col">
-                                    <a href="#" key="new_ext" onClick={this.addExtProp(index).bind(this)}>Add</a>
-                                </div>
-                            </div>);
+                return (
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Name</label>
+                        <div className="col-sm-3">
+                            <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.g.m[index].args.name} onChange={this.handleNewExtPropName(index).bind(this)} />
+                        </div>
+                        <label className="col-sm-2 col-form-label">Value</label>
+                        <div className="col-sm-3">
+                            <input key={"ext_new_value"} className="form-control" placeholder="value" type="text" value={this.state.g.m[index].args.value} onChange={this.handleNewExtPropValue(index).bind(this)} />
+                        </div>
+                        <div className="col-sm-2">
+                            <a href="#" key="new_ext" onClick={this.addExtProp(index).bind(this)}>Add</a>
+                        </div>
+                    </div>);
             }
 
             getModifications() {
@@ -462,130 +465,105 @@
                     if (this.state.g.m[index].type == "result") {
                         return (
                             <div className="card">
-                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("next step").bind(this)}>next step</button>
-                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("sample in").bind(this)}>sample in</button>
-                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("restart").bind(this)}>restart</button>
-                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("modify trace state").bind(this)}>modify trace state</button>
-                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("make first").bind(this)}>make first</button>
+                                <div className="form-group row">
+                                    <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("next step").bind(this)}>next step</button>
+                                    <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("sample in").bind(this)}>sample in</button>
+                                    <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("restart").bind(this)}>restart</button>
+                                    <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("modify trace state").bind(this)}>modify trace state</button>
+                                    <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("make first").bind(this)}>make first</button>
+                                </div>
 
                                 <div className={this.state.calculated.m[index].success ? "alert alert-success" : "alert alert-danger"} role="alert">
                                     <p style={{display: this.state.calculated.m[index].errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.m[index].errorMessage}</p>
 
                                     <h4 className="alert-heading">Sent/Received headers:</h4>
-                                    <p>traceparent: {this.state.calculated.m[index].traceparent}</p>
-                                    <p style={{display: this.state.calculated.m[index].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[index].tracestate}</p>
+                                    <div className="form-group row">
+                                        <label for="traceparent" className="col-sm-2 col-form-label">traceparent:</label>
+                                        <div className="col-sm-10">
+                                            <input type="text" id="traceparent{index}" className="form-control-plaintext" value={this.state.calculated.m[index].traceparent} readonly />
+                                        </div>
+                                    </div>
+                                    <div className="form-group row">
+                                        <label for="tracestate" className="col-sm-2 col-form-label">tracestate:</label>
+                                        <div className="col-sm-10">
+                                                <input type="text" id="tracestate{index}" className="form-control-plaintext" value= {this.state.calculated.m[index].tracestate} readonly />
+                                        </div>
+                                    </div>
                                 </div>
                                 <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("result").bind(this)}>Send</button>
 
                         </div> )
                     } else if (this.state.g.m[index].type == "restart") {
-                        return (<div className="card">
+                        return (
+                <div className="row no-gutters">
+                <label className="col-sm-2 col-form-label">{index + 1}. Restart trace</label>
+                <div className="card">
                     <div className="card-body">
-                        <h3 className="card-title">Modification: "restart trace"</h3>
-                        
-                        <div className="card">
-                            <div className="card-body">
-                                <h4 className="card-title">Trace parent</h4>
-                                <div className="row">
-                                    <div className="col-md-1">
-                                        trace-id
-                                    </div>
-                                    <div className="col">
-                                        <input type="text" id="trace-id" className="form-control" placeholder="00000000000000000000000000000000" value={this.state.g.m[index].args.traceId} onChange={this.handleTraceIdChange(index).bind(this)} />
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-1">
-                                        span-id
-                                    </div>
-                                    <div className="col">
-                                        <input type="text" className="form-control" placeholder="00000000000000" value={this.state.g.m[index].args.spanId} onChange={this.handleSpanIdChange(index).bind(this)} /> 
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-1">
-                                        sampled
-                                    </div>
-                                    <div className="col">
-                                        <input type="checkbox" className="form-check-input" value={this.state.g.m[index].args.sampled} onChange={this.handleSampledChange(index).bind(this)} /> 
-                                    </div>
-                                </div>
+                        <div className="form-group row">
+                            <label className="col-sm-2 col-form-label">trace-id</label>
+                            <div className="col-sm-10">
+                                <input type="text" id="trace-id" className="form-control" placeholder="00000000000000000000000000000000" value={this.state.g.m[index].args.traceId} onChange={this.handleTraceIdChange(index).bind(this)} />
                             </div>
                         </div>
 
-                        <div className="card">
-                            <div className="card-body">
-                                <h4 className="card-title">Trace state</h4>
-
-                                <ul>
-                                    {this.getTraceStateProps(index)}
-                                </ul>
-                                {this.getTraceStatePropsNew(index)}
+                        <div className="form-group row">
+                            <label className="col-sm-2 col-form-label">span-id</label>
+                            <div className="col-sm-10">
+                                <input type="text" className="form-control" placeholder="00000000000000" value={this.state.g.m[index].args.spanId} onChange={this.handleSpanIdChange(index).bind(this)} /> 
                             </div>
                         </div>
+
+                        <div className="form-group row">
+                            <label className="col-sm-2 col-form-label">sampled</label>
+                            <div className="col-sm-10">
+                                <input type="checkbox" className="form-check-input" value={this.state.g.m[index].args.sampled} onChange={this.handleSampledChange(index).bind(this)} /> 
+                            </div>
+                        </div>
+
+                        <label className="col-sm-12 col-form-label">Trace state</label>
+
+                        {this.getTraceStateProps(index)}
+                        {this.getTraceStatePropsNew(index)}
                     </div>
-                </div>)
+                </div>
+            </div>)
 
                     } else if (this.state.g.m[index].type == "next step") {
-                        return (<div className="card">
-                    <div className="card-body">
-                        <h3 className="card-title">Modification: next step</h3>
-                        
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="row">
-                                    <div className="col-md-1">
-                                        span-id
-                                    </div>
-                                    <div className="col">
-                                        <input type="text" className="form-control" placeholder="00000000000000" value={this.state.g.m[index].args.spanId} onChange={this.handleSpanIdChange(index).bind(this)} /> 
-                                    </div>
+                        return (
+                            <div className="form-group row">
+                                <label className="col-sm-2 col-form-label">{index + 1}. New span id:</label>
+                                <div className="col-sm-10">
+                                    <input type="text" className="form-control" placeholder="00000000000000" value={this.state.g.m[index].args.spanId} onChange={this.handleSpanIdChange(index).bind(this)} /> 
                                 </div>
                             </div>
-                        </div>
-
-                    </div>
-                </div>)
+                      )
 
                     } else if (this.state.g.m[index].type == "sample in") {
-                        return (<div className="card">
-                    <div className="card-body">
-                        <h3 className="card-title">Modification: sample in</h3>
-                    </div>
-                </div>)
-
+                        return (
+                            <label className="col-form-label">{index + 1}. Sampling flag set to 1</label>
+                        )
                     } else if (this.state.g.m[index].type == "modify trace state") {
-                        return (<div className="card">
-                    <div className="card-body">
-                        <h3 className="card-title">Modification: modify trace state</h3>
-                        <div className="col-md-1">
-                                    Name
-                                </div>
-                                <div className="col">
+                        return (
+                            <div className="form-group row">
+                                <label className="col-sm-4 col-form-label">{index + 1}. Modify trace state for name:</label>
+                                <div className="col-sm-3">
                                     <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.g.m[index].args.name} onChange={this.handleNewExtPropName(index).bind(this)} />
                                 </div>
-                                <div className="col-md-1">
-                                    Value
-                                </div>
-                                <div className="col">
+                                <label className="col-sm-2 col-form-label">value:</label>
+                                <div className="col-sm-3">
                                     <input key={"ext_new_value"} className="form-control" placeholder="value" type="text" value={this.state.g.m[index].args.value} onChange={this.handleNewExtPropValue(index).bind(this)} />
                                 </div>
-                    </div>
-                </div>)
-
+                            </div>
+                        )
                     } else if (this.state.g.m[index].type == "make first") {
-                        return (<div className="card">
-                    <div className="card-body">
-                        <h3 className="card-title">Modification: make first</h3>
-                        <div className="col-md-1">
-                                    Name
-                                </div>
-                                <div className="col">
+                        return (
+                            <div className="form-group row">
+                                <label className="col-sm-4 col-form-label">{index + 1}. Make tracestate first for name:</label>
+                                <div className="col-sm-8">
                                     <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.g.m[index].args.name} onChange={this.handleNewExtPropName(index).bind(this)} />
                                 </div>
-                    </div>
-                </div>)
-
+                            </div>
+                        )
                     }
                     
                     });
@@ -599,16 +577,18 @@
                             <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.errorMessage}</p>
 
                             <h4 className="alert-heading">Initial headers:</h4>
-                            <p>traceparent:
-                                    <div className="col">
-                                        <input type="text" id="traceparent" className="form-control" placeholder="00-00000000000000000000000000000000-00000000000000-00" value={this.state.g.traceparent} onChange={this.handleTraceParentChange.bind(this)} />
-                                    </div>
-                            </p>
-                            <p>tracestate: 
-                                <div className="col">
+                            <div className="form-group row">
+                                <label for="traceparent" className="col-sm-2 col-form-label">traceparent:</label>
+                                <div className="col-sm-10">
+                                    <input type="text" id="traceparent" className="form-control" placeholder="00-00000000000000000000000000000000-00000000000000-00" value={this.state.g.traceparent} onChange={this.handleTraceParentChange.bind(this)} />
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label for="tracestate" className="col-sm-2 col-form-label">tracestate:</label>
+                                <div className="col-sm-10">
                                         <input type="text" id="tracestate" className="form-control" placeholder="tc" value={this.state.g.tracestate} onChange={this.handleTraceStateChange.bind(this)} />
-                                    </div>
-                            </p>
+                                </div>
+                            </div>
                         </div>
                         {this.getModifications()}
 
