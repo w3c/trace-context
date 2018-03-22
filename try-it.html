@@ -40,11 +40,12 @@
                         traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00",
                         tracestate: "tc",
                         m: [
+                            {
+                                type: "result",
+                                args: {},
+                            }
                         ]
                     },
-
-                    // temporary variables to allow to add new name/value pairs in collecitons
-                    newExtProp: {name: "cluster-id", value: "3563577b34"},
                     
                     // calculated fields
                     calculated: {
@@ -143,7 +144,12 @@
                 var ext = initialTraceContext.ext;
                 initialTraceContext = {};
 
-                if (type == "restart") {
+                if (type == "result") {
+                    initialTraceContext.traceId = traceId;
+                    initialTraceContext.spanId = spanId;
+                    initialTraceContext.sampled = sampled;
+                    initialTraceContext.ext = ext;
+                } else if (type == "restart") {
                     initialTraceContext.traceId = args.traceId;
                     initialTraceContext.spanId = args.spanId;
                     initialTraceContext.sampled = args.sampled;
@@ -158,6 +164,42 @@
                     initialTraceContext.spanId = spanId;
                     initialTraceContext.sampled = true;
                     initialTraceContext.ext = ext;
+                } else if (type == "modify trace state") {
+                    initialTraceContext.traceId = traceId;
+                    initialTraceContext.spanId = spanId;
+                    initialTraceContext.sampled = true;
+                    var exists = false;
+                    initialTraceContext.ext = ext.map(state => { 
+                        if (state.name != args.name) {
+                            return state;
+                        } else {
+                            exists = true;
+                            return { name: args.name, value: args.value };
+                        }});
+                    if (!exists) {
+                        initialTraceContext.ext.push({ name: args.name, value: args.value });
+                    }
+                } else if (type == "make first") {
+                    initialTraceContext.traceId = traceId;
+                    initialTraceContext.spanId = spanId;
+                    initialTraceContext.sampled = true;
+
+                    if (args.name.length > 0) {
+                        var exists = false;
+                        var tracestate = {name: args.name, value: ""};
+
+                        initialTraceContext.ext = ext.filter(state => { 
+                            if (state.name != args.name) {
+                                return true;
+                            } else {
+                                exists = true;
+                                tracestate = state;
+                                return false;
+                            }});
+                        initialTraceContext.ext.splice(0, 0, tracestate);
+                    } else {
+                        initialTraceContext.ext = ext
+                    }
                 }
 
                 result.traceparent = this.getTraceParent(initialTraceContext, result);
@@ -293,21 +335,26 @@
                 }
             }
 
-            handleNewExtPropName(event) {
-                var newExtPropName = event.target.value;
-                this.setState((state) => {state.newExtProp.name = newExtPropName; return this.updateHeaders(state);});
+            handleNewExtPropName(index) {
+                return (event) => {
+                    var newExtPropName = event.target.value;
+                    this.setState((state) => {state.g.m[index].args.name = newExtPropName; return this.updateHeaders(state);});
+                }
             }
            
-            handleNewExtPropValue(event) {
-                var newExtPropValue = event.target.value;
-                this.setState((state) => {state.newExtProp.value = newExtPropValue; return this.updateHeaders(state);});
+            handleNewExtPropValue(index) {
+                return (event) => {
+                    var newExtPropValue = event.target.value;
+                    this.setState((state) => {state.g.m[index].args.value = newExtPropValue; return this.updateHeaders(state);});
+                }
             }
         
             addExtProp(index) {
                 return (event) => {
                     this.setState((state) => {
-                        state.g.m[index].args.ext.push(state.newExtProp);
-                        state.newExtProp = {name: "", value: ""};
+                        state.g.m[index].args.ext.push({name: state.g.m[index].args.name, value: state.g.m[index].args.value});
+                        state.g.m[index].args.name = "";
+                        state.g.m[index].args.value = "";
                         return this.updateHeaders(state);
                     });
                 }
@@ -323,8 +370,14 @@
             handleAddModificationProp(type) {
                 return (event) => {
                     this.setState((state) => {
-                        if (type == "restart") {
+                        if (type == "result") {
                             state.g.m.push({
+                                type: "result", 
+                                args: {
+                                }
+                            });
+                        } else if (type == "restart") {
+                            state.g.m.splice(state.g.m.length - 1, 0, {
                                 type: "restart", 
                                 args: {
                                     traceId: this.getRandom16charsString() + this.getRandom16charsString(),
@@ -332,22 +385,40 @@
                                     sampled: false,
                                     ext: [
                                     ],
+                                    name:"",
+                                    value:"",
                                 }
                             });
                         } else if (type == "next step") {
-                            state.g.m.push({
+                            state.g.m.splice(state.g.m.length - 1, 0, {
                                 type: "next step", 
                                 args: {
                                     spanId: this.getRandom16charsString(),
                                 }
                             });
                         } else if (type == "sample in") {
-                            state.g.m.push({
+                            state.g.m.splice(state.g.m.length - 1, 0, {
                                 type: "sample in", 
                                 args: {
                                 }
                             });
+                        } else if (type == "modify trace state") {
+                            state.g.m.splice(state.g.m.length - 1, 0, {
+                                type: "modify trace state", 
+                                args: {
+                                    name: "",
+                                    value: "",
+                                }
+                            });
+                        } else if (type == "make first") {
+                            state.g.m.splice(state.g.m.length - 1, 0, {
+                                type: "make first", 
+                                args: {
+                                    name: "",
+                                }
+                            });
                         }
+                        
                         return this.updateHeaders(state);
                     });
                 }
@@ -372,13 +443,13 @@
                                     Name
                                 </div>
                                 <div className="col">
-                                    <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.newExtProp.name} onChange={this.handleNewExtPropName.bind(this)} />
+                                    <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.g.m[index].args.name} onChange={this.handleNewExtPropName(index).bind(this)} />
                                 </div>
                                 <div className="col-md-1">
                                     Value
                                 </div>
                                 <div className="col">
-                                    <input key={"ext_new_value"} className="form-control" placeholder="value" type="text" value={this.state.newExtProp.value} onChange={this.handleNewExtPropValue.bind(this)} />
+                                    <input key={"ext_new_value"} className="form-control" placeholder="value" type="text" value={this.state.g.m[index].args.value} onChange={this.handleNewExtPropValue(index).bind(this)} />
                                 </div>
                                 <div className="col">
                                     <a href="#" key="new_ext" onClick={this.addExtProp(index).bind(this)}>Add</a>
@@ -388,7 +459,26 @@
 
             getModifications() {
                 return this.state.g.m.map((prop, index) => {
-                    if (this.state.g.m[index].type == "restart") {
+                    if (this.state.g.m[index].type == "result") {
+                        return (
+                            <div className="card">
+                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("next step").bind(this)}>next step</button>
+                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("sample in").bind(this)}>sample in</button>
+                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("restart").bind(this)}>restart</button>
+                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("modify trace state").bind(this)}>modify trace state</button>
+                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("make first").bind(this)}>make first</button>
+
+                                <div className={this.state.calculated.m[index].success ? "alert alert-success" : "alert alert-danger"} role="alert">
+                                    <p style={{display: this.state.calculated.m[index].errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.m[index].errorMessage}</p>
+
+                                    <h4 className="alert-heading">Sent/Received headers:</h4>
+                                    <p>traceparent: {this.state.calculated.m[index].traceparent}</p>
+                                    <p style={{display: this.state.calculated.m[index].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[index].tracestate}</p>
+                                </div>
+                                <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("result").bind(this)}>Send</button>
+
+                        </div> )
+                    } else if (this.state.g.m[index].type == "restart") {
                         return (<div className="card">
                     <div className="card-body">
                         <h3 className="card-title">Modification: "restart trace"</h3>
@@ -434,13 +524,6 @@
                             </div>
                         </div>
                     </div>
-                    <div className={this.state.calculated.m[index].success ? "alert alert-success" : "alert alert-danger"} role="alert">
-                        <p style={{display: this.state.calculated.m[index].errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.m[index].errorMessage}</p>
-
-                        <h4 className="alert-heading">Headers:</h4>
-                        <p>traceparent: {this.state.calculated.m[index].traceparent}</p>
-                        <p style={{display: this.state.calculated.m[index].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[index].tracestate}</p>
-                    </div>
                 </div>)
 
                     } else if (this.state.g.m[index].type == "next step") {
@@ -462,13 +545,6 @@
                         </div>
 
                     </div>
-                    <div className={this.state.calculated.m[index].success ? "alert alert-success" : "alert alert-danger"} role="alert">
-                        <p style={{display: this.state.calculated.m[index].errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.m[index].errorMessage}</p>
-
-                        <h4 className="alert-heading">Headers:</h4>
-                        <p>traceparent: {this.state.calculated.m[index].traceparent}</p>
-                        <p style={{display: this.state.calculated.m[index].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[index].tracestate}</p>
-                    </div>
                 </div>)
 
                     } else if (this.state.g.m[index].type == "sample in") {
@@ -476,12 +552,37 @@
                     <div className="card-body">
                         <h3 className="card-title">Modification: sample in</h3>
                     </div>
-                    <div className={this.state.calculated.m[index].success ? "alert alert-success" : "alert alert-danger"} role="alert">
-                        <p style={{display: this.state.calculated.m[index].errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.m[index].errorMessage}</p>
+                </div>)
 
-                        <h4 className="alert-heading">Headers:</h4>
-                        <p>traceparent: {this.state.calculated.m[index].traceparent}</p>
-                        <p style={{display: this.state.calculated.m[index].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[index].tracestate}</p>
+                    } else if (this.state.g.m[index].type == "modify trace state") {
+                        return (<div className="card">
+                    <div className="card-body">
+                        <h3 className="card-title">Modification: modify trace state</h3>
+                        <div className="col-md-1">
+                                    Name
+                                </div>
+                                <div className="col">
+                                    <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.g.m[index].args.name} onChange={this.handleNewExtPropName(index).bind(this)} />
+                                </div>
+                                <div className="col-md-1">
+                                    Value
+                                </div>
+                                <div className="col">
+                                    <input key={"ext_new_value"} className="form-control" placeholder="value" type="text" value={this.state.g.m[index].args.value} onChange={this.handleNewExtPropValue(index).bind(this)} />
+                                </div>
+                    </div>
+                </div>)
+
+                    } else if (this.state.g.m[index].type == "make first") {
+                        return (<div className="card">
+                    <div className="card-body">
+                        <h3 className="card-title">Modification: make first</h3>
+                        <div className="col-md-1">
+                                    Name
+                                </div>
+                                <div className="col">
+                                    <input key={"ext_new_name"} className="form-control" placeholder="name" type="text" value={this.state.g.m[index].args.name} onChange={this.handleNewExtPropName(index).bind(this)} />
+                                </div>
                     </div>
                 </div>)
 
@@ -497,7 +598,7 @@
                         <div className={this.state.calculated.success ? "alert alert-success" : "alert alert-danger"} role="alert">
                             <p style={{display: this.state.calculated.errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.errorMessage}</p>
 
-                            <h4 className="alert-heading">Headers:</h4>
+                            <h4 className="alert-heading">Initial headers:</h4>
                             <p>traceparent:
                                     <div className="col">
                                         <input type="text" id="traceparent" className="form-control" placeholder="00-00000000000000000000000000000000-00000000000000-00" value={this.state.g.traceparent} onChange={this.handleTraceParentChange.bind(this)} />
@@ -511,9 +612,6 @@
                         </div>
                         {this.getModifications()}
 
-                        <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("next step").bind(this)}>next step</button>
-                        <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("sample in").bind(this)}>sample in</button>
-                        <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("restart").bind(this)}>restart</button>
                     
                     </form>
                 );
