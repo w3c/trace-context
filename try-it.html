@@ -153,6 +153,11 @@
                     initialTraceContext.spanId = args.spanId;
                     initialTraceContext.sampled = sampled;
                     initialTraceContext.ext = ext;
+                } else if (type == "sample in") {
+                    initialTraceContext.traceId = traceId;
+                    initialTraceContext.spanId = spanId;
+                    initialTraceContext.sampled = true;
+                    initialTraceContext.ext = ext;
                 }
 
                 result.traceparent = this.getTraceParent(initialTraceContext, result);
@@ -336,6 +341,12 @@
                                     spanId: this.getRandom16charsString(),
                                 }
                             });
+                        } else if (type == "sample in") {
+                            state.g.m.push({
+                                type: "sample in", 
+                                args: {
+                                }
+                            });
                         }
                         return this.updateHeaders(state);
                     });
@@ -460,6 +471,20 @@
                     </div>
                 </div>)
 
+                    } else if (this.state.g.m[index].type == "sample in") {
+                        return (<div className="card">
+                    <div className="card-body">
+                        <h3 className="card-title">Modification: sample in</h3>
+                    </div>
+                    <div className={this.state.calculated.m[index].success ? "alert alert-success" : "alert alert-danger"} role="alert">
+                        <p style={{display: this.state.calculated.m[index].errorMessage.length != 0 ? 'block' : 'none' }}>Errors: {this.state.calculated.m[index].errorMessage}</p>
+
+                        <h4 className="alert-heading">Headers:</h4>
+                        <p>traceparent: {this.state.calculated.m[index].traceparent}</p>
+                        <p style={{display: this.state.calculated.m[index].tracestate.length != 0 ? 'block' : 'none' }}>tracestate: {this.state.calculated.m[index].tracestate}</p>
+                    </div>
+                </div>)
+
                     }
                     
                     });
@@ -487,6 +512,7 @@
                         {this.getModifications()}
 
                         <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("next step").bind(this)}>next step</button>
+                        <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("sample in").bind(this)}>sample in</button>
                         <button type="button" class="btn btn-primary" onClick={this.handleAddModificationProp("restart").bind(this)}>restart</button>
                     
                     </form>
