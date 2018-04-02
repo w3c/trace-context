@@ -151,6 +151,10 @@ system, went through a system named `rojo` and later returned to `congo`, the
 Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
+APM/Tracer vendors and open source projects should register `tracestate` names
+in the [TraceState Registry](TRACE_STATE_REGISTRY.md). This helps avoid
+conflicts.
+
 **Limits:**
 Maximum length of a combined header MUST be less than 512 bytes. 
 
