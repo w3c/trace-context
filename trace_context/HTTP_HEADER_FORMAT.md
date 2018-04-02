@@ -105,6 +105,21 @@ make a decision to trace and the decision might be deferred). When `trace-option
 the default value for this bit is `0`
 * The behavior of other bits is currently undefined.
 
+# Mutating the header 
+
+Library or platform receiving `traceparent` request header MUST send it to outgoing http requests. It MAY mutate the value of this header before passing to outgoing http requests.  
+
+Library or platform receiving `traceparent` response header MAY send it as a response header to originating http request. Proxies, load balancers, and other platforms with 1:1 mapping of request and response SHOULD return this `traceparent` header to originating http request. `traceparent` response header MAY also be mutated.
+
+Here is the list of allowed mutations: 
+
+1. **Update `span-id`**. The value of property `span-id` can be regenerated. 
+2. **Mark trace for sampling**. The value of `sampled` flag of `trace-options` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `sampled` flag update. 
+3. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-options` are regenerated. Library or platform MAY choose to return the newly generated `trace-id` as `traceparent` response header. 
+
+Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
+
+
 #### Examples of HTTP headers
 
 *Valid sampled traceparent:*
