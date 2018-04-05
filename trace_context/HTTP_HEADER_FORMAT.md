@@ -55,43 +55,28 @@ which tracing system corresponds with `traceparent`. In this case, since
 
 ## Field value
 
-```
-value           = version "-" versionformat
-version         = 2HEXDIG
-```
-
-
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including the HEXDIG rules from that document.
 
 ```
-versionformat   = traceid "-" spanid 
-versionformat   =/ traceid "-" spanid "-" traceoptions
-
-traceid         = 32HEXDIG  ; 16 bytes array identifier
-spanid          = 16HEXDIG  ; 8 bytes array identifier
-traceoptions    = 2HEXDIG   ; 16 bit flags
-```
-
-## Field value
-
-```
-base16(<version>)-< version_format >
+value           = version "-" version-format
+version         = 2HEXDIG   ; this document assumes version 00. Version 255 is forbidden
 ```
 
 The value is US-ASCII encoded (which is UTF-8 compliant). Character `-` is
 used as a delimiter between fields.
 
-### Version
+Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version 255 is invalid. Current specification assumes the `version` is set to `00`.
 
-Is a 1 byte representing an 8-bit unsigned integer. Version 255 reserved. Current specification assumes the `version` is set to `0`.
-
-### Version 0 format
+The following `version-format` definition used for version `00`.
 
 ```
-base16(<trace-id>)-base16(<span-id>)[-base16(<trace-options>)]
-```
+version-format   = trace-id "-" span-id 
+version-format   =/ trace-id "-" span-id "-" trace-options
 
-`trace-id` and `span-id` are required. The `trace-options` is optional. Character `-`
- is used as a delimiter between fields.
+trace-id         = 32HEXDIG  ; 16 bytes array identifier. All zeroes forbidden
+span-id          = 16HEXDIG  ; 8 bytes array identifier. All zeroes forbidden
+trace-options    = 2HEXDIG   ; 16 bit flags. Currently only one bit is used. See below for details
+```
 
 ### Trace-id
 
@@ -107,7 +92,7 @@ Is the ID of the caller span (parent). It is represented as an 8-bytes array, fo
 
 Implementation may decide to completely ignore the traceparent when the span-id is invalid.
 
-#### Trace-options
+## Trace-options
 
 Controls tracing options such as sampling, trace level etc. It is a 1 byte representing an 8-bit 
 unsigned integer. The flags are recommendations given by the caller rather than strict rules to 
@@ -117,14 +102,15 @@ follow for three reasons:
 2. Bug in caller
 3. Different load between caller service and callee service might force callee to down sample.    
 
-### Bits behavior definition (01234567):
+### Bits behavior definition
+
 * The least significant bit (the 7th bit) provides recommendation whether the request should be 
 traced or not (`1` recommends the request should be traced, `0` means the caller does not
 make a decision to trace and the decision might be deferred). When `trace-options` is missing
 the default value for this bit is `0`
 * The behavior of other bits is currently undefined.
 
-#### Examples of HTTP headers
+## Examples of HTTP headers
 
 *Valid sampled traceparent:*
 
