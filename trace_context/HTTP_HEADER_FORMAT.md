@@ -56,6 +56,24 @@ which tracing system corresponds with `traceparent`. In this case, since
 ## Field value
 
 ```
+value           = version "-" versionformat
+version         = 2HEXDIG
+```
+
+
+
+```
+versionformat   = traceid "-" spanid 
+versionformat   =/ traceid "-" spanid "-" traceoptions
+
+traceid         = 32HEXDIG  ; 16 bytes array identifier
+spanid          = 16HEXDIG  ; 8 bytes array identifier
+traceoptions    = 2HEXDIG   ; 16 bit flags
+```
+
+## Field value
+
+```
 base16(<version>)-< version_format >
 ```
 
@@ -65,6 +83,7 @@ used as a delimiter between fields.
 ### Version
 
 Is a 1 byte representing an 8-bit unsigned integer. Version 255 reserved. Current specification assumes the `version` is set to `0`.
+
 ### Version 0 format
 
 ```
