@@ -23,7 +23,6 @@ together.
 
 - Trace Context [Report](https://w3c.github.io/distributed-tracing/report-trace-context.html)
 - Correlation Context [Report](https://w3c.github.io/distributed-tracing/report-correlation-context.html)
-- Demo [app](https://w3c.github.io/distributed-tracing/try-it.html)
 
 ## Reference Implementations
 
