@@ -75,7 +75,7 @@ version-format   =/ trace-id "-" span-id "-" trace-options
 
 trace-id         = 32HEXDIG  ; 16 bytes array identifier. All zeroes forbidden
 span-id          = 16HEXDIG  ; 8 bytes array identifier. All zeroes forbidden
-trace-options    = 2HEXDIG   ; 16 bit flags. Currently only one bit is used. See below for details
+trace-options    = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See below for details
 ```
 
 ### Trace-id
