@@ -1,7 +1,16 @@
 # Overview
 
-Trace context represented by set of name/value pairs describing identity of every http request. As a performance optimization measure few of these pairs were promoted to a separate header. This header has fixed length and defined sequence of fields.
+Trace context consists of set of properties crucial for events correlation in distributed applications. Trace context positions request in a distributed trace. If you look at distributed trace as a graph of correlated requests - a single request can be part of multiple graphs. For example, let's say component `A` calls component `B` which in turn calls `C`. One distributed tracing system may see component `A` calling component `B`. Another - may see all three components communicating. So the call from `B` to `C` will carry trace context about service `A` as well as information about it's direct upstream `B`.
+
+The situation when a single request is a part of multiple graphs becoming more common. One distributed application may have components monitored by different distributed tracing systems. And those distributed tracing systems may not be easily replaceable as they might be provided by cloud vendors or distributed as a pre-build components.
+
+So the trace context is designed to allow extensibility for all distributed tracing systems. And requires them to respect context set by other systems.
+
+Trace context represented by set of name/value pairs describing identity of every http request. Two propagation fields carry the common and vendor-specific properties that make up the trace context.
+
+* `traceparent` describes the position of the incoming request in its trace graph in a portable, fixed-length format. Its design focuses on fast parsing.
+* `tracestate` maps all graphs the incoming parent is a part of in potentially vendor-specific formats. For example, if a request crosses tracing systems, there will be one entry in `tracestate` for each system.
+
+Notably, the `tracestate` field is unreliant on data in the `traceparent`.
 
 Libraries and platforms MUST propagate `traceparent` and `tracestate` headers to guarantee that trace will not be broken. `Correlation-Context` header is a companion header representing user-defined baggage associated with the trace. Libraries and platforms MAY propagate this header.
-
-**TODO:** Add details on behavior when one of the headers cannot be parsed
