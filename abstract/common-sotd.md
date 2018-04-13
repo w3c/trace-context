@@ -1,32 +1,5 @@
-This is a first draft of specification. This draft was discussed at Distributed Tracing workshop. There was an agreement with the format, scope and semantics of this specification. 
+This is a first draft of specification. It is believed to be working well to correlate telemetry. So tracing and diagnostics products can operate together. There is a general agreement on names and format from the number of vendors. Community group is working in three directions:
 
-Attendees:
-
-- Abhishek Singh, AWS
-- Adam Leftik AppDynamics
-- Adrian Cole, Pivotal
-- Alois Reitbauer, Dynatrace
-- Anssi Alaranta, AWS
-- Ben Plotnick, Yelp
-- Ben Sigelman, LightStep
-- Bharath Kumar, AWS
-- Bogdan Drutu, Google
-- Brian McCallister, Groupon
-- Chris Erway, SolarWinds
-- Christian Schwarzbauer, Dynatrace
-- David Nunnerley, AWS
-- Erika Arnold, New Relic
-- Fabian Lange, Instana
-- Jack Pullikottil, Microsoft
-- Jan Krems Groupon
-- Jonah Kowall, AppDynamics/Cisco
-- Michael Kopp, Dynatrace
-- Morgan McLean, Google
-- Nara, Netflix
-- Nic Munroe, Nike
-- Peter Giacomo Lombardo, Instana
-- Sergey Kanzhelev, Microsoft
-- Ted Young, LightStep
-- Victor Soares, New Relic
-- Wu Sheng, Huawei & SkyWalking
-- Yuri Shkuro, Uber
+1. Writing test cases to confirm viability of headers in practice.
+2. Addressing edge cases scenarios.
+3. Working on moving this effort forward with W3C by creating a working group.
