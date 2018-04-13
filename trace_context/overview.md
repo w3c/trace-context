@@ -13,4 +13,4 @@ Trace context represented by set of name/value pairs describing identity of ever
 
 Notably, the `tracestate` field is unreliant on data in the `traceparent`.
 
-Libraries and platforms MUST propagate `traceparent` and `tracestate` headers to guarantee that trace will not be broken. `Correlation-Context` header is a companion header representing user-defined baggage associated with the trace. Libraries and platforms MAY propagate this header.
+Libraries and platforms MUST propagate `traceparent` and `tracestate` headers to guarantee that trace will not be broken.
