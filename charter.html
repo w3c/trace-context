@@ -92,8 +92,15 @@
 
     <p class="mission">The
       <strong>mission</strong> of the
-      <a href="">Distributed Tracing Working Group</a> is to define standards for interoperability between tracing tools. Interoperability
-      refers to:
+      <a href="">Distributed Tracing Working Group</a> is to define standards for interoperability between tracing tools. A tracing tool refers to a tool which is either
+      implemented as a library or agent and provides at least one of the following capabilities:
+      <ul>
+        <li> Propagaton of the context identifying a trace i.e. an interaction with an application.</li>
+        <li> Modification of trace information to indicate that additioal trace information is available.</li>
+        <li> Collection of tracing information for a specific trace.</li>
+      </ul>
+
+     Interoperability for tracing therefore refers to:
       <ul>
         <li>A standardized way to propagate vendor specific tracing information across tiers instrumented with different tracing
           tools </li>
