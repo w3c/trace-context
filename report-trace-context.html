@@ -11,12 +11,29 @@
         specStatus: "ED",
         editors: [{
           name: "Sergey Kanzhelev",
-          url: "https://www.w3.org/community/trace-context/",
+          company: "Microsoft",
+          companyURL: "https://microsoft.com"
         }],
         processVersion: 2017,
+        github: {
+          repoURL: "https://github.com/w3c/distributed-tracing/",
+          branch: "master",
+        },
         edDraftURI: "https://github.com/w3c/distributed-tracing/blob/master/report-trace-context.html",
         shortName: "trace-context",
-        format: "markdown"
+        format: "markdown",
+        subjectPrefix: "trace-context",
+        wg: "Distributed Trace Context Community Group",
+        wgPublicList: "public-trace-context",
+        wgURI: "https://www.w3.org/community/trace-context/",
+        //isPreview: true, //this will add ugly box saying it's preview 
+        otherLinks: [{
+          key: 'Discussions',
+          data: [{
+            value: 'We are on Gitter.',
+            href: 'https://gitter.im/TraceContext/Lobby'
+          }]
+        }],
       };
     </script>
   </head>
@@ -24,7 +41,7 @@
         <section id='abstract' data-include="abstract/common-abstract.md" data-include-format='markdown'></section>
         <section id='sotd' data-include="abstract/common-sotd.md" data-include-format='markdown'></section>
 
-        <section data-include="abstract/trace-context-overview.md" data-include-format='markdown'></section>
+        <section data-include="trace_context/overview.md" data-include-format='markdown'></section>
         
         <section data-include="trace_context/HTTP_HEADER_FORMAT.md" data-include-format='markdown'></section>
   </body>

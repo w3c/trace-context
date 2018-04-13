@@ -45,8 +45,6 @@ except pushed to the right. The left-most position lets the next server know
 which tracing system corresponds with `traceparent`. In this case, since
 `congo` wrote `traceparent`, its `tracestate` entry should be left-most.
 
-*See [rationale document](HTTP_HEADER_FORMAT_RATIONALE.md) for details of decisions made for this format.*
-
 # TraceParent field
 
 ## Header name
@@ -81,14 +79,14 @@ trace-options    = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See 
 ### Trace-id
 
 Is the ID of the whole trace forest. It is represented as a 16-bytes array, for example,
-`4bf92f3577b34da6a3ce929d0e0e4736`. All bytes 0 is considered invalid.
+`4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` is considered invalid.
 
 Implementation MAY decide to completely ignore the traceparent when the trace-id is invalid.
 
 ### Span-id
 
 Is the ID of the caller span (parent). It is represented as an 8-bytes array, for example, 
-`00f067aa0ba902b7`. All bytes 0 is considered invalid.
+`00f067aa0ba902b7`. All bytes `0` is considered invalid.
 
 Implementation may decide to completely ignore the traceparent when the span-id is invalid.
 
