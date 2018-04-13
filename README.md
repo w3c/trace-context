@@ -4,6 +4,15 @@ This repository is associated with the [Distributed Trace Context Community Grou
 
 Specification for tracing context propagation format.
 
+## Team Communication 
+
+Overview of team related communication channels
+
+* GitHub issues for any specification related issues
+* Mailing List for general discussions. Please subscribe to [public-trace-context@w3.org](http://lists.w3.org/Archives/Public/public-trace-context/)
+* Gitter Channel to reach the team. [TraceContext/Lobby](https://gitter.im/TraceContext/Lobby)
+* Public Google calendar for all meetings and events [Google Calendar](https://calendar.google.com/calendar?cid=ZHluYXRyYWNlLmNvbV81YTA5cWh1YTZmaDdqYjIzaDd2ZGpnNnZlZ0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t)
+
 ## Goal
 
 This specification defines formats to pass trace context information across systems. Our goal is 
@@ -14,7 +23,6 @@ together.
 
 - Trace Context [Report](https://w3c.github.io/distributed-tracing/report-trace-context.html)
 - Correlation Context [Report](https://w3c.github.io/distributed-tracing/report-correlation-context.html)
-- Demo [app](https://w3c.github.io/distributed-tracing/try-it.html)
 
 ## Reference Implementations
 

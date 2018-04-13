@@ -1,9 +1,9 @@
-#  Trace Context HTTP Header Format Rationale
+#  Trace context HTTP header format rationale
 
 This document provides rationale for the decisions made, mapping the
-`Trace-Parent` and `Trace-State` fields to HTTP headers.
+`traceparent` and `tracestate` fields to HTTP headers.
 
-## Lowercase Concatenated header names
+## Lowercase concatenated header names
 While HTTP headers are conventionally delimited by hyphens, the trace context
 header names are not. Rather, they are lowercase concatenated "traceparent" and
 "tracestate" respectively. The departure from convention is due to practical
