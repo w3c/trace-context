@@ -145,16 +145,22 @@ base16(<TraceOptions>) = 00  // not-sampled
 
 # TraceState field
 
+The `tracestate` HTTP header field conveys information about request position in multiple distributed tracing graphs.
+
 ## Header name
 
 `tracestate`
 
 ## Header value
 
-`vendorName1=opaqueValue1,vendorName2=opaqueValue2`
+`tracestate` is a Structured header in accordance to [Draft of Structured Headers for HTTP](http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html). Its value MUST be a dictionary ([Draft of Structured Headers for HTTP](http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html), Section 4.1).
 
-The value a concatenation of trace graph name-state pairs. Only one entry per
-name is allowed because the entry represents that last position in the trace.
+Maximum length of a combined header MUST be less than 512 bytes. If the maximum length of a combined header is more than 512 bytes it SHOULD be ignored.
+
+Example: `vendorName1=opaqueValue1,vendorName2=opaqueValue2`
+
+The value a concatenation of trace graph key-value pairs. Only one entry per
+key is allowed because the entry represents that last position in the trace.
 Hence implementors must overwrite their entry upon reentry to their tracing
 system.
 
@@ -166,23 +172,6 @@ system, went through a system named `rojo` and later returned to `congo`, the
 
 Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
-
-**Limits:**
-Maximum length of a combined header MUST be less than 512 bytes. 
-
-## Name format
-
-Name starts with the beginning of the string or separator `,` and ends with the
-equal sign `=`. The contents of the name are any url encoded string that does
-not contain an equal sign `=`. Names should intuitively identify a the tracing
-system even if multiple systems per vendor are present.
-
-## Value format
-
-Value starts after equal sign and ends with a separator `,` or end of string.
-In the case of a generic tracing system, it contains the same data as the most
-recent `traceparent` value. Other systems may have different formatting, such
-as Base64 encoded opaque values.
 
 # Examples of HTTP headers
 
