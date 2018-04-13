@@ -184,3 +184,16 @@ Multiple tracing systems (with different formatting):
 ```
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
+
+# Mutating the traceparent field
+
+## Base mutations
+
+Library or platform receiving `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests.
+
+Here is the list of allowed mutations:
+1. **Update `span-id`**. The value of property `span-id` can be regenerated.
+2. **Mark trace for sampling**. The value of `sampled` flag of `trace-options` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `sampled` flag update.
+3. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-options` are regenerated.
+
+Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
