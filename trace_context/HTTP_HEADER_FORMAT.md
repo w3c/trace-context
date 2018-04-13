@@ -145,7 +145,7 @@ base16(<TraceOptions>) = 00  // not-sampled
 
 # TraceState field
 
-The `tracestate` HTTP header field conveys information about request position in multiple distributed tracing graphs.
+The `tracestate` HTTP header field conveys information about request position in multiple distributed tracing graphs. This field contain information essential for positioning the request in a distributed tracing graph. It SHOULD NOT contain user-generated values. Aggressive length limit for the field is driven by requirements to store and pass it in various messaging scenarios and protocols.
 
 ## Header name
 
@@ -173,7 +173,7 @@ system, went through a system named `rojo` and later returned to `congo`, the
 Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
-# Examples of HTTP headers
+## Examples of HTTP headers
 
 Single tracing system (generic format): 
 
