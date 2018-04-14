@@ -92,8 +92,15 @@
 
     <p class="mission">The
       <strong>mission</strong> of the
-      <a href="">Distributed Tracing Working Group</a> is to define standards for interoperability between tracing tools. Interoperability
-      refers to:
+      <a href="">Distributed Tracing Working Group</a> is to define standards for interoperability between tracing tools. A tracing tool refers to a tool which is either
+      implemented as a library or agent and provides at least one of the following capabilities:
+      <ul>
+        <li> Propagaton of the context identifying a trace i.e. an interaction with an application.</li>
+        <li> Modification of trace information to indicate that additioal trace information is available.</li>
+        <li> Collection of tracing information for a specific trace.</li>
+      </ul>
+
+     Interoperability for tracing therefore refers to:
       <ul>
         <li>A standardized way to propagate vendor specific tracing information across tiers instrumented with different tracing
           tools </li>
@@ -121,7 +128,7 @@
               Start date
             </th>
             <td>
-              <i>01 April 2018 (date of the "Call for Participation", when the charter is approved)</i>
+              <i>01 May 2018 (date of the "Call for Participation", when the charter is approved)</i>
             </td>
           </tr>
           <tr id="Duration">
@@ -129,7 +136,7 @@
               End date
             </th>
             <td>
-              <i>31 March 2020</i>
+              <i>30 April 2020</i>
             </td>
           </tr>
 
@@ -219,7 +226,7 @@
             <a href="https://www.w3.org/2018/Process-20180201/#implementation-experience">at least three independent implementations</a> of each feature defined in the specification.</p>
           <p>Each specification should contain a section detailing any known security or privacy implications for implementers,
             Web authors, and end users.</p>
-          <p>Testing plans for each specification, starting from the earliest drafts.</p>
+          <p>Each specification also has an related testsuite defining compliant behaviour of implementations. The tesuite is build so implementations can easily be tested for compliant behaviour. </p>
         </div>
       </section>
 
@@ -290,16 +297,16 @@
                   <dt>
             </dd>
             <dt class="spec">
-              <a href="#">
+
                 <i>Trace Interchange Format</i>
-              </a>
+
             </dt>
             <dd>
               <p>This specification defines a standardized format to exchange trace data across multiple platforms.
                 <p class="draft-status">
                   <b>Draft state:</b>
                   <i>
-                    <a href="#">Requirements Definition</a>
+                    Requirements Definition
                   </i>
 
                 </p>
@@ -361,8 +368,9 @@
             <dt>
               <a href="https://www.w3.org/webperf/"> Web Performance Working Group</a>
             </dt>
-            <dd>The trace context standard is also applicable to be implemented for work done within the web performance working
-              group.
+            <dd>The trace context standard relates to work around Server Timing done within the Web Performance group. Going forward
+                it will make sense to define how trace context headers - specifically response headers - are related to the server timing header.
+                The trace interchange format also can be used to represent server timing data. 
             </dd>
           </dl>
           <h3 id="external-coordination">External Organizations</h3>
