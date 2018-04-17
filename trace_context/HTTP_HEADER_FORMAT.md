@@ -189,11 +189,13 @@ tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=l
 
 ## Base mutations
 
-Library or platform receiving `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests.
+Library or platform receiving `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests. 
+
+If the value of `traceparent` field wasn't changed before propagation - `tracestate` should also be propagated unmodified. Unmodified headers propagation is typically implemented in a pass-thru services like proxies. This behavior may also be implemented in a services which currently does not collect distributed tracing information.
 
 Here is the list of allowed mutations:
-1. **Update `span-id`**. The value of property `span-id` can be regenerated.
-2. **Mark trace for sampling**. The value of `sampled` flag of `trace-options` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `sampled` flag update.
-3. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-options` are regenerated.
+1. **Update `span-id`**. The value of property `span-id` can be regenerated. This is the most typical mutation and should be considered a default.
+2. **Mark trace for sampling**. The value of `sampled` flag of `trace-options` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `sampled` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
+3. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-options` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface. 
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
