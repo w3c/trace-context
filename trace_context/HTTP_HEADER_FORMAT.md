@@ -155,7 +155,9 @@ Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
 **Limits:**
-Maximum length of a combined header MUST be less than 512 bytes. 
+Maximum length of a combined header MUST be less than 512 bytes.
+
+`tracestate` field contains essential information for requests correlation. Platforms and tracing systems MUST propagate this header. Compliance with specification will require storing of `tracestate` as part of request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus the aggressive limit of 512 bytes was chosen.
 
 ## Name format
 
