@@ -153,7 +153,7 @@ The `tracestate` HTTP header field conveys information about request position in
 
 ## Header value
 
-This document uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234], including the DIGIT, ALPHA and DQUOTE rules from that document. It also includes the OWS rule from [RFC7230].
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule from that document. It also includes the OWS rule from [RFC7230](https://www.rfc-editor.org/info/rfc7230).
 
 ```
 dictionary  = dict-member 0*128( OWS "," OWS dict-member )
