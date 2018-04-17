@@ -191,7 +191,7 @@ tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=l
 
 Library or platform receiving `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests. 
 
-If the value of `traceparent` field wasn't changed before propagation - `tracestate` should also be propagated unmodified. Unmodified headers propagation is typically implemented in a pass-thru services like proxies. This behavior may also be implemented in a services which currently does not collect distributed tracing information.
+If the value of `traceparent` field wasn't changed before propagation - `tracestate` MUST NOT be modified as well. Unmodified headers propagation is typically implemented in a pass-thru services like proxies. This behavior may also be implemented in a services which currently does not collect distributed tracing information.
 
 Here is the list of allowed mutations:
 1. **Update `span-id`**. The value of property `span-id` can be regenerated. This is the most typical mutation and should be considered a default.
