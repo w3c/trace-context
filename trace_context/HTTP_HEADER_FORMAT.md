@@ -153,11 +153,32 @@ The `tracestate` HTTP header field conveys information about request position in
 
 ## Header value
 
-`tracestate` is a Structured header in accordance to [Draft of Structured Headers for HTTP](http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html). Its value MUST be a dictionary ([Draft of Structured Headers for HTTP](http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html), Section 4.1).
+This document uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234], including the DIGIT, ALPHA and DQUOTE rules from that document. It also includes the OWS rule from [RFC7230].
+
+```
+dictionary  = dict-member 0*128( OWS "," OWS dict-member )
+dict-member = key "=" value
+```
+
+Identifiers are short (up to 256 characters) textual identifiers; their abstract model is identical to their expression in the textual HTTP serialisation.
+
+```
+key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+lcalpha    = %x61-7A ; a-z
+```
+
+Note that identifiers can only contain lowercase letters.
+
+Valus is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
+
+```
+value    = chr 0*256(chr)
+chr      = %x20-2B / %x2D-3C / %x3E-7E
+```
 
 Maximum length of a combined header MUST be less than 512 bytes. If the maximum length of a combined header is more than 512 bytes it SHOULD be ignored.
 
-Example: `vendorName1=opaqueValue1,vendorName2=opaqueValue2`
+Example: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`
 
 The value a concatenation of trace graph key-value pairs. Only one entry per
 key is allowed because the entry represents that last position in the trace.

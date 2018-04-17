@@ -14,26 +14,14 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 
 ## Header value
 
+`tracestate` is a Structured header in accordance to [Draft of Structured Headers for HTTP](http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html). Its value MUST be a Parameterised List ([Draft of Structured Headers for HTTP](http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html), Section 4.3).
+
 `name1=value1[;properties1],name2=value2[;properties2]`
 
 **Limits:**
 1. Maximum number of name-value pairs: `180`.
 2. Maximum number of bytes per a single name-value pair: `4096`.
 3. Maximum total length of all name-value pairs: `8192`.
-
-## Name format
-
-Url encoded string. Spaces are allows before and after the name. Header with the trimmed name and with spaces before and after name MUST be considered identical.
-
-## Value format
-
-Value starts after equal sign and ends with the special character `;`, separator `,` or end of string. Value represents a url encoded string and case sensitive. Spaces are allowed in the beginning and the end of the value. Value with spaces before and after MUST be considered identical to the trimmed value. 
-
-## Properties
-
-Properties are expected to be in a format of keys & key-value pairs `;` delimited list `;k1=v1;k2;k3=v3`. Some properties may be known to the library or platform processing the header. Such properties may effect how library or platform processes corresponding name-value pair. Properties unknown to the library or platform MUST be preserved if name and/or value wasn't modified by the library or platform.
-
-Spaces are allowed between properties and before and after equal sign. Properties with spaces MUST be considered identical to properties with all spaces trimmed.
 
 # Examples of HTTP headers
 
