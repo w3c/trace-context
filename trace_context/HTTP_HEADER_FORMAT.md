@@ -160,7 +160,7 @@ dictionary  = dict-member 0*128( OWS "," OWS dict-member )
 dict-member = key "=" value
 ```
 
-Identifiers are short (up to 256 characters) textual identifiers; their abstract model is identical to their expression in the textual HTTP serialisation.
+Identifiers are short (up to 256 characters) textual identifiers.
 
 ```
 key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
