@@ -116,8 +116,7 @@ boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
 ```
 
 ### Bits behavior definition
-When the `trace-options` field is missing, flags are interpreted the same as if it were
-present and unset.
+When the `trace-options` field is missing, flags are interpreted as unset.
 
 #### Traced Flag (00000001)
 When set, the least significant bit recommends the request should be traced. A caller who
