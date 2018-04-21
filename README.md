@@ -4,6 +4,8 @@ This repository is associated with the [Distributed Trace Context Community Grou
 
 Specification for tracing context propagation format.
 
+This repository follows the best practices from https://w3c.github.io/
+
 ## Team Communication 
 
 Overview of team related communication channels
@@ -23,6 +25,8 @@ together.
 
 - Trace Context [Report](https://w3c.github.io/distributed-tracing/report-trace-context.html)
 - Correlation Context [Report](https://w3c.github.io/distributed-tracing/report-correlation-context.html)
+- Working group charter (in W3C Advisory Committee review): https://www.w3.org/2018/04/distributed-tracing-wg-charter.html
+
 
 ## Reference Implementations
 
@@ -53,4 +57,4 @@ See [Contributing.md](CONTRIBUTING.md) for details
 
 # Other
 
-Charter document for Working Group creation: https://w3c.github.io/distributed-tracing/charter.html
+Charter document for Working Group: https://w3c.github.io/distributed-tracing/charter.html
