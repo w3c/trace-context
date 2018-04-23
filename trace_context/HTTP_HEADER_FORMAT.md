@@ -205,7 +205,7 @@ Libraries and platforms MUST NOT make any other mutations to the `traceparent` h
 
 Library or platform receiving `tracestate` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests. The main concept of `tracestate` mutations is that order of unmodified key-value pairs SHOULD be preserved. Modified keys SHOULD be moved to the beginning of the list.
 
-Single request may be processed by multiple tracing systems in a single component. So any number of allowed mutations may happen in a single component. Here is the list of allowed mutations:
+Here is the list of allowed mutations:
 
 1. **Update key value**. The value of any key can be updated. Modified key MUST be moved to the beginning of the list. This is the most common mutation resuming the trace.
 2. **Add new key-value pair**. New key-value pair should be added into the beginning of the list.
