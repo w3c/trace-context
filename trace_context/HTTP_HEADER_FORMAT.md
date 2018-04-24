@@ -92,21 +92,38 @@ Implementation may decide to completely ignore the traceparent when the span-id 
 
 ## Trace-options
 
-Controls tracing options such as sampling, trace level etc. It is a 1 byte representing an 8-bit 
-unsigned integer. The flags are recommendations given by the caller rather than strict rules to 
-follow for three reasons:
+An [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that controls tracing options such
+as sampling, trace level etc. These flags are recommendations given by the caller rather than
+strict rules to follow for three reasons:
 
 1. Trust and abuse.
 2. Bug in caller
 3. Different load between caller service and callee service might force callee to down sample.    
 
-### Bits behavior definition
+Like other fields, `trace-options` is hex-encoded. For example, all 8 flags set would be 'ff'
+and no flags set would be '00'.
 
-* The least significant bit (the 7th bit) provides recommendation whether the request should be 
-traced or not (`1` recommends the request should be traced, `0` means the caller does not
-make a decision to trace and the decision might be deferred). When `trace-options` is missing
-the default value for this bit is `0`
-* The behavior of other bits is currently undefined.
+As this is a bit field, you cannot interpret flags by decoding the hex value and looking at
+the resulting number. For example, a flag `00000001` could be encoded as `01` in hex, or `09`
+in hex if present with the flag `00001000`. A common mistake in bit fields is forgeting to
+mask when interpreting flags.
+
+Here is an example of properly handing trace options:
+```java
+static final int FLAG_TRACED = 1 << 1; // 00000001
+...
+boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
+```
+
+### Bits behavior definition
+When the `trace-options` field is missing, flags are interpreted as unset.
+
+#### Traced Flag (00000001)
+When set, the least significant bit recommends the request should be traced. A caller who
+defers a tracing decision leaves this flag unset.
+
+#### Other Flags
+The behavior of other flags, such as (00000010) are undefined.
 
 ## Examples of HTTP headers
 
