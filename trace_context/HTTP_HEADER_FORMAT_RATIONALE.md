@@ -20,7 +20,7 @@ integration beyond http at the cost of a conventional distraction.
 
 We've been discussing to make parts of `traceparent` header optional. One proposal we declined was to allow trace-id-only `traceparent` headers. The intended use was to save size for small clients (like mobile devices) initiating the call. Rationale for declining it was to avoid abuse and confusion. Suggestion on saving size is to use binary format that we want to discuss.
 
-Making `tarceoptions` optional doesn't save a lot, but makes specification more complicated. And potentially can lead to incompatible implementations which do not expect traceoptions.
+Making `traceoptions` optional doesn't save a lot, but makes specification more complicated. And potentially can lead to incompatible implementations which do not expect `traceoptions`.
 
 ## `tracestate`
 
