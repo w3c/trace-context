@@ -153,7 +153,11 @@ The `tracestate` HTTP header field conveys information about request position in
 
 ## Header value
 
-This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule from that document. It also includes the OWS rule from [RFC7230](https://www.rfc-editor.org/info/rfc7230).
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including [the DIGIT rule in appendix B.1 for RFC 5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes [the OWS rule from RFC 7230 Section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
+
+`DIGIT` rule defines number `0`-`9`. 
+
+The `OWS` rule defines an optional whitespace. It is used where zero or more whitespace characters might appear. When it is preferred to improve readability - a sender SHOULD generate the optional whitespace as a single space; otherwise, a sender SHOULD NOT generate optional whitespace. See details in corresponding RFC.
 
 ```
 dictionary  = dict-member 0*128( OWS "," OWS dict-member )
@@ -167,9 +171,9 @@ key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
 lcalpha    = %x61-7A ; a-z
 ```
 
-Note that identifiers can only contain lowercase letters.
+Note that identifiers MUST begin with a lowercase letter, and can only contain lowercase letters `a`-`z`, digits `0`-`9`, underscores `_`, dashes `-`, asterisks `*`, and forward slashes `/`.
 
-Valus is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
+Value is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
 
 ```
 value    = chr 0*256(chr)
