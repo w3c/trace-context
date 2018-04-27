@@ -14,6 +14,8 @@ Multiple correlation context headers are allowed. Values can be combined in a si
 
 ## Header value
 
+TODO: This header may need it's own ABNF description. Examples do not match the RFC definition.
+
 `Correlation-Context` is a Structured header in accordance to [Draft of Structured Headers for HTTP](http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html). Its value MUST be a Parameterised List ([Draft of Structured Headers for HTTP](http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html), Section 4.3).
 
 `name1=value1[;properties1],name2=value2[;properties2]`
