@@ -16,6 +16,12 @@ copy http headers into fields. This class of concerns only exist when we choose
 to support mixed case with hyphens. By choosing not to, we open trace context
 integration beyond http at the cost of a conventional distraction.
 
+## All parts of traceparent are required
+
+We've been discussing to make parts of `traceparent` header optional. One proposal we declined was to allow trace-id-only `traceparent` headers. The intended use was to save size for small clients (like mobile devices) initiating the call. Rationale for declining it was to avoid abuse and confusion. Suggestion on saving size is to use binary format that we want to discuss.
+
+Making `tarceoptions` optional doesn't save a lot, but makes specification more complicated. And potentially can lead to incompatible implementations which do not expect traceoptions.
+
 ## `tracestate`
 
 - The names should be human readable, but values opaque. Cryptic name can
