@@ -68,8 +68,7 @@ Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version 
 The following `version-format` definition used for version `00`.
 
 ```
-version-format   = trace-id "-" span-id 
-version-format   =/ trace-id "-" span-id "-" trace-options
+version-format   = trace-id "-" span-id "-" trace-options
 
 trace-id         = 32HEXDIG  ; 16 bytes array identifier. All zeroes forbidden
 span-id          = 16HEXDIG  ; 8 bytes array identifier. All zeroes forbidden
@@ -98,14 +97,14 @@ strict rules to follow for three reasons:
 
 1. Trust and abuse.
 2. Bug in caller
-3. Different load between caller service and callee service might force callee to down sample.    
+3. Different load between caller service and callee service might force callee to down sample.
 
 Like other fields, `trace-options` is hex-encoded. For example, all 8 flags set would be 'ff'
 and no flags set would be '00'.
 
 As this is a bit field, you cannot interpret flags by decoding the hex value and looking at
 the resulting number. For example, a flag `00000001` could be encoded as `01` in hex, or `09`
-in hex if present with the flag `00001000`. A common mistake in bit fields is forgeting to
+in hex if present with the flag `00001000`. A common mistake in bit fields is forgetting to
 mask when interpreting flags.
 
 Here is an example of properly handing trace options:
@@ -114,9 +113,6 @@ static final int FLAG_TRACED = 1 << 1; // 00000001
 ...
 boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
 ```
-
-### Bits behavior definition
-When the `trace-options` field is missing, flags are interpreted as unset.
 
 #### Traced Flag (00000001)
 When set, the least significant bit recommends the request should be traced. A caller who
