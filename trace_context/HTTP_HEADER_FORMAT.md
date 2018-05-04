@@ -159,14 +159,14 @@ This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](ht
 
 The `OWS` rule defines an optional whitespace. It is used where zero or more whitespace characters might appear. When it is preferred to improve readability - a sender SHOULD generate the optional whitespace as a single space; otherwise, a sender SHOULD NOT generate optional whitespace. See details in corresponding RFC.
 
-The `tracestate` field value is a `dictionary` as defined below. The `dictionary` is a series of `dict-members` separated by commas `,`, and a `dict-member` is a key/value pair separated by an equals sign `=`. Spaces and horizontal tabs surrounding `dict-member`s are ignored. There can be a maximum of 128 `dict-member`s in a `dictionary`.
+The `tracestate` field value is a `list` as defined below. The `list` is a series of `list-members` separated by commas `,`, and a `list-member` is a key/value pair separated by an equals sign `=`. Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 128 `list-member`s in a `list`.
 
-A simple example of a `dictionary` with two `dict-member`s might look like: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
+A simple example of a `list` with two `list-member`s might look like: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
 
 
 ```
-dictionary  = dict-member 0*128( OWS "," OWS dict-member )
-dict-member = key "=" value
+list  = list-member 0*128( OWS "," OWS list-member )
+list-member = key "=" value
 ```
 
 Identifiers are short (up to 256 characters) textual identifiers.
