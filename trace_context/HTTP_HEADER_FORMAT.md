@@ -155,9 +155,11 @@ Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
 **Limits:**
-Maximum length of a combined header MUST be less than 512 bytes.
+There might be multiple `tracestate` headers in a single request according to [RFC 7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Maximum length of a combined header MUST be less than 512 characters. This length include commas required to separate list items. But SHOULD NOT include optional white space (OWA) characters.
 
-`tracestate` field contains essential information for requests correlation. Platforms and tracing systems MUST propagate this header. Compliance with specification will require storing of `tracestate` as part of request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus the aggressive limit of 512 bytes was chosen.
+`tracestate` field contains essential information for requests correlation. Platforms and tracing systems MUST propagate this header. Compliance with specification will require storing of `tracestate` as part of request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus the aggressive limit of 512 characters was chosen.
+
+If the `tracestate` value size is bigger than 512 characters, the tracer CAN decide to forward the `tracestate`. When propagating `tracestate` with the excessive length - the assumption SHOULD be that the callee will drop this header.
 
 ## Name format
 
