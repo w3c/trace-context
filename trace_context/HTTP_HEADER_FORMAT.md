@@ -49,7 +49,11 @@ which tracing system corresponds with `traceparent`. In this case, since
 
 ## Header name
 
-`traceparent`
+In order to increase interoperability across multiple protocols and encourage successful integration by default it is recommended to keep the header name lower case. Header name is a single word without any delimiters like hyphen (`-`).
+
+Header name: `traceparent`
+
+Platforms and libraries MUST expect header name in any casing and SHOULD send header name in lower case.
 
 ## Field value
 
@@ -147,7 +151,11 @@ base16(<TraceOptions>) = 00  // not-sampled
 
 ## Header name
 
-`tracestate`
+In order to increase interoperability across multiple protocols and encourage successful integration by default it is recommended to keep the header name lower case. Header name is a single word without any delimiters like hyphen (`-`).
+
+Header name: `tracestate`
+
+Platforms and libraries MUST expect header name in any casing and SHOULD send header name in lower case.
 
 ## Header value
 
