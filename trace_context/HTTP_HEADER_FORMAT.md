@@ -113,7 +113,7 @@ mask when interpreting flags.
 
 Here is an example of properly handing trace options:
 ```java
-static final int FLAG_TRACED = 1 << 1; // 00000001
+static final byte FLAG_TRACED = 1; // 00000001
 ...
 boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
 ```
