@@ -38,17 +38,12 @@ Header should be small so providers can satisfy the requirement to pass the valu
 
 TODO: put more thoughts into it
 
-### Not trimming spaces
+### Forcing lower case tracestate names
 
-The `tracestate` header is not meant to be edited by hand, and the values
-are opaque. Thus, optimizations such as trimming spaces before and
-after the comma, equal sign, etc are not handled by this specification.
-
-### Case sensitivity of names
-
-There are few considerations why the names should be case sensitive:
-- some keys may be a url query string parameters which are case sensitive
-- forcing lower case will decrease readability of the names written in camel case
+Lowercase names has a few benefits:
+- consistent with structured headers specification http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html
+- make naming consistent and avoid potential interoperability issues between systems
+- encourages to minimize the name size to a single word
 
 ### String encoding of names
 

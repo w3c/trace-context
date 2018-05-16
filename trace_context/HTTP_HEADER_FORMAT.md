@@ -149,6 +149,8 @@ base16(<TraceOptions>) = 00  // not-sampled
 
 # TraceState field
 
+The `tracestate` HTTP header field conveys information about request position in multiple distributed tracing graphs.
+
 ## Header name
 
 In order to increase interoperability across multiple protocols and encourage successful integration by default it is recommended to keep the header name lower case. Header name is a single word without any delimiters like hyphen (`-`).
@@ -159,10 +161,44 @@ Platforms and libraries MUST expect header name in any casing and SHOULD send he
 
 ## Header value
 
-`vendorName1=opaqueValue1,vendorName2=opaqueValue2`
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including [the DIGIT rule in appendix B.1 for RFC 5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes [the OWS rule from RFC 7230 Section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
-The value a concatenation of trace graph name-state pairs. Only one entry per
-name is allowed because the entry represents that last position in the trace.
+`DIGIT` rule defines number `0`-`9`. 
+
+The `OWS` rule defines an optional whitespace. It is used where zero or more whitespace characters might appear. When it is preferred to improve readability - a sender SHOULD generate the optional whitespace as a single space; otherwise, a sender SHOULD NOT generate optional whitespace. See details in corresponding RFC.
+
+The `tracestate` field value is a `list` as defined below. The `list` is a series of `list-members` separated by commas `,`, and a `list-member` is a key/value pair separated by an equals sign `=`. Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 128 `list-member`s in a `list`.
+
+A simple example of a `list` with two `list-member`s might look like: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
+
+
+```
+list  = list-member 0*128( OWS "," OWS list-member )
+list-member = key "=" value
+```
+
+Identifiers are short (up to 256 characters) textual identifiers.
+
+```
+key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+lcalpha    = %x61-7A ; a-z
+```
+
+Note that identifiers MUST begin with a lowercase letter, and can only contain lowercase letters `a`-`z`, digits `0`-`9`, underscores `_`, dashes `-`, asterisks `*`, and forward slashes `/`.
+
+Value is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
+
+```
+value    = chr 0*256(chr)
+chr      = %x20-2B / %x2D-3C / %x3E-7E
+```
+
+Maximum length of a combined header MUST be less than 512 bytes. If the maximum length of a combined header is more than 512 bytes it SHOULD be ignored.
+
+Example: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`
+
+The value a concatenation of trace graph key-value pairs. Only one entry per
+key is allowed because the entry represents that last position in the trace.
 Hence implementors must overwrite their entry upon reentry to their tracing
 system.
 
@@ -175,24 +211,7 @@ system, went through a system named `rojo` and later returned to `congo`, the
 Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
-**Limits:**
-Maximum length of a combined header MUST be less than 512 bytes. 
-
-## Name format
-
-Name starts with the beginning of the string or separator `,` and ends with the
-equal sign `=`. The contents of the name are any url encoded string that does
-not contain an equal sign `=`. Names should intuitively identify a the tracing
-system even if multiple systems per vendor are present.
-
-## Value format
-
-Value starts after equal sign and ends with a separator `,` or end of string.
-In the case of a generic tracing system, it contains the same data as the most
-recent `traceparent` value. Other systems may have different formatting, such
-as Base64 encoded opaque values.
-
-# Examples of HTTP headers
+## Examples of HTTP headers
 
 Single tracing system (generic format): 
 
