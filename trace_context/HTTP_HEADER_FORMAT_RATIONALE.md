@@ -16,6 +16,12 @@ copy http headers into fields. This class of concerns only exist when we choose
 to support mixed case with hyphens. By choosing not to, we open trace context
 integration beyond http at the cost of a conventional distraction.
 
+## All parts of traceparent are required
+
+We've been discussing to make parts of `traceparent` header optional. One proposal we declined was to allow trace-id-only `traceparent` headers. The intended use was to save size for small clients (like mobile devices) initiating the call. Rationale for declining it was to avoid abuse and confusion. Suggestion on saving size is to use binary format that we want to discuss.
+
+Making `traceoptions` optional doesn't save a lot, but makes specification more complicated. And potentially can lead to incompatible implementations which do not expect `traceoptions`.
+
 ## `tracestate`
 
 - The names should be human readable, but values opaque. Cryptic name can
@@ -32,17 +38,12 @@ Header should be small so providers can satisfy the requirement to pass the valu
 
 TODO: put more thoughts into it
 
-### Not trimming spaces
+### Forcing lower case tracestate names
 
-The `tracestate` header is not meant to be edited by hand, and the values
-are opaque. Thus, optimizations such as trimming spaces before and
-after the comma, equal sign, etc are not handled by this specification.
-
-### Case sensitivity of names
-
-There are few considerations why the names should be case sensitive:
-- some keys may be a url query string parameters which are case sensitive
-- forcing lower case will decrease readability of the names written in camel case
+Lowercase names has a few benefits:
+- consistent with structured headers specification http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html
+- make naming consistent and avoid potential interoperability issues between systems
+- encourages to minimize the name size to a single word
 
 ### String encoding of names
 
