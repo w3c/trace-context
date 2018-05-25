@@ -47,14 +47,14 @@ Context might be split into multiple headers:
 
 ```
 Correlation-Context: userId=sergey
-Correlation-Context: serverNode=DF%3D28,isProduction=false
+Correlation-Context: serverNode=DF%3A28,isProduction=false
 ```
 
 Values and names might begin and end with spaces:
 
 ```
 Correlation-Context: userId =   sergey
-Correlation-Context: serverNode = DF%3D28, isProduction = false
+Correlation-Context: serverNode = DF%3A28, isProduction = false
 ```
 
 ## Example use case
