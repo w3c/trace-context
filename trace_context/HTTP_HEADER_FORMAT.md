@@ -211,7 +211,28 @@ system, went through a system named `rojo` and later returned to `congo`, the
 Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
-## Examples of HTTP headers
+**Limits:**
+There might be multiple `tracestate` headers in a single request according to [RFC 7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Maximum length of a combined header MUST be less than 512 characters. This length include commas required to separate list items. But SHOULD NOT include optional white space (OWA) characters.
+
+`tracestate` field contains essential information for requests correlation. Platforms and tracing systems MUST propagate this header. Compliance with specification will require storing of `tracestate` as part of request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus the aggressive limit of 512 characters was chosen.
+
+If the `tracestate` value size is bigger than 512 characters, the tracer CAN decide to forward the `tracestate`. When propagating `tracestate` with the excessive length - the assumption SHOULD be that the callee will drop this header.
+
+## Name format
+
+Name starts with the beginning of the string or separator `,` and ends with the
+equal sign `=`. The contents of the name are any url encoded string that does
+not contain an equal sign `=`. Names should intuitively identify a the tracing
+system even if multiple systems per vendor are present.
+
+## Value format
+
+Value starts after equal sign and ends with a separator `,` or end of string.
+In the case of a generic tracing system, it contains the same data as the most
+recent `traceparent` value. Other systems may have different formatting, such
+as Base64 encoded opaque values.
+
+# Examples of HTTP headers
 
 Single tracing system (generic format): 
 
