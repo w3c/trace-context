@@ -173,7 +173,7 @@ A simple example of a `list` with two `list-member`s might look like: `vendornam
 
 
 ```
-list  = list-member 0*128( OWS "," OWS list-member )
+list  = list-member 0*127( OWS "," OWS list-member )
 list-member = key "=" value
 ```
 
@@ -189,11 +189,12 @@ Note that identifiers MUST begin with a lowercase letter, and can only contain l
 Value is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
 
 ```
-value    = chr 0*256(chr)
-chr      = %x20-2B / %x2D-3C / %x3E-7E
+value    = nblk-chr 0*254(chr) nblk-chr
+nblk-chr = %x21-2B / %x2D-3C / %x3E-7E
+chr      = %x20 / nblk-chr
 ```
 
-Maximum length of a combined header MUST be less than 512 bytes. If the maximum length of a combined header is more than 512 bytes it SHOULD be ignored.
+The length of a combined header MUST be less than or equal to 512 bytes. If the length of a combined header is more than 512 bytes it SHOULD be ignored.
 
 Example: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`
 
