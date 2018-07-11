@@ -161,7 +161,7 @@ Platforms and libraries MUST expect header name in any casing and SHOULD send he
 
 ## Header value
 
-This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including [the DIGIT rule in appendix B.1 for RFC 5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes [the OWS rule from RFC 7230 Section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule in [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes the OWS rule from [RFC7230 section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
 `DIGIT` rule defines number `0`-`9`. 
 
@@ -213,17 +213,17 @@ Rather, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
 **Limits:**
-There might be multiple `tracestate` headers in a single request according to [RFC 7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Maximum length of a combined header MUST be less than 512 characters. This length include commas required to separate list items. But SHOULD NOT include optional white space (OWA) characters.
+There might be multiple `tracestate` headers in a single request according to [RFC7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Maximum length of a combined header MUST be less than 512 characters. This length includes commas required to separate list items. But SHOULD NOT include optional white space (OWA) characters.
 
-`tracestate` field contains essential information for requests correlation. Platforms and tracing systems MUST propagate this header. Compliance with specification will require storing of `tracestate` as part of request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus the aggressive limit of 512 characters was chosen.
+`tracestate` field contains essential information for requests correlation. Platforms and tracing systems MUST propagate this header. Compliance with specification will require storing of `tracestate` as part of request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus, the aggressive limit of 512 characters was chosen.
 
-If the `tracestate` value size is bigger than 512 characters, the tracer CAN decide to forward the `tracestate`. When propagating `tracestate` with the excessive length - the assumption SHOULD be that the callee will drop this header.
+If the `tracestate` value has more than 512 characters, the tracer CAN decide to forward the `tracestate`. When propagating `tracestate` with the excessive length - the assumption SHOULD be that the receiver will drop this header.
 
 ## Name format
 
 Name starts with the beginning of the string or separator `,` and ends with the
-equal sign `=`. The contents of the name are any url encoded string that does
-not contain an equal sign `=`. Names should intuitively identify a the tracing
+equal sign `=`. The contents of the name are any URL encoded string that does
+not contain an equal sign `=`. Names should intuitively identify the tracing
 system even if multiple systems per vendor are present.
 
 ## Value format
