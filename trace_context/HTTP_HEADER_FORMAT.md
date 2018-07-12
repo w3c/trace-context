@@ -81,7 +81,7 @@ trace-options    = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See 
 
 ### Trace-id
 
-Is the ID of the whole trace forest. It is represented as a 16-bytes array, for example,
+Is the ID of the whole trace forest. It is represented as a 16-bytes array, for example, 
 `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` is considered invalid.
 
 Implementation MAY decide to completely ignore the traceparent when the trace-id is invalid.
@@ -163,7 +163,7 @@ Platforms and libraries MUST expect header name in any casing and SHOULD send he
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule in [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes the OWS rule from [RFC7230 section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
-`DIGIT` rule defines number `0`-`9`. 
+`DIGIT` rule defines number `0`-`9`.
 
 The `OWS` rule defines an optional whitespace. It is used where zero or more whitespace characters might appear. When it is preferred to improve readability - a sender SHOULD generate the optional whitespace as a single space; otherwise, a sender SHOULD NOT generate optional whitespace. See details in corresponding RFC.
 
@@ -253,7 +253,7 @@ tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=l
 
 Library or platform receiving `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests.
 
-If the value of `traceparent` field wasn't changed before propagation - `tracestate` MUST NOT be modified as well. Unmodified headers propagation is typically implemented in a pass-thru services like proxies. This behavior may also be implemented in a services which currently does not collect distributed tracing information.
+If the value of `traceparent` field wasn't changed before propagation - `tracestate` MUST NOT be modified as well. Unmodified headers propagation is typically implemented in pass-thru services like proxies. This behavior may also be implemented in a service which currently does not collect distributed tracing information.
 
 Here is the list of allowed mutations:
 
