@@ -32,11 +32,23 @@ copy of the `traceparent` format or an opaque string.
 
 ### Size limits
 
+#### Total size limit
+
 Header should be small so providers can satisfy the requirement to pass the value all the time.
 
 512 bytes looks like a reasonable compromise.
 
 TODO: put more thoughts into it
+
+#### Maximum number of elements
+
+Here are some rationals and assumptions:
+- the total size can be calculated 2 * num_elements - 1 (delimiters) + sum(key.size()) + sum(value.size()).
+- we assume that each key will have around 4 elements (e.g. `msft`, `goog`, etc).
+- we assume that each value will have 8 or more characters (e.g. one hex int32).
+- based on the previous two assumptions each key-value pair will have more than 12 characters.
+
+Based on the assumptions and rationals a maximum number of elements of 32 looks like a reasonable compromise.
 
 ### Forcing lower case tracestate names
 
