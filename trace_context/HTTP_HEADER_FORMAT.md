@@ -189,7 +189,7 @@ Note that identifiers MUST begin with a lowercase letter, and can only contain l
 Value is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
 
 ```
-value    = nblk-chr 0*254(chr) nblk-chr
+value    = 0*255(chr) nblk-chr
 nblk-chr = %x21-2B / %x2D-3C / %x3E-7E
 chr      = %x20 / nblk-chr
 ```
