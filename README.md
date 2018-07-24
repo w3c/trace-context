@@ -1,12 +1,13 @@
 # Distributed Tracing Working group
 
-This repository is associated with the [Distributed Trace Context Working Group](https://www.w3.org/community/trace-context/).
+This repository is associated with the [Distributed Trace Context Working Group](https://www.w3.org/2018/distributed-tracing/).
 
 Specification for distributed tracing context propagation format:
 
 - Trace Context [Report](https://w3c.github.io/distributed-tracing/report-trace-context.html).
 - Correlation Context [Report](https://w3c.github.io/distributed-tracing/report-correlation-context.html).
-- Working group [charter](https://www.w3.org/2018/04/distributed-tracing-wg-charter.html). Live [charter document](https://w3c.github.io/distributed-tracing/charter.html).
+- Working group [charter](https://www.w3.org/2018/04/distributed-tracing-wg-charter.html) (as of working group creation). Live [charter document](https://w3c.github.io/distributed-tracing/charter.html).
+- Original [community group](https://www.w3.org/community/trace-context/).
 
 ## Team Communication
 
@@ -27,7 +28,7 @@ together.
 
 TODO: add link here
 
-## Why are we doing this?
+## Why are we doing this
 
 * If this becomes popular, frameworks and other services will automatically pass trace IDs 
 through for correlated requests. This would prevent traces from hitting dead ends when a request 
