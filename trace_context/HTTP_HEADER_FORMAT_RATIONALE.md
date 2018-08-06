@@ -1,9 +1,10 @@
-#  Trace context HTTP header format rationale
+# Trace context HTTP header format rationale
 
 This document provides rationale for the decisions made, mapping the
 `traceparent` and `tracestate` fields to HTTP headers.
 
 ## Lowercase concatenated header names
+
 While HTTP headers are conventionally delimited by hyphens, the trace context
 header names are not. Rather, they are lowercase concatenated "traceparent" and
 "tracestate" respectively. The departure from convention is due to practical
@@ -43,6 +44,7 @@ TODO: put more thoughts into it
 #### Maximum number of elements
 
 Here are some rationals and assumptions:
+
 - the total size can be calculated 2 * num_elements - 1 (delimiters) + sum(key.size()) + sum(value.size()).
 - we assume that each key will have around 4 elements (e.g. `msft`, `goog`, etc).
 - we assume that each value will have 8 or more characters (e.g. one hex int32).
@@ -61,3 +63,13 @@ Lowercase names has a few benefits:
 
 Url encoding is low-overhead way to encode unicode characters for non-latin characters in the 
 values. Url encoding keeps a single words in latin unchanged and easy readable.
+
+## Versioning
+
+- One options is to preserve an original non-parseable `traceparent` header in `tracestate` when restarting trace. So other players
+who understands format may still use it. It may lead to abuse though when bad actor will not follow specification and will use it merely as
+a transport.
+- When parsing unknown versions we may or may not require hex validation. Future version of standard should assume current implementations
+didn't validate hex. So future version of spec cannot force incompatible version by non-hex character. Only by length of parts.
+- We forcing all or nothing rule to avoid abusing the standard by sending shorter headers with very high version. So implementaiton will
+preserve `trace-id`, but not anything else.

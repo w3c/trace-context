@@ -112,17 +112,20 @@ in hex if present with the flag `00001000`. A common mistake in bit fields is fo
 mask when interpreting flags.
 
 Here is an example of properly handing trace options:
+
 ```java
 static final byte FLAG_TRACED = 1; // 00000001
 ...
 boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
 ```
 
-#### Traced Flag (00000001)
+### Traced Flag (00000001)
+
 When set, the least significant bit recommends the request should be traced. A caller who
 defers a tracing decision leaves this flag unset.
 
-#### Other Flags
+### Other Flags
+
 The behavior of other flags, such as (00000010) are undefined.
 
 ## Examples of HTTP headers
@@ -147,7 +150,22 @@ base16(<SpanId>) = 00f067aa0ba902b7
 base16(<TraceOptions>) = 00  // not-sampled
 ```
 
-# TraceState field
+## Versioning
+
+Implementation is opinionated about future version of specification. We hope to make format of `traceparent` additive.
+
+Implementation should follow a following rules when parsing headers with unexpected format:
+
+1. Pass thru services should not analyze version. Pass thru service needs to expect that headers may have bigger limits in future.
+2. When version prefix cannot be parsed (it's not 2 hex characters followed by dash), implementation should restart trace.
+3. If higher version is detected - implementation should try to parse.
+  a. If size of header shorter - implementation should not parse it.
+  b. Try parse `trace-id`: from dash 32 characters. Make sure followed by dash.
+  c. Try parse `span-id`: from the second dash 16 characters. Make sure followed by dash.
+  d. Try parse sampling bit of `flags`:  2 characters from third dash. Following with either end of string or a dash.
+  If all three values were parsed successfully - implementation should use them. After parsing - implementation MUST NOT assume anything about other parts of `traceparent` and MUST send version `00` to downstream services.
+
+# Tracestate field
 
 The `tracestate` HTTP header field conveys information about request position in multiple distributed tracing graphs.
 
@@ -233,7 +251,7 @@ In the case of a generic tracing system, it contains the same data as the most
 recent `traceparent` value. Other systems may have different formatting, such
 as Base64 encoded opaque values.
 
-# Examples of HTTP headers
+## Examples of HTTP headers
 
 Single tracing system (generic format): 
 
@@ -246,6 +264,10 @@ Multiple tracing systems (with different formatting):
 ```
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
+
+## Versioning
+
+Version of `tracestate` is defined by the version prefix of `traceparent` header. Implementation needs to attempt parsing of `tracestate` if higher version is detected to the best of ability. It is implementor decision whether to use partially-parsed `tracestate` key-value pairs or not.
 
 # Mutating the traceparent field
 
