@@ -41,6 +41,10 @@ browsers to attach trace IDs to requests and submit tracing data to a distribute
 * Frameworks can *bless* access to the trace context even if they prevent access to underlying 
 request headers, making it available by default.
 
+## Known implementations
+
+1. JS implementation from Instana https://github.com/instana/trace-context.js
+
 ## Contributing
 
 See [Contributing.md](CONTRIBUTING.md) for details.
