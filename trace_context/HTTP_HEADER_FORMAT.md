@@ -118,12 +118,15 @@ static final byte FLAG_TRACED = 1; // 00000001
 boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
 ```
 
-#### Traced Flag (00000001)
+#### Requested Flag (00000001)
 When set, the least significant bit recommends the request should be traced. A caller who
 defers a tracing decision leaves this flag unset.
 
+#### Recorded Flag (00000010)
+When set, the least significant bit documents that the caller may have recorded trace data. A caller who does not record trace data out-of-band leaves this flag unset.
+
 #### Other Flags
-The behavior of other flags, such as (00000010) are undefined.
+The behavior of other flags, such as (00000100) are undefined.
 
 ## Examples of HTTP headers
 
@@ -258,8 +261,9 @@ If the value of `traceparent` field wasn't changed before propagation - `tracest
 Here is the list of allowed mutations:
 
 1. **Update `span-id`**. The value of property `span-id` can be regenerated. This is the most typical mutation and should be considered a default.
-2. **Mark trace for sampling**. The value of `sampled` flag of `trace-options` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `sampled` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
-3. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-options` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface. 
+2. **Request trace capture**. The value of `requested` flag of `trace-options` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `requested` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
+3. **Update `recorded`**. The value of `recorded` reflects the caller's recording behavior: either the trace data were dropped or they may have been recorded out-of-band. This mutation gives the downstream tracer information about the likelihood its parent's information was recorded.
+4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-options` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface. 
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
 
