@@ -94,7 +94,7 @@ than zeroes. Let's say system works with 8-byte `trace-id` like `3ce929d0e0e4736
 value to `0000000000000003ce929d0e0e4736` it is recommended to generate value like
 `4bf92f3577b34da6a3ce929d0e0e4736` where `4bf92f3577b34da6a` is a random value or a function of time & host value.
 Note, even though system may operate with shorter `trace-id` for distributed traces reporting - full `trace-id` should
-be propagated to confirm to specification.
+be propagated to conform to specification.
 
 Implementation MAY decide to completely ignore the traceparent when the trace-id is invalid.
 
