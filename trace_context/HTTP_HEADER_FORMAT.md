@@ -175,7 +175,7 @@ base16(<SpanId>) = 00f067aa0ba902b7
 base16(<TraceFlags>) = 00  // not requested
 ```
 
-## Versioning
+## Versioning of `traceparent`
 
 Implementation is opinionated about future version of specification. Current version of this specification assumes that the future
 versions of `traceparent` header will be additive to the current one.
@@ -291,7 +291,7 @@ Multiple tracing systems (with different formatting):
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
 
-## Versioning
+## Versioning of `tracestate`
 
 Version of `tracestate` is defined by the version prefix of `traceparent` header. Implementation needs to attempt parsing of `tracestate` if higher version is detected to the best of ability. It is implementor decision whether to use partially-parsed `tracestate` key-value pairs or not.
 
