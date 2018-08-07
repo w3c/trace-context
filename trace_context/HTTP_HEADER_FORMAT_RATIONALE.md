@@ -66,10 +66,18 @@ values. Url encoding keeps a single words in latin unchanged and easy readable.
 
 ## Versioning
 
-- One options is to preserve an original non-parseable `traceparent` header in `tracestate` when restarting trace. So other players
-who understands format may still use it. It may lead to abuse though when bad actor will not follow specification and will use it merely as
-a transport.
-- When parsing unknown versions we may or may not require hex validation. Future version of standard should assume current implementations
-didn't validate hex. So future version of spec cannot force incompatible version by non-hex character. Only by length of parts.
-- We forcing all or nothing rule to avoid abusing the standard by sending shorter headers with very high version. So implementaiton will
-preserve `trace-id`, but not anything else.
+Versioning options are:
+
+1. Pass thru unknown headers
+2. Re-start trace when you see unknown header
+3. Try to parse trace following some rules when you see unknown header
+
+One variation is whether original or new header you cannot recognize is preserved in `tracestate`.
+
+- Option 1 is least favorable as it makes one bad header break entire distributed trace.
+- Option 2 is better. It's easy, doesn't restrict future version in any way and re-started trace should be understood by new systems. So only one "connection" is lost. And the lost connection issue can be solved by storing original header in `tracestate`. Drawbacks are also obvious. First, single old component always breaks traces. Second, it's harder to transition without customer dissat of broken traces. 
+
+  Storing original value also has negative effects. Valid `traceparent` is 55 characters (out of 512 allowed for `tracestate`). And "bad" headers could be much longer pushing valuable `tracestate` pairs out. Also this requirement increases the chance of abuse. When bad actor will start sending header with the version `99` that is only understood by that actor. And the fact that every system passes thru original value allows this actor to build complete solution based on this header.
+- Option 3 with the fallback to option 2 seems to allow the easiest transition between versions by forcing a lot of restrictions on the future. Initial proposal was to try to parse individual parts like `trace-id` than `span-id`. Assuming `span-id` size or format may change without changing `trace-id`. However majority sees potential for abuse here. So we suggest to force future versions be additive to the current format. And if parsing fails at any stage - simply restart the trace.
+
+Another consideration - whether to force validation of hex numbers as part of a spec. When parsing unknown versions we may or may not require hex validation in addition to size checks and checks of dashes (`-`) in proper location. Since we anticipate many implementation of loose check for `trace-id` and `span-id` - future version of standard should assume current implementations didn't validate whether values are hex. So future version of spec cannot force incompatible version by non-hex character on the same places where hex characters are required now. Only by length of parts.
