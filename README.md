@@ -43,7 +43,7 @@ request headers, making it available by default.
 
 ## Known implementations
 
-1. JS implementation from Instana https://github.com/instana/trace-context.js
+1. JS implementation https://github.com/instana/trace-context.js
 
 ## Contributing
 
