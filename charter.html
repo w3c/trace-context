@@ -189,7 +189,7 @@
         <p>
           Modern cloud-native applications are highly distributed and often span multiple technology and vendor boundaries. The complexity
           of these applications requires a detailed understanding of how individual requests are executed. This is referred
-          to as "tracing".
+          to as "distributed racing".
         </p>
         <p>
           Tracing tools for collecting this information have been available for quite some time. However, these tools have not been
@@ -202,6 +202,11 @@
             <li> End users don't have the ability to create complete end-to-end traces of application transactions which are monitored
               by different tools, as there is no defined data format and semantics for trace data</li>
           </ul>
+        </p>
+        <p>
+          Components of cloud-native application can be browser-hosted SPA applications, mobile apps, server components implemented in various
+          languages and  externally hosted SaaS applications. Those components communicate using various protocols. Variety of technologies 
+          and platforms calls for standardization of protocols used to implement distributed tracing scenarios.
         </p>
         <p>
           The scope of this working group is the definition of data formats and headers enabling the propagation and correlation of
