@@ -152,18 +152,19 @@ base16(<TraceOptions>) = 00  // not-sampled
 
 ## Versioning
 
-Implementation is opinionated about future version of specification. We hope to make format of `traceparent` additive.
+Implementation is opinionated about future version of specification. Current version of this specification assumes that the future
+versions of `traceparent` header will be additive to the current one.
 
 Implementation should follow a following rules when parsing headers with unexpected format:
 
-1. Pass thru services should not analyze version. Pass thru service needs to expect that headers may have bigger limits in future.
-2. When version prefix cannot be parsed (it's not 2 hex characters followed by dash), implementation should restart trace.
+1. Pass thru services should not analyze version. Pass thru service needs to expect that headers may have bigger size limits in future and only disallow prohibitively large headers.
+2. When version prefix cannot be parsed (it's not 2 hex characters followed by dash (`-`)), implementation should restart the trace.
 3. If higher version is detected - implementation should try to parse.
-  a. If size of header shorter - implementation should not parse it.
-  b. Try parse `trace-id`: from dash 32 characters. Make sure followed by dash.
+  a. If size of header shorter than 55 characters - implementation should not parse header and should restart the trace.
+  b. Try parse `trace-id`: from the first dash - next 32 characters. Make sure they followed by dash.
   c. Try parse `span-id`: from the second dash at 35th position - 16 characters. Make sure followed by dash.
   d. Try parse sampling bit of `flags`:  2 characters from third dash. Following with either end of string or a dash.
-  If all three values were parsed successfully - implementation should use them. After parsing - implementation MUST NOT assume anything about other parts of `traceparent` and MUST send version `00` to downstream services.
+  If all three values were parsed successfully - implementation should use them. After parsing - implementation MUST NOT assume anything about other parts of `traceparent` and MUST send the version `00` (in the current version of specification) to downstream services.
 
 # Tracestate field
 
