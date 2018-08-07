@@ -118,6 +118,15 @@ static final byte FLAG_TRACED = 1; // 00000001
 boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
 ```
 
+### Flag behavior
+
+| option       | recorded? | requested? | recording probability | situation                                                          |
+| ------------ | --------  | ---------- | --------------------- | ------------------------------------------------------------------ |
+| 00000000     | no        | false      | low                   | I definitely dropped the data and no one asked for it              |
+| 00000001     | no        | true       | medium                | I definitely dropped the data but someone asked for it             |
+| 00000010     | maybe     | false      | medium                | Maybe I recorded this but no one asked for it yet (maybe deferred) |
+| 00000011     | maybe     | true       | high                  | Maybe I recorded this and someone asked for it                     |
+
 #### Requested Flag (00000001)
 When set, the least significant bit recommends the request should be traced. A caller who
 defers a tracing decision leaves this flag unset.
