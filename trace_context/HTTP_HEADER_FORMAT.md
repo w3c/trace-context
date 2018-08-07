@@ -161,7 +161,7 @@ Implementation should follow a following rules when parsing headers with unexpec
 3. If higher version is detected - implementation should try to parse.
   a. If size of header shorter - implementation should not parse it.
   b. Try parse `trace-id`: from dash 32 characters. Make sure followed by dash.
-  c. Try parse `span-id`: from the second dash 16 characters. Make sure followed by dash.
+  c. Try parse `span-id`: from the second dash at 35th position - 16 characters. Make sure followed by dash.
   d. Try parse sampling bit of `flags`:  2 characters from third dash. Following with either end of string or a dash.
   If all three values were parsed successfully - implementation should use them. After parsing - implementation MUST NOT assume anything about other parts of `traceparent` and MUST send version `00` to downstream services.
 
