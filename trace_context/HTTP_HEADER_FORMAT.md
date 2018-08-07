@@ -20,8 +20,8 @@ If the receiving server is traced in the `rojo` tracing system, it carries
 the over the state it received and adds a new entry with the position in
 its trace.
 ```
-traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
+traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
+tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
 
 You'll notice that the `rojo` system reuses the value of `traceparent` in its
