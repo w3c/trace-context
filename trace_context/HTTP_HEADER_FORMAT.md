@@ -72,11 +72,11 @@ Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version 
 The following `version-format` definition used for version `00`.
 
 ```
-version-format   = trace-id "-" span-id "-" trace-options
+version-format   = trace-id "-" span-id "-" trace-flags
 
 trace-id         = 32HEXDIG  ; 16 bytes array identifier. All zeroes forbidden
 span-id          = 16HEXDIG  ; 8 bytes array identifier. All zeroes forbidden
-trace-options    = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See below for details
+trace-flags      = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See below for details
 ```
 
 ### Trace-id
@@ -105,35 +105,35 @@ Is the ID of the caller span (parent). It is represented as an 8-bytes array, fo
 
 Implementation may decide to completely ignore the traceparent when the span-id is invalid.
 
-## Trace-options
+## Trace-flags
 
-An [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that controls tracing options such
+An [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that controls tracing flags such
 as sampling, trace level etc. These flags are recommendations given by the caller rather than
 strict rules to follow for three reasons:
 
-1. Trust and abuse.
+1. Trust and abuse
 2. Bug in caller
 3. Different load between caller service and callee service might force callee to down sample.
 
-Like other fields, `trace-options` is hex-encoded. For example, all 8 flags set would be 'ff'
-and no flags set would be '00'.
+Like other fields, `trace-flags` is hex-encoded. For example, all 8 flags set would be `ff`
+and no flags set would be `00`.
 
 As this is a bit field, you cannot interpret flags by decoding the hex value and looking at
 the resulting number. For example, a flag `00000001` could be encoded as `01` in hex, or `09`
 in hex if present with the flag `00001000`. A common mistake in bit fields is forgetting to
 mask when interpreting flags.
 
-Here is an example of properly handing trace options:
+Here is an example of properly handing trace flags:
 
 ```java
 static final byte FLAG_TRACED = 1; // 00000001
 ...
-boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
+boolean traced = (traceFlags & FLAG_TRACED) == FLAG_TRACED
 ```
 
 ### Flag behavior
 
-| option       | recorded? | requested? | recording probability | situation                                                          |
+| flag         | recorded? | requested? | recording probability | situation                                                          |
 | ------------ | --------  | ---------- | --------------------- | ------------------------------------------------------------------ |
 | 00000000     | no        | false      | low                   | I definitely dropped the data and no one asked for it              |
 | 00000001     | no        | true       | medium                | I definitely dropped the data but someone asked for it             |
@@ -141,35 +141,38 @@ boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
 | 00000011     | maybe     | true       | high                  | Maybe I recorded this and someone asked for it                     |
 
 #### Requested Flag (00000001)
+
 When set, the least significant bit recommends the request should be traced. A caller who
 defers a tracing decision leaves this flag unset.
 
 #### Recorded Flag (00000010)
+
 When set, the least significant bit documents that the caller may have recorded trace data. A caller who does not record trace data out-of-band leaves this flag unset.
 
 #### Other Flags
-The behavior of other flags, such as (00000100) are undefined.
+
+The behavior of other flags, such as (00000100) is not defined and reserved for future use. Implementation MUST set those to zero.
 
 ## Examples of HTTP headers
 
-*Valid sampled traceparent:*
+*Valid traceparent when one of upstream services requested recording:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 base16(<Version>) = 00
 base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceOptions>) = 01  // sampled
+base16(<TraceFlags>) = 01  // requested
 ```
 
-*Valid not-sampled traceparent:*
+*Valid traceparent when one of upstream services requested recording:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
 base16(<Version>) = 00
 base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceOptions>) = 00  // not-sampled
+base16(<TraceFlags>) = 00  // not requested
 ```
 
 ## Versioning
@@ -303,9 +306,9 @@ If the value of `traceparent` field wasn't changed before propagation - `tracest
 Here is the list of allowed mutations:
 
 1. **Update `span-id`**. The value of property `span-id` can be regenerated. This is the most typical mutation and should be considered a default.
-2. **Request trace capture**. The value of `requested` flag of `trace-options` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `requested` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
+2. **Request trace capture**. The value of `requested` flag of `trace-flags` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `requested` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
 3. **Update `recorded`**. The value of `recorded` reflects the caller's recording behavior: either the trace data were dropped or they may have been recorded out-of-band. This mutation gives the downstream tracer information about the likelihood its parent's information was recorded.
-4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-options` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface. 
+4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-flags` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface. 
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
 
