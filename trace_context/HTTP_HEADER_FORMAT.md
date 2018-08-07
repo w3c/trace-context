@@ -81,8 +81,20 @@ trace-options    = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See 
 
 ### Trace-id
 
-Is the ID of the whole trace forest. It is represented as a 16-bytes array, for example, 
+Is the ID of the whole trace forest. It is represented as a 16-bytes array, for example,
 `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` is considered invalid.
+
+`Trace-id` is used to uniquely identify distributed trace. So implementation should generate globally unique
+values. Many algorithms of unique identification generation are based on some constant part - time or host
+based and a random values. There are systems that make random sampling decisions based on the value of `trace-id`.
+So to increase interoperability it is recommended to keep random part on the right side of `trace-id` value.
+
+When system operates with shorter `trace-id` - it is recommended to fill-in extra bytes with random value rather
+than zeroes. Let's say system works with 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting `trace-id`
+value to `0000000000000003ce929d0e0e4736` it is recommended to generate value like
+`4bf92f3577b34da6a3ce929d0e0e4736` where `4bf92f3577b34da6a` is a random value or a function of time & host value.
+Note, even though system may operate with shorter `trace-id` for distributed traces reporting - full `trace-id` should
+be propagated to conform to specification.
 
 Implementation MAY decide to completely ignore the traceparent when the trace-id is invalid.
 
