@@ -225,10 +225,11 @@ Identifiers are short (up to 256 characters) textual identifiers.
 
 ```
 key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+key = lcalpha 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" ) "@" lcalpha 0*13( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
 lcalpha    = %x61-7A ; a-z
 ```
 
-Note that identifiers MUST begin with a lowercase letter, and can only contain lowercase letters `a`-`z`, digits `0`-`9`, underscores `_`, dashes `-`, asterisks `*`, and forward slashes `/`.
+Note that identifiers MUST begin with a lowercase letter, and can only contain lowercase letters `a`-`z`, digits `0`-`9`, underscores `_`, dashes `-`, asterisks `*`, and forward slashes `/`. For multi-tenant vendors scenarios `@` sign can be used to prefix vendor name. Suggested use is to allow set tenant id in the beginning of key like `fw529a3039@dt` - `fw529a3039` is a tenant id and `@dt` is a vendor name. Searching for `@dt=` would be more robust for parsing (searching for all vendor's keys).
 
 Value is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
 
