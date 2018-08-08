@@ -79,3 +79,33 @@ One variation is whether original or new header you cannot recognize is preserve
 
   Storing original value also has negative effects. Valid `traceparent` is 55 characters (out of 512 allowed for `tracestate`). And "bad" headers could be much longer pushing valuable `tracestate` pairs out. Also this requirement increases the chance of abuse. When bad actor will start sending header with the version `99` that is only understood by that actor. And the fact that every system passes thru original value allows this actor to build complete solution based on this header.
 - Option 3 with the fallback to option 2 seems to allow the easiest transition between versions by forcing a lot of restrictions on the future. Initial proposal was to try to parse individual parts like `trace-id` than `span-id`. Assuming `span-id` size or format may change without changing `trace-id`. However majority sees potential for abuse here. So we suggest to force future versions be additive to the current format. And if parsing fails at any stage - simply restart the trace.
+
+## Response headers
+
+**TL;DR;** There are many scenarios where collaboration between distributed tracing vendors require writing and reading response headers.
+We can see that this can have value, but don't think right now is the right time to standardize. We decided to rather wait for
+individual vendors to start collaborate over response headers and later decide which scenarios worth standardizing. Using of `traceparent` and
+`tracestate` headers is not forbidden in response headers.
+
+### Use Cases
+
+1. Restart a trace and return new trace identification information to caller.
+2. Send Tenant ID/identity of the service so caller knows where to query telemetry from.
+3. Notify upstream to sample trace sending a sampling flag (+ sampling score) for delegated sampling.
+4. Report back data to the caller (like server timing, method name, application type and version). E.g. for http call - caller only knows the url when server knows route information. Route information may be helpful to caller to group outgoing requests.
+
+### Open Issues
+
+- If standard defines response headers - are they required or optional?
+- How are they propagated to the caller of the caller? Is this done via multiple hops?
+- Some IoT devices may not expect relatively large response headers.
+
+### Potential Content of a Header
+
+- `traceparent` can be used for use cases 1 and 3 (identity and deferred sampling).
+- `tracestate`-like header can be used for all use cases.
+
+### Problems*
+
+- Might not work in all scenarios (e.g queues).
+- Not sure what processing etc. would look like.
