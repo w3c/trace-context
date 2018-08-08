@@ -64,6 +64,11 @@ Lowercase names has a few benefits:
 Url encoding is low-overhead way to encode unicode characters for non-latin characters in the 
 values. Url encoding keeps a single words in latin unchanged and easy readable.
 
+## Vendor name in a key
+
+Sign `@` is allowed in a key for easy parsing of vendor name out of tracestate key. Idea is that with the registry of trace vendors one can easily understand the vendor name and how to parse it's trace state. Without `@` sign parsing will be more complicated. Also `@` sign has known semantics in
+addressing for protocols like ftp and e-mails.
+
 ## Versioning
 
 Versioning options are:
