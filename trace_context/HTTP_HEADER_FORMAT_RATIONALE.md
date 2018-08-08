@@ -6,8 +6,8 @@ This document provides rationale for the decisions made, mapping the
 ## Lowercase concatenated header names
 
 While HTTP headers are conventionally delimited by hyphens, the trace context
-header names are not. Rather, they are lowercase concatenated "traceparent" and
-"tracestate" respectively. The departure from convention is due to practical
+header names are not. Rather, they are lowercase concatenated `traceparent` and
+`tracestate` respectively. The departure from convention is due to practical
 concerns of propagation. Trace context is unlike typical http headers, which
 are point-to-point and do not propagate through other systems like messaging.
 Different systems have different constraints. For example, some cannot read
@@ -17,11 +17,11 @@ copy http headers into fields. This class of concerns only exist when we choose
 to support mixed case with hyphens. By choosing not to, we open trace context
 integration beyond http at the cost of a conventional distraction.
 
-## All parts of traceparent are required
+## All parts of `traceparent` are required
 
 We've been discussing to make parts of `traceparent` header optional. One proposal we declined was to allow trace-id-only `traceparent` headers. The intended use was to save size for small clients (like mobile devices) initiating the call. Rationale for declining it was to avoid abuse and confusion. Suggestion on saving size is to use binary format that we want to discuss.
 
-Making `traceoptions` optional doesn't save a lot, but makes specification more complicated. And potentially can lead to incompatible implementations which do not expect `traceoptions`.
+Making `trace-flags` optional doesn't save a lot, but makes specification more complicated. And potentially can lead to incompatible implementations which do not expect `trace-flags`.
 
 ## `tracestate`
 
