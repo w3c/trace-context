@@ -20,8 +20,8 @@ If the receiving server is traced in the `rojo` tracing system, it carries
 the over the state it received and adds a new entry with the position in
 its trace.
 ```
-traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
+traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
+tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
 
 You'll notice that the `rojo` system reuses the value of `traceparent` in its
@@ -72,17 +72,29 @@ Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version 
 The following `version-format` definition used for version `00`.
 
 ```
-version-format   = trace-id "-" span-id "-" trace-options
+version-format   = trace-id "-" span-id "-" trace-flags
 
 trace-id         = 32HEXDIG  ; 16 bytes array identifier. All zeroes forbidden
 span-id          = 16HEXDIG  ; 8 bytes array identifier. All zeroes forbidden
-trace-options    = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See below for details
+trace-flags      = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See below for details
 ```
 
 ### Trace-id
 
-Is the ID of the whole trace forest. It is represented as a 16-bytes array, for example, 
+Is the ID of the whole trace forest. It is represented as a 16-bytes array, for example,
 `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` is considered invalid.
+
+`Trace-id` is used to uniquely identify distributed trace. So implementation should generate globally unique
+values. Many algorithms of unique identification generation are based on some constant part - time or host
+based and a random values. There are systems that make random sampling decisions based on the value of `trace-id`.
+So to increase interoperability it is recommended to keep random part on the right side of `trace-id` value.
+
+When system operates with shorter `trace-id` - it is recommended to fill-in extra bytes with random value rather
+than zeroes. Let's say system works with 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting `trace-id`
+value to `0000000000000003ce929d0e0e4736` it is recommended to generate value like
+`4bf92f3577b34da6a3ce929d0e0e4736` where `4bf92f3577b34da6a` is a random value or a function of time & host value.
+Note, even though system may operate with shorter `trace-id` for distributed traces reporting - full `trace-id` should
+be propagated to conform to specification.
 
 Implementation MAY decide to completely ignore the traceparent when the trace-id is invalid.
 
@@ -93,61 +105,93 @@ Is the ID of the caller span (parent). It is represented as an 8-bytes array, fo
 
 Implementation may decide to completely ignore the traceparent when the span-id is invalid.
 
-## Trace-options
+## Trace-flags
 
-An [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that controls tracing options such
+An [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that controls tracing flags such
 as sampling, trace level etc. These flags are recommendations given by the caller rather than
 strict rules to follow for three reasons:
 
-1. Trust and abuse.
+1. Trust and abuse
 2. Bug in caller
 3. Different load between caller service and callee service might force callee to down sample.
 
-Like other fields, `trace-options` is hex-encoded. For example, all 8 flags set would be 'ff'
-and no flags set would be '00'.
+Like other fields, `trace-flags` is hex-encoded. For example, all 8 flags set would be `ff`
+and no flags set would be `00`.
 
 As this is a bit field, you cannot interpret flags by decoding the hex value and looking at
 the resulting number. For example, a flag `00000001` could be encoded as `01` in hex, or `09`
 in hex if present with the flag `00001000`. A common mistake in bit fields is forgetting to
 mask when interpreting flags.
 
-Here is an example of properly handing trace options:
+Here is an example of properly handing trace flags:
+
 ```java
 static final byte FLAG_TRACED = 1; // 00000001
 ...
-boolean traced = (traceOptions & FLAG_TRACED) == FLAG_TRACED
+boolean traced = (traceFlags & FLAG_TRACED) == FLAG_TRACED
 ```
 
-#### Traced Flag (00000001)
+### Flag behavior
+
+| flag         | recorded? | requested? | recording probability | situation                                                          |
+| ------------ | --------  | ---------- | --------------------- | ------------------------------------------------------------------ |
+| 00000000     | no        | false      | low                   | I definitely dropped the data and no one asked for it              |
+| 00000001     | no        | true       | medium                | I definitely dropped the data but someone asked for it             |
+| 00000010     | maybe     | false      | medium                | Maybe I recorded this but no one asked for it yet (maybe deferred) |
+| 00000011     | maybe     | true       | high                  | Maybe I recorded this and someone asked for it                     |
+
+#### Requested Flag (00000001)
+
 When set, the least significant bit recommends the request should be traced. A caller who
 defers a tracing decision leaves this flag unset.
 
+#### Recorded Flag (00000010)
+
+When set, the least significant bit documents that the caller may have recorded trace data. A caller who does not record trace data out-of-band leaves this flag unset.
+
 #### Other Flags
-The behavior of other flags, such as (00000010) are undefined.
+
+The behavior of other flags, such as (00000100) is not defined and reserved for future use. Implementation MUST set those to zero.
 
 ## Examples of HTTP headers
 
-*Valid sampled traceparent:*
+*Valid traceparent when one of upstream services requested recording:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 base16(<Version>) = 00
 base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceOptions>) = 01  // sampled
+base16(<TraceFlags>) = 01  // requested
 ```
 
-*Valid not-sampled traceparent:*
+*Valid traceparent when one of upstream services requested recording:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
 base16(<Version>) = 00
 base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceOptions>) = 00  // not-sampled
+base16(<TraceFlags>) = 00  // not requested
 ```
 
-# TraceState field
+## Versioning of `traceparent`
+
+Implementation is opinionated about future version of specification. Current version of this specification assumes that the future
+versions of `traceparent` header will be additive to the current one.
+
+Implementation should follow a following rules when parsing headers with unexpected format:
+
+1. Pass thru services should not analyze version. Pass thru service needs to expect that headers may have bigger size limits in future and only disallow prohibitively large headers.
+2. When version prefix cannot be parsed (it's not 2 hex characters followed by dash (`-`)), implementation should restart the trace.
+3. If higher version is detected - implementation SHOULD try to parse it.
+  a. If size of header shorter than 55 characters - implementation should not parse header and should restart the trace.
+  b. Try parse `trace-id`: from the first dash - next 32 characters. Implementation MUST check 32 characters to be hex. Make sure they followed by dash.
+  c. Try parse `span-id`: from the second dash at 35th position - 16 characters. Implementation MUST check 16 characters to be hex.  Make sure followed by dash.
+  d. Try parse sampling bit of `flags`:  2 characters from third dash. Following with either end of string or a dash.
+  If all three values were parsed successfully - implementation should use them. Implementation MUST NOT parse or assume anything about any fields unknown for this version. Implementation MUST use these fields to construct the new `traceparent` field according to the highest version of the specification known to the implementation (in this specification it is `00`).
+
+# Tracestate field
 
 The `tracestate` HTTP header field conveys information about request position in multiple distributed tracing graphs.
 
@@ -181,10 +225,11 @@ Identifiers are short (up to 256 characters) textual identifiers.
 
 ```
 key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+key = lcalpha 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" ) "@" lcalpha 0*13( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
 lcalpha    = %x61-7A ; a-z
 ```
 
-Note that identifiers MUST begin with a lowercase letter, and can only contain lowercase letters `a`-`z`, digits `0`-`9`, underscores `_`, dashes `-`, asterisks `*`, and forward slashes `/`.
+Note that identifiers MUST begin with a lowercase letter, and can only contain lowercase letters `a`-`z`, digits `0`-`9`, underscores `_`, dashes `-`, asterisks `*`, and forward slashes `/`. For multi-tenant vendors scenarios `@` sign can be used to prefix vendor name. Suggested use is to allow set tenant id in the beginning of key like `fw529a3039@dt` - `fw529a3039` is a tenant id and `@dt` is a vendor name. Searching for `@dt=` would be more robust for parsing (searching for all vendor's keys).
 
 Value is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
 
@@ -233,7 +278,7 @@ In the case of a generic tracing system, it contains the same data as the most
 recent `traceparent` value. Other systems may have different formatting, such
 as Base64 encoded opaque values.
 
-# Examples of HTTP headers
+## Examples of HTTP headers
 
 Single tracing system (generic format): 
 
@@ -247,6 +292,10 @@ Multiple tracing systems (with different formatting):
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
 
+## Versioning of `tracestate`
+
+Version of `tracestate` is defined by the version prefix of `traceparent` header. Implementation needs to attempt parsing of `tracestate` if higher version is detected to the best of ability. It is implementor decision whether to use partially-parsed `tracestate` key-value pairs or not.
+
 # Mutating the traceparent field
 
 ## Base mutations
@@ -258,8 +307,9 @@ If the value of `traceparent` field wasn't changed before propagation - `tracest
 Here is the list of allowed mutations:
 
 1. **Update `span-id`**. The value of property `span-id` can be regenerated. This is the most typical mutation and should be considered a default.
-2. **Mark trace for sampling**. The value of `sampled` flag of `trace-options` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `sampled` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
-3. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-options` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface. 
+2. **Request trace capture**. The value of `requested` flag of `trace-flags` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `requested` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
+3. **Update `recorded`**. The value of `recorded` reflects the caller's recording behavior: either the trace data were dropped or they may have been recorded out-of-band. This mutation gives the downstream tracer information about the likelihood its parent's information was recorded.
+4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-flags` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface. 
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
 
