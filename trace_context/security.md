@@ -32,5 +32,5 @@ protect denial of monitoring by malicious or badly authored callers.
 ## Other risks
 
 Application owners need to make sure to test all code path leading to sending of `traceparent` and `tracestate` headers. For
-example, browsers single page applications it is typical to make cross-origin calls from the browser. If one of code paths leads
+example, in browsers single page applications it is typical to make cross-origin calls. If one of code paths leads
 to sending of `traceparent` and `tracestate` headers - cross-origin calls restricted via `Access-Control-Allow-Headers` [header](https://www.w3.org/TR/cors/#access-control-allow-headers-response-header) may fail.
