@@ -40,7 +40,12 @@ by the same tracing vendor. So information supplied by tracing system originated
 request will typically be less and less important deeper in distributed trace. Immediate
 caller's information on other hand typically is more valuable as it is more likely being
 monitored by the same tracing vendor. Thus it is logical to move immediate caller's
-information to the beginning of the `tracestate` list.
+information to the beginning of the `tracestate` list. So less important values will be
+pushed to the end of the list.
+
+This prioritization of `tracestate` values improves performance of querying value of
+tracestate - typically you only need a first pair. It also allows to meaningfully truncate
+`tracestate` when required instead of dropping the entire list of values.
 
 ### Size limits
 
