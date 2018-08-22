@@ -96,14 +96,16 @@ value to `0000000000000003ce929d0e0e4736` it is recommended to generate value li
 Note, even though system may operate with shorter `trace-id` for distributed traces reporting - full `trace-id` should
 be propagated to conform to specification.
 
-Implementation MAY decide to completely ignore the traceparent when the trace-id is invalid.
+Implementation HAVE TO ignore the `traceparent` when the `trace-id` is invalid. For instance, if it contains
+non-allowed characters.
 
 ### Span-id
 
 Is the ID of the caller span (parent). It is represented as an 8-bytes array, for example, 
 `00f067aa0ba902b7`. All bytes `0` is considered invalid.
 
-Implementation may decide to completely ignore the traceparent when the span-id is invalid.
+Implementation HAVE TO ignore the `traceparent` when the `span-id` is invalid. For instance, if it contains
+non-allowed characters.
 
 ## Trace-flags
 
