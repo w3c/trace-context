@@ -31,6 +31,22 @@ interfere with identification of the tracing system responsible for an entry.
 - The typical name will be a single word in latin and the value will be a
 copy of the `traceparent` format or an opaque string.
 
+## Ordering of keys in `tracestate`
+
+Specification calls for ordering of values in tracestate. This requirements allows better interoperability between tracing vendors.
+
+Typical distributed trace is clustered - components calling each other often monitored
+by the same tracing vendor. So information supplied by tracing system originated a
+request will typically be less and less important deeper in distributed trace. Immediate
+caller's information on other hand typically is more valuable as it is more likely being
+monitored by the same tracing vendor. Thus it is logical to move immediate caller's
+information to the beginning of the `tracestate` list. So less important values will be
+pushed to the end of the list.
+
+This prioritization of `tracestate` values improves performance of querying value of
+tracestate - typically you only need a first pair. It also allows to meaningfully truncate
+`tracestate` when required instead of dropping the entire list of values.
+
 ### Size limits
 
 #### Total size limit
