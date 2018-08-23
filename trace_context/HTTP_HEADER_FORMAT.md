@@ -11,7 +11,8 @@ vendor-specific format.
 
 For example, a client traced in the congo system adds the following headers
 to an outbound http request.
-```
+
+```HTTP
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 tracestate: congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4=
 ```
@@ -19,7 +20,8 @@ tracestate: congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4=
 If the receiving server is traced in the `rojo` tracing system, it carries
 the over the state it received and adds a new entry with the position in
 its trace.
-```
+
+```HTTP
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
@@ -31,7 +33,7 @@ entry in `tracestate`. This means it is a generic tracing system. Otherwise,
 If the receiving server of the above is `congo` again, it continues from its
 last position, overwriting its entry with one representing the new parent.
 
-```
+```HTTP
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
 tracestate: congo=Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWF=,rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 ```
@@ -59,7 +61,7 @@ Platforms and libraries MUST expect header name in any casing and SHOULD send he
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including the HEXDIG rules from that document.
 
-```
+```abnf
 value           = version "-" version-format
 version         = 2HEXDIG   ; this document assumes version 00. Version 255 is forbidden
 ```
@@ -71,7 +73,7 @@ Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version 
 
 The following `version-format` definition used for version `00`.
 
-```
+```abnf
 version-format   = trace-id "-" span-id "-" trace-flags
 
 trace-id         = 32HEXDIG  ; 16 bytes array identifier. All zeroes forbidden
@@ -113,9 +115,12 @@ An [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that controls tracing 
 as sampling, trace level etc. These flags are recommendations given by the caller rather than
 strict rules to follow for three reasons:
 
-1. Trust and abuse
-2. Bug in caller
-3. Different load between caller service and callee service might force callee to down sample.
+1. Trust and abuse.
+2. Bug in caller.
+3. Different load between caller service and callee service might force callee
+   to down sample.
+
+You can find more in security section of this specification.
 
 Like other fields, `trace-flags` is hex-encoded. For example, all 8 flags set would be `ff`
 and no flags set would be `00`.
@@ -128,9 +133,9 @@ mask when interpreting flags.
 Here is an example of properly handing trace flags:
 
 ```java
-static final byte FLAG_TRACED = 1; // 00000001
+static final byte FLAG_REQUESTED = 1; // 00000001
 ...
-boolean traced = (traceFlags & FLAG_TRACED) == FLAG_TRACED
+boolean traced = (traceFlags & FLAG_REQUESTED) == FLAG_REQUESTED
 ```
 
 ### Flag behavior
@@ -144,12 +149,37 @@ boolean traced = (traceFlags & FLAG_TRACED) == FLAG_TRACED
 
 #### Requested Flag (00000001)
 
-When set, the least significant bit recommends the request should be traced. A caller who
-defers a tracing decision leaves this flag unset.
+When set, the least significant bit recommends the request should be traced.
+Typical use for this flag is propagating a sampling decision from the service
+originating the distributed trace. For instance, if originating service has a
+logic to record information about 1 of every 100 requests - the one that was
+marked for recording will have this flag set to `1`.
+
+Many distributed tracing scenarios may be broken when only small subset of calls
+participated in this distributed trace were collected. Thus it is important to
+follow the header mutation rules. This flag can only be changed from `0` to `1`,
+and not the other way around. So the decision of one component to record will be
+respected by every component.
+
+Abuse of this flag - always setting it to `1` will - also lead to broken
+scenarios. Most platforms will respect this flag, but have a protection in place
+to limit the amount of collected traces. And the logic of this limiting may
+differ from component to component. Thus on high volume of traces when different
+components will apply different policies - most traces will not have full information.
+
+Caller who defers a tracing decision SHOULD leaves this flag unset. Caller may
+communicate the priority of deferred decision (most likely will be collected)
+using `recorded` flag.
+
+Flag `recorded` can also be used to communicate the ask to collect information
+or notify that information was collected and available for querying from the
+caller service.
 
 #### Recorded Flag (00000010)
 
-When set, the least significant bit documents that the caller may have recorded trace data. A caller who does not record trace data out-of-band leaves this flag unset.
+When set, the second least significant bit documents that the caller may have
+recorded trace data. A caller who does not record trace data  out-of-band leaves
+this flag unset.
 
 #### Other Flags
 
@@ -161,20 +191,20 @@ The behavior of other flags, such as (00000100) is not defined and reserved for 
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-base16(<Version>) = 00
-base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
-base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceFlags>) = 01  // requested
+base16(Version) = 00
+base16(Trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
+base16(Span-id) = 00f067aa0ba902b7
+base16(Trace-flags) = 01  // requested
 ```
 
 *Valid traceparent when one of upstream services requested recording:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
-base16(<Version>) = 00
-base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
-base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceFlags>) = 00  // not requested
+base16(Version) = 00
+base16(Trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
+base16(Span-id) = 00f067aa0ba902b7
+base16(Trace-flags) = 00  // not requested
 ```
 
 ## Versioning of `traceparent`
@@ -217,15 +247,14 @@ The `tracestate` field value is a `list` as defined below. The `list` is a serie
 
 A simple example of a `list` with two `list-member`s might look like: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
 
-
-```
+```abnf
 list  = list-member 0*31( OWS "," OWS list-member )
 list-member = key "=" value
 ```
 
 Identifiers are short (up to 256 characters) textual identifiers.
 
-```
+```abnf
 key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
 key = lcalpha 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" ) "@" lcalpha 0*13( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
 lcalpha    = %x61-7A ; a-z
@@ -235,7 +264,7 @@ Note that identifiers MUST begin with a lowercase letter, and can only contain l
 
 Value is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
 
-```
+```abnf
 value    = 0*255(chr) nblk-chr
 nblk-chr = %x21-2B / %x2D-3C / %x3E-7E
 chr      = %x20 / nblk-chr
@@ -284,13 +313,13 @@ as Base64 encoded opaque values.
 
 Single tracing system (generic format): 
 
-```
+```HTTP
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 ```
 
 Multiple tracing systems (with different formatting):
 
-```
+```HTTP
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4=
 ```
 
@@ -311,7 +340,7 @@ Here is the list of allowed mutations:
 1. **Update `span-id`**. The value of property `span-id` can be regenerated. This is the most typical mutation and should be considered a default.
 2. **Request trace capture**. The value of `requested` flag of `trace-flags` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `requested` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
 3. **Update `recorded`**. The value of `recorded` reflects the caller's recording behavior: either the trace data were dropped or they may have been recorded out-of-band. This mutation gives the downstream tracer information about the likelihood its parent's information was recorded.
-4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-flags` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface. 
+4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-flags` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface.
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
 
@@ -324,4 +353,3 @@ Here is the list of allowed mutations:
 1. **Update key value**. The value of any key can be updated. Modified key MUST be moved to the beginning of the list. This is the most common mutation resuming the trace.
 2. **Add new key-value pair**. New key-value pair should be added into the beginning of the list.
 3. **Delete the key-value pair**. Any key-value pair MAY be deleted. It is highly discouraged to delete keys that wasn't generated by the same tracing system or platform. Deletion of unknown key-value pair will break correlation in other system. This mutation enables two scenarios. First is proxies to block certain `tracestate` keys for privacy and security concerns. Second scenario is a truncation of long `tracestate`.
-
