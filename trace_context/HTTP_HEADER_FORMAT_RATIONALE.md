@@ -47,6 +47,42 @@ This prioritization of `tracestate` values improves performance of querying valu
 tracestate - typically you only need a first pair. It also allows to meaningfully truncate
 `tracestate` when required instead of dropping the entire list of values.
 
+## Mutations of `tracestate`
+
+Two questions that comes up frequently is whether the `tracestate` header HAVE TO
+be mutated on every mutation of `span-id` to identify the vendor which made this
+change and whether two different vendors can modify the `tracestate` entries in
+a single component.
+
+This requirement may improve interoperability between vendors. For instance,
+vendor may check the first `tracestate` key and provide some additional value
+for the customer by adjusting data collection in the current component via the
+knowledge of a caller behavior. For instance, apply specific sampling policies
+or provide an experience for customers to get data from caller's vendor. There
+are more scenarios that might be simplified by strict mutation requirements.
+
+Even though improved interoperability will enable more scenarios specification
+does not restrict number of mutations of `tracestate` and doesn't require the
+mutation.
+
+Main reason for not requiring the mutation is generic tracers. Generic tracers
+are tracers which doesn't need to carry any information via `tracestate` and/or
+doesn't have a single back-end this data will be stored in. The only thing
+generic tracer can set in `tracestate` is either a key with some constant, an
+empty value or a copy of  `traceparent`. Neither of those details particularly
+interesting for the callee. But requirement puts extra burden and complexity on
+implementors. Another reason for not requiring a mutation is that allowing
+multiple mutations may require vendors to check for more than one key anyway.
+
+Some back-end neutral SDKs may be implemented so that destination back-end
+decided via side-car or out-of-process agent configuration. In such cases
+customer may decide to enable more than one headers mutations logic in
+in-process SDK. Another requirement for multiple mutations is that in similar
+environment where back-end destination is decided via out-of-process
+configuration - certain header mutations may still be required. Example may be
+smart sampling mechanisms that rely on additional data propagation in
+`tracestate`.
+
 ### Size limits
 
 #### Total size limit
