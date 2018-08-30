@@ -18,7 +18,7 @@ tracestate: congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4=
 ```
 
 If the receiving server is traced in the `rojo` tracing system, it carries
-the over the state it received and adds a new entry with the position in
+over the state it received and adds a new entry with the position in
 its trace.
 
 ```HTTP
@@ -71,7 +71,7 @@ used as a delimiter between fields.
 
 Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version 255 is invalid. Current specification assumes the `version` is set to `00`.
 
-The following `version-format` definition used for version `00`.
+The following `version-format` definition is used for version `00`.
 
 ```abnf
 version-format   = trace-id "-" span-id "-" trace-flags
@@ -84,26 +84,26 @@ trace-flags      = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See 
 ### Trace-id
 
 Is the ID of the whole trace forest. It is represented as a 16-bytes array, for example,
-`4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` is considered invalid.
+`4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` are considered invalid.
 
-`Trace-id` is used to uniquely identify distributed trace. So implementation should generate globally unique
+`Trace-id` is used to uniquely identify a distributed trace. So implementation should generate globally unique
 values. Many algorithms of unique identification generation are based on some constant part - time or host
 based and a random values. There are systems that make random sampling decisions based on the value of `trace-id`.
-So to increase interoperability it is recommended to keep random part on the right side of `trace-id` value.
+So to increase interoperability it is recommended to keep the random part on the right side of `trace-id` value.
 
-When system operates with shorter `trace-id` - it is recommended to fill-in extra bytes with random value rather
-than zeroes. Let's say system works with 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting `trace-id`
-value to `0000000000000003ce929d0e0e4736` it is recommended to generate value like
+When a system operates with a shorter `trace-id` - it is recommended to fill-in the extra bytes with random values rather
+than zeroes. Let's say the system works with a 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting `trace-id`
+value to `0000000000000003ce929d0e0e4736` it is recommended to generate a value like
 `4bf92f3577b34da6a3ce929d0e0e4736` where `4bf92f3577b34da6a` is a random value or a function of time & host value.
-Note, even though system may operate with shorter `trace-id` for distributed traces reporting - full `trace-id` should
-be propagated to conform to specification.
+Note, even though a system may operate with a shorter `trace-id` for distributed trace reporting - full `trace-id` should
+be propagated to conform to the specification.
 
 Implementation HAVE TO ignore the `traceparent` when the `trace-id` is invalid. For instance, if it contains
 non-allowed characters.
 
 ### Span-id
 
-Is the ID of the caller span (parent). It is represented as an 8-bytes array, for example, 
+Is the ID of the caller span (parent). It is represented as an 8-byte array, for example, 
 `00f067aa0ba902b7`. All bytes `0` is considered invalid.
 
 Implementation HAVE TO ignore the `traceparent` when the `span-id` is invalid. For instance, if it contains
@@ -187,7 +187,7 @@ The behavior of other flags, such as (00000100) is not defined and reserved for 
 
 ## Examples of HTTP headers
 
-*Valid traceparent when one of upstream services requested recording:*
+*Valid traceparent when one of the upstream services requested recording:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
@@ -197,7 +197,7 @@ base16(Span-id) = 00f067aa0ba902b7
 base16(Trace-flags) = 01  // requested
 ```
 
-*Valid traceparent when one of upstream services requested recording:*
+*Valid traceparent when one of the upstream services requested recording:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
@@ -209,17 +209,17 @@ base16(Trace-flags) = 00  // not requested
 
 ## Versioning of `traceparent`
 
-Implementation is opinionated about future version of specification. Current version of this specification assumes that the future
+Implementation is opinionated about future version of the specification. Current version of this specification assumes that the future
 versions of `traceparent` header will be additive to the current one.
 
-Implementation should follow a following rules when parsing headers with unexpected format:
+Implementation should follow the following rules when parsing headers with an unexpected format:
 
-1. Pass thru services should not analyze version. Pass thru service needs to expect that headers may have bigger size limits in future and only disallow prohibitively large headers.
+1. Pass thru services should not analyze version. Pass thru service needs to expect that headers may have bigger size limits in the future and only disallow prohibitively large headers.
 2. When version prefix cannot be parsed (it's not 2 hex characters followed by dash (`-`)), implementation should restart the trace.
 3. If higher version is detected - implementation SHOULD try to parse it.
-  a. If size of header shorter than 55 characters - implementation should not parse header and should restart the trace.
-  b. Try parse `trace-id`: from the first dash - next 32 characters. Implementation MUST check 32 characters to be hex. Make sure they followed by dash.
-  c. Try parse `span-id`: from the second dash at 35th position - 16 characters. Implementation MUST check 16 characters to be hex.  Make sure followed by dash.
+  a. If the size of header is shorter than 55 characters - implementation should not parse header and should restart the trace.
+  b. Try parse `trace-id`: from the first dash - next 32 characters. Implementation MUST check 32 characters to be hex. Make sure they are followed by dash.
+  c. Try parse `span-id`: from the second dash at 35th position - 16 characters. Implementation MUST check 16 characters to be hex.  Make sure this is followed by a dash.
   d. Try parse sampling bit of `flags`:  2 characters from third dash. Following with either end of string or a dash.
   If all three values were parsed successfully - implementation should use them. Implementation MUST NOT parse or assume anything about any fields unknown for this version. Implementation MUST use these fields to construct the new `traceparent` field according to the highest version of the specification known to the implementation (in this specification it is `00`).
 
@@ -248,6 +248,7 @@ The `tracestate` field value is a `list` as defined below. The `list` is a serie
 A simple example of a `list` with two `list-member`s might look like: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
 
 ```abnf
+```
 list  = list-member 0*31( OWS "," OWS list-member )
 list-member = key "=" value
 ```
@@ -274,7 +275,7 @@ The length of a combined header MUST be less than or equal to 512 bytes. If the 
 
 Example: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`
 
-The value a concatenation of trace graph key-value pairs. Only one entry per
+The value of a concatenation of trace graph key-value pairs. Only one entry per
 key is allowed because the entry represents that last position in the trace.
 Hence implementors must overwrite their entry upon reentry to their tracing
 system.
@@ -291,7 +292,7 @@ Rather, the entry would be rewritten to only include the most recent position:
 **Limits:**
 There might be multiple `tracestate` headers in a single request according to [RFC7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Maximum length of a combined header MUST be less than 512 characters. This length includes commas required to separate list items. But SHOULD NOT include optional white space (OWA) characters.
 
-`tracestate` field contains essential information for requests correlation. Platforms and tracing systems MUST propagate this header. Compliance with specification will require storing of `tracestate` as part of request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus, the aggressive limit of 512 characters was chosen.
+`tracestate` field contains essential information for request correlation. Platforms and tracing systems MUST propagate this header. Compliance with the specification will require storing of `tracestate` as part of the request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus, the aggressive limit of 512 characters was chosen.
 
 If the `tracestate` value has more than 512 characters, the tracer CAN decide to forward the `tracestate`. When propagating `tracestate` with the excessive length - the assumption SHOULD be that the receiver will drop this header.
 
@@ -311,7 +312,7 @@ as Base64 encoded opaque values.
 
 ## Examples of HTTP headers
 
-Single tracing system (generic format): 
+Single tracing system (generic format):
 
 ```HTTP
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
@@ -325,7 +326,7 @@ tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=l
 
 ## Versioning of `tracestate`
 
-Version of `tracestate` is defined by the version prefix of `traceparent` header. Implementation needs to attempt parsing of `tracestate` if higher version is detected to the best of ability. It is implementor decision whether to use partially-parsed `tracestate` key-value pairs or not.
+Version of `tracestate` is defined by the version prefix of `traceparent` header. Implementation needs to attempt parsing of `tracestate` if a higher version is detected to the best of its ability. It is the implementor's decision whether to use partially-parsed `tracestate` key-value pairs or not.
 
 # Mutating the traceparent field
 
@@ -333,23 +334,23 @@ Version of `tracestate` is defined by the version prefix of `traceparent` header
 
 Library or platform receiving `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests.
 
-If the value of `traceparent` field wasn't changed before propagation - `tracestate` MUST NOT be modified as well. Unmodified headers propagation is typically implemented in pass-thru services like proxies. This behavior may also be implemented in a service which currently does not collect distributed tracing information.
+If the value of the `traceparent` field wasn't changed before propagation - `tracestate` MUST NOT be modified as well. Unmodified headers propagation is typically implemented in pass-thru services like proxies. This behavior may also be implemented in a service which currently does not collect distributed tracing information.
 
 Here is the list of allowed mutations:
 
 1. **Update `span-id`**. The value of property `span-id` can be regenerated. This is the most typical mutation and should be considered a default.
 2. **Request trace capture**. The value of `requested` flag of `trace-flags` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `requested` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
-3. **Update `recorded`**. The value of `recorded` reflects the caller's recording behavior: either the trace data were dropped or they may have been recorded out-of-band. This mutation gives the downstream tracer information about the likelihood its parent's information was recorded.
-4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-flags` are regenerated. This mutation is used in the services defined as a front gate into secure network and eliminates a potential denial of service attack surface.
+3. **Update `recorded`**. The value of `recorded` reflects the caller's recording behavior: either the trace data were dropped or may have been recorded out-of-band. This mutation gives the downstream tracer information about the likelihood its parent's information was recorded.
+4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-flags` are regenerated. This mutation is used in the services defined as a front gate into secure networks and eliminates a potential denial of service attack surface. 
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
 
 # Mutating the tracestate field
 
-Library or platform receiving `tracestate` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests. The main concept of `tracestate` mutations is that order of unmodified key-value pairs MUST be preserved. Modified keys MUST be moved to the beginning of the list.
+Library or platform receiving `tracestate` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests. The main concept of `tracestate` mutations is that the order of unmodified key-value pairs MUST be preserved. Modified keys MUST be moved to the beginning of the list.
 
 Here is the list of allowed mutations:
 
-1. **Update key value**. The value of any key can be updated. Modified key MUST be moved to the beginning of the list. This is the most common mutation resuming the trace.
+1. **Update key value**. The value of any key can be updated. Modified keys MUST be moved to the beginning of the list. This is the most common mutation resuming the trace.
 2. **Add new key-value pair**. New key-value pair should be added into the beginning of the list.
-3. **Delete the key-value pair**. Any key-value pair MAY be deleted. It is highly discouraged to delete keys that wasn't generated by the same tracing system or platform. Deletion of unknown key-value pair will break correlation in other system. This mutation enables two scenarios. First is proxies to block certain `tracestate` keys for privacy and security concerns. Second scenario is a truncation of long `tracestate`.
+3. **Delete the key-value pair**. Any key-value pair MAY be deleted. It is highly discouraged to delete keys that weren't generated by the same tracing system or platform. Deletion of unknown key-value pair will break correlation in other systems. This mutation enables two scenarios. The first is proxies can block certain `tracestate` keys for privacy and security concerns. The second scenario is a truncation of long `tracestate`'s.
