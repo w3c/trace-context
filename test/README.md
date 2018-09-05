@@ -12,20 +12,6 @@
 	> pip install aiohttp
 	```
 
-## Run Test Harness
-* From the test folder, run the test harness:
-	```
-	> python harness.py
-	```
-	Alternatively, you can specify the binding address and port:
-	```
-	> python harness.py 127.0.0.1 8080
-	```
-	The test harness will start and output the endpoint, you can access the endpoint from a browser:
-	```
-	harness listening on http://127.0.0.1:8080
-	```
-
 ## Implement Test Service
 The test harness will use HTTP POST to communicate with your test service endpoint, giving instructions via the POST body, and waiting for your service to callback to the harness.
 
@@ -50,15 +36,44 @@ Content-Type: application/json
 ]
 ```
 
-## Run Test Cases in Web Browser
-* Make sure both the [test harness](#run-test-harness) and your [test service](#implement-test-service) are running.
-* Open browser, navigate to the root path of test harness, which you can get from the harness console output, for example, `http://127.0.0.1:8080`.
-* You will be prompted for your test endpoint, provide the endpoint which has implemented the [HTTP POST body format](#http-post-body-format), for example, `http://127.0.0.1:5000/test`.
-* The test would start and you should be able to see interactive results from the browser.
+## Run Test Cases
+* Make sure your [test service](#implement-test-service) is running.
+* Run the test script against your test service endpoint (e.g. `http://127.0.0.1:5000/test`).
+	```
+	> python test.py http://127.0.0.1:5000/test
+	```
+* After the test completed, you will get the result.
+	```
+	harness listening on http://127.0.0.1:7777
+	.....F
+	======================================================================
+	FAIL: test_traceparent_trace_flags_illegal_characters (__main__.TraceContextTest)
+	----------------------------------------------------------------------
+	Traceback (most recent call last):
+	File "test.py", line 129, in test_traceparent_trace_flags_illegal_characters
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+	AssertionError: '12345678901234567890123456789012' == '12345678901234567890123456789012'
 
-#### Tips
-* The test endpoint would be saved to session cookie, so you don't have to type in again next time. If you do need to switch to another test endpoint, either clear the session cookie from your browser, or start a In-Private session.
-* For convenience, you can also provide the test endpoint via anchor, for example, `http://127.0.0.1:8080#http://127.0.0.1:5000/test`. This will make it easier if you want to send the link to someone else and let them run the test cases.
+	----------------------------------------------------------------------
+	Ran 6 tests in 0.389s
 
-## Run Test Cases from Command Shell
-TBD
+	FAILED (failures=1)
+	```
+* There are optional environment variables which allow you to control the harness behavior. Please read the help message from `python test.py`.
+	```
+	Usage: ./test.py <service endpoint>
+
+	Environment Variables:
+		HARNESS_HOST       the public host/address of the test harness (default 127.0.0.1)
+		HARNESS_PORT       the public port of the test harness (default 7777)
+		HARNESS_TIMEOUT    the timeout (in seconds) used for each test case (default 5)
+		HARNESS_BIND_HOST  the host/address which the test harness binds to (default to HARNESS_HOST)
+		HARNESS_BIND_PORT  the port which the test harness binds to (default to HARNESS_PORT)
+		SERVICE_ENDPOINT   your test service endpoint (no default value)
+
+	Example: ./test.py http://127.0.0.1:5000/test
+	```
+* Alternatively, you can use the Python [unit testing framework](https://docs.python.org/3/library/unittest.html) module to run the test.
+	```
+	> python -m unittest
+	```
