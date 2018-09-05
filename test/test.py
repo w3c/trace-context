@@ -59,6 +59,7 @@ class TestBase(unittest.TestCase):
 					{'url': scope.url('0'), 'arguments': []},
 				],
 			})
+			self.assertTrue('0' in response, 'your test service failed to make a callback to the test harness {}'.format(response['status']))
 			return response['0']
 
 	def make_single_request_and_get_traceparent_components(self, headers):

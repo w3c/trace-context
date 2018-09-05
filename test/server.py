@@ -49,6 +49,7 @@ class AsyncTestServer(object):
 		scope = {
 			'arguments': arguments,
 			'headers': list(request.headers.items()),
+			'status': [],
 		}
 		self.scopes[scope_id] = scope
 		if arguments != None:
@@ -63,7 +64,7 @@ class AsyncTestServer(object):
 					if 'arguments' in action:
 						arguments = action['arguments'] or []
 					async with session.post(action['url'], json = arguments) as response:
-						pass
+						scope['status'].append([action['url'], response.status])
 		del self.scopes[scope_id]
 		return web.json_response(scope)
 
