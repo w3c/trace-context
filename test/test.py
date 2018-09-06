@@ -185,4 +185,4 @@ Example: {0} http://127.0.0.1:5000/test
 	loader = unittest.TestLoader()
 	suite.addTests(loader.loadTestsFromTestCase(AdvancedTest))
 	suite.addTests(loader.loadTestsFromTestCase(TraceContextTest))
-	unittest.TextTestRunner().run(suite)
+	unittest.TextTestRunner(verbosity = 2).run(suite)
