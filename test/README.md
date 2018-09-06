@@ -96,3 +96,62 @@ Content-Type: application/json
 	```
 	> python -m unittest test.TraceContextTest.test_traceparent_header_name
 	```
+* When the environment variable HARNESS_DEBUG is set (to any non-empty value), debug info will be dumped to the console output:
+	```
+	> python test.py http://127.0.0.1:5000/test AdvancedTest
+	harness listening on http://127.0.0.1:7777
+	test_multiple_requests (__main__.AdvancedTest) ...
+
+	Harness trying to send the following request to your service http://127.0.0.1:5000/test
+
+	POST http://127.0.0.1:5000/test HTTP/1.1
+	traceparent: 00-12345678901234567890123456789012-1234567890123456-01
+
+	[{'arguments': [],
+	'url': 'http://127.0.0.1:7777/callback/608bf55129ae4e4eafef75909cc47c49.0'},
+	{'arguments': [],
+	'url': 'http://127.0.0.1:7777/callback/608bf55129ae4e4eafef75909cc47c49.1'},
+	{'arguments': [],
+	'url': 'http://127.0.0.1:7777/callback/608bf55129ae4e4eafef75909cc47c49.2'}]
+
+	Your service http://127.0.0.1:5000/test responded with HTTP status 200
+
+
+	Your service http://127.0.0.1:5000/test made the following callback to harness
+
+	Host: 127.0.0.1:7777
+	User-Agent: python-requests/2.19.1
+	Accept-Encoding: gzip, deflate
+	Accept: */*
+	Connection: keep-alive
+	Content-Length: 2
+	traceparent: 00-12345678901234567890123456789012-1e3438eafec64bdf-01
+
+	Your service http://127.0.0.1:5000/test made the following callback to harness
+
+	Host: 127.0.0.1:7777
+	User-Agent: python-requests/2.19.1
+	Accept-Encoding: gzip, deflate
+	Accept: */*
+	Connection: keep-alive
+	Content-Length: 2
+	traceparent: 00-12345678901234567890123456789012-a08ab06e8541419c-01
+
+	Your service http://127.0.0.1:5000/test made the following callback to harness
+
+	Host: 127.0.0.1:7777
+	User-Agent: python-requests/2.19.1
+	Accept-Encoding: gzip, deflate
+	Accept: */*
+	Connection: keep-alive
+	Content-Length: 2
+	traceparent: 00-12345678901234567890123456789012-a50f507837844515-01
+
+
+	ok
+
+	----------------------------------------------------------------------
+	Ran 1 test in 0.204s
+
+	OK
+	```
