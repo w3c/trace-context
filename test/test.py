@@ -50,16 +50,16 @@ class TestBase(unittest.TestCase):
 		self.assertTrue(match, 'failed to parse traceparent header, unknown format {!r}'.format(traceparent))
 		return match.groups()
 
-	def make_single_request(self, headers):
+	def make_request(self, headers, count = 1):
 		import pprint
 		with client.scope() as scope:
 			arguments = {
 				'url': environ('SERVICE_ENDPOINT'),
 				'headers': headers,
-				'arguments': [
-					{'url': scope.url('0'), 'arguments': []},
-				],
+				'arguments': [],
 			}
+			for idx in range(count):
+				arguments['arguments'].append({'url': scope.url(str(idx)), 'arguments': []})
 			response = scope.send_request(arguments = arguments)
 			verbose = ['', '']
 			verbose.append('Harness trying to send the following request to your service {0}'.format(arguments['url']))
@@ -79,13 +79,25 @@ class TestBase(unittest.TestCase):
 				verbose.append('Your service {} responded with HTTP status {}'.format(arguments['url'], status['code']))
 				verbose.append('')
 				verbose.append(status['body'])
+			for idx in range(count):
+				if str(idx) in response:
+					verbose.append('Your service {} made the following callback to harness'.format(arguments['url']))
+					verbose.append('')
+					for key, value in response[str(idx)]['headers']:
+						verbose.append('{}: {}'.format(key, value))
+					verbose.append('')
 			verbose.append('')
 			verbose = os.linesep.join(verbose)
-			self.assertTrue('0' in response, 'your test service failed to make a callback to the test harness {}'.format(verbose))
-			return response['0']
+			if 'HARNESS_DEBUG' in os.environ:
+				print(verbose)
+			result = []
+			for idx in range(count):
+				self.assertTrue(str(idx) in response, 'your test service failed to make a callback to the test harness {}'.format(verbose))
+				result.append(response[str(idx)])
+			return result
 
 	def make_single_request_and_get_traceparent_components(self, headers):
-		return self.get_traceparent_components(self.make_single_request(headers)['headers'])
+		return self.get_traceparent_components(self.make_request(headers)[0]['headers'])
 
 class TraceContextTest(TestBase):
 	def test_both_traceparent_and_tracestate_missing(self):
@@ -105,6 +117,18 @@ class TraceContextTest(TestBase):
 		])
 		self.assertEqual(trace_id, '12345678901234567890123456789012')
 		self.assertNotEqual(span_id, '1234567890123456')
+
+	def test_traceparent_duplicated(self):
+		'''
+		harness sends a request with two traceparent headers
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789011-1234567890123456-01'],
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789011')
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
 
 	def test_traceparent_header_name(self):
 		'''
@@ -157,23 +181,14 @@ class AdvancedTest(TestBase):
 		harness asks vendor service to callback multiple times
 		expects a different span_id each time
 		'''
-		with client.scope() as scope:
-			response = scope.send_request(arguments = {
-				'url': environ('SERVICE_ENDPOINT'),
-				'headers': [
-					['traceparent', '00-12345678901234567890123456789012-1234567890123456-01'],
-				],
-				'arguments': [
-					{'url': scope.url('1'), 'arguments': []},
-					{'url': scope.url('2'), 'arguments': []},
-					{'url': scope.url('3'), 'arguments': []},
-				],
-			})
-			span_ids = set()
-			span_ids.add(self.get_traceparent_components(response['1']['headers'])[2])
-			span_ids.add(self.get_traceparent_components(response['2']['headers'])[2])
-			span_ids.add(self.get_traceparent_components(response['3']['headers'])[2])
-			self.assertEqual(len(span_ids), 3)
+		span_ids = set()
+		for response in self.make_request([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-01'],
+		], 3):
+			version, trace_id, span_id, trace_flags = self.get_traceparent_components(response['headers'])
+			self.assertEqual(trace_id, '12345678901234567890123456789012')
+			span_ids.add(span_id)
+		self.assertEqual(len(span_ids), 3)
 
 
 if __name__ == '__main__':

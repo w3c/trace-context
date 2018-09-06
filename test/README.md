@@ -70,6 +70,7 @@ Content-Type: application/json
 	Usage: python test.py <service endpoint> [patterns]
 
 	Environment Variables:
+		HARNESS_DEBUG      when set, debug mode will be enabled (default to disabled)
 		HARNESS_HOST       the public host/address of the test harness (default 127.0.0.1)
 		HARNESS_PORT       the public port of the test harness (default 7777)
 		HARNESS_TIMEOUT    the timeout (in seconds) used for each test case (default 5)
