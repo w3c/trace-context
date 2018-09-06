@@ -51,15 +51,37 @@ class TestBase(unittest.TestCase):
 		return match.groups()
 
 	def make_single_request(self, headers):
+		import pprint
 		with client.scope() as scope:
-			response = scope.send_request(arguments = {
+			arguments = {
 				'url': environ('SERVICE_ENDPOINT'),
 				'headers': headers,
 				'arguments': [
 					{'url': scope.url('0'), 'arguments': []},
 				],
-			})
-			self.assertTrue('0' in response, 'your test service failed to make a callback to the test harness {}'.format(response['status']))
+			}
+			response = scope.send_request(arguments = arguments)
+			verbose = ['', '']
+			verbose.append('Harness trying to send the following request to your service {0}'.format(arguments['url']))
+			verbose.append('')
+			verbose.append('POST {} HTTP/1.1'.format(arguments['url']))
+			for key, value in arguments['headers']:
+				verbose.append('{}: {}'.format(key, value))
+			verbose.append('')
+			verbose.append(pprint.pformat(arguments['arguments']))
+			verbose.append('')
+			status = response['status'][0]
+			if status['type'] == 'exception':
+				verbose.append('Harness got an exception {}'.format(status['class']))
+				verbose.append('')
+				verbose.append(status['msg'])
+			elif status['type'] == 'http':
+				verbose.append('Your service {} responded with HTTP status {}'.format(arguments['url'], status['code']))
+				verbose.append('')
+				verbose.append(status['body'])
+			verbose.append('')
+			verbose = os.linesep.join(verbose)
+			self.assertTrue('0' in response, 'your test service failed to make a callback to the test harness {}'.format(verbose))
 			return response['0']
 
 	def make_single_request_and_get_traceparent_components(self, headers):
@@ -178,7 +200,7 @@ Example: {0} http://127.0.0.1:5000/test
 	timeout = environ('HARNESS_TIMEOUT', '5')
 	bind_host = environ('HARNESS_BIND_HOST', host)
 	bind_port = environ('HARNESS_BIND_PORT', port)
-	client = TestClient(host = host, port = int(port), timeout = int(timeout))
+	client = TestClient(host = host, port = int(port), timeout = int(timeout) + 1)
 	server = TestServer(host = bind_host, port = int(bind_port), timeout = int(timeout))
 
 	suite = unittest.TestSuite()

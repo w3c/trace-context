@@ -63,8 +63,19 @@ class AsyncTestServer(object):
 					arguments = []
 					if 'arguments' in action:
 						arguments = action['arguments'] or []
-					async with session.post(action['url'], json = arguments) as response:
-						scope['status'].append([action['url'], response.status])
+					try:
+						async with session.post(action['url'], json = arguments) as response:
+							scope['status'].append({
+								'type': 'http',
+								'code': response.status,
+								'body': await response.text(),
+							})
+					except Exception as err:
+						scope['status'].append({
+							'type': 'exception',
+							'class': type(err).__name__,
+							'msg': str(err),
+						})
 		del self.scopes[scope_id]
 		return web.json_response(scope)
 
