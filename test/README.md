@@ -45,23 +45,29 @@ Content-Type: application/json
 * After the test completed, you will get the result.
 	```
 	harness listening on http://127.0.0.1:7777
-	.....F
+	test_multiple_requests (__main__.AdvancedTest) ... ok
+	test_both_traceparent_and_tracestate_missing (__main__.TraceContextTest) ... ok
+	test_traceparent_header_name (__main__.TraceContextTest) ... ok
+	test_traceparent_header_name_valid_casing (__main__.TraceContextTest) ... ok
+	test_traceparent_included_tracestate_missing (__main__.TraceContextTest) ... ok
+	test_traceparent_trace_flags_illegal_characters (__main__.TraceContextTest) ... FAIL
+
 	======================================================================
 	FAIL: test_traceparent_trace_flags_illegal_characters (__main__.TraceContextTest)
 	----------------------------------------------------------------------
 	Traceback (most recent call last):
-	File "test.py", line 129, in test_traceparent_trace_flags_illegal_characters
+	File "test.py", line 130, in test_traceparent_trace_flags_illegal_characters
 		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
 	AssertionError: '12345678901234567890123456789012' == '12345678901234567890123456789012'
 
 	----------------------------------------------------------------------
-	Ran 6 tests in 0.389s
+	Ran 6 tests in 0.381s
 
 	FAILED (failures=1)
 	```
 * There are optional environment variables which allow you to control the harness behavior. Please read the help message from `python test.py`.
 	```
-	Usage: ./test.py <service endpoint> [patterns]
+	Usage: python test.py <service endpoint> [patterns]
 
 	Environment Variables:
 		HARNESS_HOST       the public host/address of the test harness (default 127.0.0.1)
