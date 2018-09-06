@@ -41,7 +41,7 @@ class TestBase(unittest.TestCase):
 		for key, value in headers:
 			if self.traceparent_name_re.match(key):
 				retval.append((key, value))
-		self.assertEqual(len(retval), 1, 'expect one traceparent header, got more {!r}'.format(retval))
+		self.assertEqual(len(retval), 1, 'expect one traceparent header, got {} {!r}'.format('more' if retval else 'zero', retval))
 		return retval[0]
 
 	def get_traceparent_components(self, headers):
