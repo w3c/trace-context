@@ -155,7 +155,7 @@ class AdvancedTest(TestBase):
 
 
 if __name__ == '__main__':
-	if len(sys.argv) == 2:
+	if len(sys.argv) >= 2:
 		os.environ['SERVICE_ENDPOINT'] = sys.argv[1]
 	if not 'SERVICE_ENDPOINT' in os.environ:
 		print('''
@@ -183,6 +183,9 @@ Example: {0} http://127.0.0.1:5000/test
 
 	suite = unittest.TestSuite()
 	loader = unittest.TestLoader()
-	suite.addTests(loader.loadTestsFromTestCase(AdvancedTest))
-	suite.addTests(loader.loadTestsFromTestCase(TraceContextTest))
+	if len(sys.argv) > 2:
+		for name in sys.argv[2:]:
+			suite.addTests(loader.loadTestsFromName(name, module = sys.modules[__name__]))
+	else:
+		suite.addTests(loader.loadTestsFromModule(sys.modules[__name__]))
 	unittest.TextTestRunner(verbosity = 2).run(suite)

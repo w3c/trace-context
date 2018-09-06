@@ -61,7 +61,7 @@ Content-Type: application/json
 	```
 * There are optional environment variables which allow you to control the harness behavior. Please read the help message from `python test.py`.
 	```
-	Usage: ./test.py <service endpoint>
+	Usage: ./test.py <service endpoint> [patterns]
 
 	Environment Variables:
 		HARNESS_HOST       the public host/address of the test harness (default 127.0.0.1)
@@ -71,7 +71,11 @@ Content-Type: application/json
 		HARNESS_BIND_PORT  the port which the test harness binds to (default to HARNESS_PORT)
 		SERVICE_ENDPOINT   your test service endpoint (no default value)
 
-	Example: ./test.py http://127.0.0.1:5000/test
+	Example:
+		python test.py http://127.0.0.1:5000/test
+		python test.py http://127.0.0.1:5000/test TraceContextTest.test_both_traceparent_and_tracestate_missing
+		python test.py http://127.0.0.1:5000/test AdvancedTest
+		python test.py http://127.0.0.1:5000/test AdvancedTest TraceContextTest.test_both_traceparent_and_tracestate_missing
 	```
 * Alternatively, you can use the Python [unit testing framework](https://docs.python.org/3/library/unittest.html) module to run the test.
 	```
