@@ -77,3 +77,11 @@ Content-Type: application/json
 	```
 	> python -m unittest
 	```
+	To enable verbose output:
+	```
+	> python -m unittest -v
+	```
+	Instead of running all the test cases, you can pick a specific test case:
+	```
+	> python -m unittest test.TraceContextTest.test_traceparent_header_name
+	```
