@@ -70,15 +70,21 @@ class TestBase(unittest.TestCase):
 			verbose.append('')
 			verbose.append(pprint.pformat(arguments['arguments']))
 			verbose.append('')
-			status = response['status'][0]
-			if status['type'] == 'exception':
-				verbose.append('Harness got an exception {}'.format(status['class']))
+			results = response['results'][0]
+			if 'exception' in results:
+				verbose.append('Harness got an exception {}'.format(results['exception']))
 				verbose.append('')
-				verbose.append(status['msg'])
-			elif status['type'] == 'http':
-				verbose.append('Your service {} responded with HTTP status {}'.format(arguments['url'], status['code']))
+				verbose.append(results['msg'])
+			else:
+				verbose.append('Your service {} responded with HTTP status {}'.format(arguments['url'], results['status']))
 				verbose.append('')
-				verbose.append(status['body'])
+				for key, value in results['headers']:
+					verbose.append('{}: {}'.format(key, value))
+				verbose.append('')
+				if isinstance(results['body'], str):
+					verbose.append(results['body'])
+				else:
+					verbose.append(pprint.pformat(results['body']))
 			for idx in range(count):
 				if str(idx) in response:
 					verbose.append('Your service {} made the following callback to harness'.format(arguments['url']))
@@ -165,13 +171,215 @@ class TraceContextTest(TestBase):
 		])
 		self.assertEqual(trace_id, '12345678901234567890123456789012')
 
+	def test_traceparent_version_0x00(self):
+		'''
+		harness sends an invalid traceparent with extra trailing characters
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-01.'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-01 '],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-01-what-the-future-will-be-like'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_version_0xcc(self):
+		'''
+		harness sends an valid traceparent with future version 204 (0xcc)
+		expects a valid traceparent from the output header with the same trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', 'cc-12345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertEqual(trace_id, '12345678901234567890123456789012')
+
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', 'cc-12345678901234567890123456789012-1234567890123456-01-what-the-future-will-be-like'],
+		])
+		self.assertEqual(trace_id, '12345678901234567890123456789012')
+
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', 'cc-12345678901234567890123456789012-1234567890123456-01.what-the-future-will-be-like'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_version_0xff(self):
+		'''
+		harness sends an invalid traceparent with version 255 (0xff)
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', 'ff-12345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_version_illegal_characters(self):
+		'''
+		harness sends an invalid traceparent with illegal characters in version
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '.0-12345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '0.-12345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_version_too_long(self):
+		'''
+		harness sends an invalid traceparent with version more than 2 HEXDIG
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '000-12345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_version_too_short(self):
+		'''
+		harness sends an invalid traceparent with version less than 2 HEXDIG
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '0-12345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_trace_id_all_zero(self):
+		'''
+		harness sends an invalid traceparent with trace_id = 00000000000000000000000000000000
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-00000000000000000000000000000000-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '00000000000000000000000000000000')
+
+	def test_traceparent_trace_id_illegal_characters(self):
+		'''
+		harness sends an invalid traceparent with illegal characters in trace_id
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-.2345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '.2345678901234567890123456789012')
+
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-1234567890123456789012345678901.-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '1234567890123456789012345678901.')
+
+	def test_traceparent_trace_id_too_long(self):
+		'''
+		harness sends an invalid traceparent with trace_id more than 32 HEXDIG
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-123456789012345678901234567890123-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '123456789012345678901234567890123')
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+		self.assertNotEqual(trace_id, '23456789012345678901234567890123')
+
+	def test_traceparent_trace_id_too_short(self):
+		'''
+		harness sends an invalid traceparent with trace_id less than 32 HEXDIG
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-1234567890123456789012345678901-1234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '1234567890123456789012345678901')
+
+	def test_traceparent_span_id_all_zero(self):
+		'''
+		harness sends an invalid traceparent with span_id = 0000000000000000
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-0000000000000000-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_span_id_illegal_characters(self):
+		'''
+		harness sends an invalid traceparent with illegal characters in span_id
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-.234567890123456-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-123456789012345.-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_span_id_too_long(self):
+		'''
+		harness sends an invalid traceparent with span_id more than 16 HEXDIG
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-12345678901234567-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_span_id_too_short(self):
+		'''
+		harness sends an invalid traceparent with span_id less than 16 HEXDIG
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-123456789012345-01'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
 	def test_traceparent_trace_flags_illegal_characters(self):
 		'''
 		harness sends an invalid traceparent with illegal characters in trace_flags
 		expects a valid traceparent from the output header, with a newly generated trace_id
 		'''
 		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
-			['traceparent', '00-12345678901234567890123456789012-1234567890123456-xy'],
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-.0'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-0.'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_trace_flags_too_long(self):
+		'''
+		harness sends an invalid traceparent with trace_flags more than 2 HEXDIG
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-001'],
+		])
+		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
+
+	def test_traceparent_trace_flags_too_short(self):
+		'''
+		harness sends an invalid traceparent with trace_flags less than 2 HEXDIG
+		expects a valid traceparent from the output header, with a newly generated trace_id
+		'''
+		version, trace_id, span_id, trace_flags = self.make_single_request_and_get_traceparent_components([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-1'],
 		])
 		self.assertNotEqual(trace_id, '12345678901234567890123456789012')
 

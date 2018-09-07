@@ -1,4 +1,4 @@
-from aiohttp import ClientSession, ClientTimeout, web
+from aiohttp import ClientSession, ClientTimeout, ContentTypeError, web
 from multidict import MultiDict
 
 class AsyncTestServer(object):
@@ -10,8 +10,7 @@ class AsyncTestServer(object):
 		self.timeout = ClientTimeout(total = timeout)
 		self.app = web.Application()
 		self.app.add_routes([
-			web.post('/callback/{id}', self.callback_handler),
-			web.post('/test/{scope_id}', self.test_handler),
+			web.post('/{scope}', self.scope_handler),
 		])
 
 	async def start(self):
@@ -24,59 +23,52 @@ class AsyncTestServer(object):
 	async def stop(self):
 		await self.runner.cleanup()
 
-	async def callback_handler(self, request):
-		scope_id, callback_id = request.match_info['id'].split('.')
+	async def scope_handler(self, request):
+		scope_id = request.match_info['scope'].split('.', maxsplit = 1)
+		callback_id = None if len(scope_id) == 1 else scope_id[1]
+		scope_id = scope_id[0]
 		arguments = await request.json()
-		scope = self.scopes[scope_id]
-		scope[callback_id] = {
-			'headers': list(request.headers.items()),
-			'arguments': arguments,
-		}
+		scope = None
+		if callback_id:
+			scope = self.scopes[scope_id]
+			scope[callback_id] = {
+				'headers': list(request.headers.items()),
+				'arguments': arguments,
+			}
+		else:
+			scope = {
+				'headers': list(request.headers.items()),
+				'arguments': arguments,
+				'results': [],
+			}
+			self.scopes[scope_id] = scope
 		if not arguments:
 			return web.json_response(None)
+		if not isinstance(arguments, list):
+			arguments = [arguments]
 		for action in arguments:
-			async with ClientSession(timeout = self.timeout) as session:
+			headers = [['Accept', 'application/json']]
+			if 'headers' in action:
+				headers += action['headers']
+			async with ClientSession(headers = headers, timeout = self.timeout) as session:
 				arguments = []
 				if 'arguments' in action:
 					arguments = action['arguments'] or []
-				async with session.post(action['url'], json = arguments) as response:
-					pass
-		return web.json_response(None)
-
-	async def test_handler(self, request):
-		scope_id = request.match_info['scope_id']
-		arguments = await request.json()
-		scope = {
-			'arguments': arguments,
-			'headers': list(request.headers.items()),
-			'status': [],
-		}
-		self.scopes[scope_id] = scope
-		if arguments != None:
-			if not isinstance(arguments, list):
-				arguments = [arguments]
-			for action in arguments:
-				headers = [['Accept', 'application/json']]
-				if 'headers' in action:
-					headers += action['headers']
-				async with ClientSession(headers = headers, timeout = self.timeout) as session:
-					arguments = []
-					if 'arguments' in action:
-						arguments = action['arguments'] or []
-					try:
-						async with session.post(action['url'], json = arguments) as response:
-							scope['status'].append({
-								'type': 'http',
-								'code': response.status,
-								'body': await response.text(),
-							})
-					except Exception as err:
-						scope['status'].append({
-							'type': 'exception',
-							'class': type(err).__name__,
-							'msg': str(err),
-						})
-		del self.scopes[scope_id]
+				result = {}
+				result['url'] = action['url']
+				scope['results'].append(result)
+				try:
+					async with session.post(action['url'], json = arguments) as response:
+						result['status'] = response.status
+						result['headers'] = list(response.headers.items())
+						result['body'] = await response.json(content_type = 'application/json')
+				except ContentTypeError as err:
+						result['body'] = await response.text()
+				except Exception as err:
+					result['exception'] = type(err).__name__
+					result['msg'] = str(err)
+		if not callback_id:
+			del self.scopes[scope_id]
 		return web.json_response(scope)
 
 class TestServer(object):
@@ -118,4 +110,4 @@ if __name__ == '__main__':
 	if len(sys.argv) >= 3:
 		port = int(sys.argv[2])
 	with TestServer(host = host, port = port) as server:
-		pass
+		input('Press Enter to quit...')

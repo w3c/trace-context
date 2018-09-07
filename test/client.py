@@ -41,12 +41,12 @@ class TestClient(object):
 
 		def send_request(self, arguments = None):
 			return self.harness.send_request(
-				url = 'http://{}:{}/test/{}'.format(self.harness.host, self.harness.port, self.id),
+				url = 'http://{}:{}/{}'.format(self.harness.host, self.harness.port, self.id),
 				headers = {'Accept': 'application/json', 'Content-Type': 'application/json'},
 				arguments = arguments)
 
 		def url(self, path = ''):
-			return 'http://{}:{}/callback/{}.{}'.format(self.harness.host, self.harness.port, self.id, path)
+			return 'http://{}:{}/{}.{}'.format(self.harness.host, self.harness.port, self.id, path)
 
 	def scope(self):
 		return TestClient.Scope(self)
