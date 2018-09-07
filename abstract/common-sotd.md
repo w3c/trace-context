@@ -1,5 +1,7 @@
-This is a first draft of specification. It is believed to be working well to correlate telemetry. So tracing and diagnostics products can operate together. There is a general agreement on names and format from the number of vendors. Working group is working in three directions:
-
-1. Writing test cases to confirm viability of headers in practice.
-2. Addressing edge cases scenarios.
-3. Working on moving this effort forward with W3C by creating a working group.
+This is the First Public Working Draft
+([FPWD](https://www.w3.org/2017/Process-20170301/#working-draft)). There are a
+few implementations of this protocol available. Experimental interoperability
+scenarios were run and have demonstrated promising results. The specification will be
+progressed into Candidate Recommendation stage after that, drafts for binary, AMQP and
+MQTT protocols will be written to make sure the concepts and structure defined
+in this specification can be ported to other protocols.
