@@ -19,12 +19,19 @@ they should ensure that `tracestate` isn't present in requests to external syste
 
 ## Denial of service
 
-When distributed tracing is enabled on a service with a public API and naively continues any trace with
-the sampling flag set, a malicious attacker could overwhelm an application with tracing overhead, forge trace ID collisions
-that make monitoring data unusable, or run up your tracing bill with your SaaS tracing vendor.
+When distributed tracing is enabled on a service with a public API and naively
+continues any trace with the `recorded` flag set, a malicious attacker could
+overwhelm an application with tracing overhead, forge `trace-id` collisions
+that make monitoring data unusable, or run up your tracing bill with your SaaS
+tracing vendor.
 
-Tracing vendors and platforms should account for these situations and make sure that checks and balances are in place to
-protect denial of monitoring by malicious or badly authored callers.
+Tracing vendors and platforms should account for these situations and make sure
+that checks and balances are in place to protect denial of monitoring by
+malicious or badly authored callers.
+
+One examples of such protection may be different tracing behavior for
+authenticated and unauthenticated requests. Various rate limiters for data
+recording can also be implemented.
 
 ## Other risks
 

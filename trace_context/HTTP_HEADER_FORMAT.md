@@ -115,10 +115,13 @@ strict rules to follow for three reasons:
 
 1. Trust and abuse
 2. Bug in caller
-3. Different load between caller service and callee service might force callee to down sample.
+3. Different load between caller service and callee service might force callee
+   to down sample.
 
-Like other fields, `trace-flags` is hex-encoded. For example, all 8 flags set would be `ff`
-and no flags set would be `00`.
+You can find more in security section of this specification.
+
+Like other fields, `trace-flags` is hex-encoded. For example, all `8` flags set
+would be `ff` and no flags set would be `00`.
 
 As this is a bit field, you cannot interpret flags by decoding the hex value and looking at
 the resulting number. For example, a flag `00000001` could be encoded as `01` in hex, or `09`
@@ -128,53 +131,93 @@ mask when interpreting flags.
 Here is an example of properly handing trace flags:
 
 ```java
-static final byte FLAG_TRACED = 1; // 00000001
+static final byte FLAG_RECORDED = 1; // 00000001
 ...
-boolean traced = (traceFlags & FLAG_TRACED) == FLAG_TRACED
+boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED
 ```
 
-### Flag behavior
+Current version of specification only supports a single flag called `recorded`.
 
-| flag         | recorded? | requested? | recording probability | situation                                                          |
-| ------------ | --------  | ---------- | --------------------- | ------------------------------------------------------------------ |
-| 00000000     | no        | false      | low                   | I definitely dropped the data and no one asked for it              |
-| 00000001     | no        | true       | medium                | I definitely dropped the data but someone asked for it             |
-| 00000010     | maybe     | false      | medium                | Maybe I recorded this but no one asked for it yet (maybe deferred) |
-| 00000011     | maybe     | true       | high                  | Maybe I recorded this and someone asked for it                     |
+### Recorded Flag (00000001)
 
-#### Requested Flag (00000001)
+When set, the least significant bit documents that the caller may have recorded
+trace data. A caller who does not record trace data out-of-band leaves this flag
+unset.
 
-When set, the least significant bit recommends the request should be traced. A caller who
-defers a tracing decision leaves this flag unset.
+Many distributed tracing scenarios may be broken when only a subset of calls
+participated in a distributed trace were recorded. At certain load recording
+information about every incoming and outgoing request become prohibitively
+expensive. Making a random or component-specific decision for data collection
+will lead to fragmented data in every distributed trace. Thus it is typical for
+tracing vendors and platforms to pass recording decision for given distributed
+trace or information needed to make this decision.
 
-#### Recorded Flag (00000010)
+There is no consensus on what is the best algorithm to make a recording
+decision. Various techniques include: probability sampling (sample 1 out of 100
+distributed traced by flipping a coin), delayed decision (make collection
+decision based on duration or a result of a call), deferred sampling (let callee
+decide whether information about this request need to be collected). There are
+variations and customizations of every technique which can be tracing vendor
+specific or application defined.
 
-When set, the least significant bit documents that the caller may have recorded trace data. A caller who does not record trace data out-of-band leaves this flag unset.
+Field `tracestate` is designed to handle the variety of techniques for making
+recording decision specific (along any other specific information) for a given
+tracing system or a platform. Flag `recorded` is introduced for better
+interoperability between vendors. It allows to communicate recording decision
+and enable better experience for the customer.
 
-#### Other Flags
+For example, when SaaS services participate in distributed trace - this service
+has no knowledge of tracing system used by it's caller. But this service may
+produce records of incoming requests for monitoring or troubleshooting purposes.
+Flag `recorded` can be used to ensure that information about requests that were
+marked for recording by caller will also be recorded by SaaS service. So caller
+can troubleshoot the behavior of every recorded request.
 
-The behavior of other flags, such as (00000100) is not defined and reserved for future use. Implementation MUST set those to zero.
+Flag `recorded` has no restriction on it's mutations except that it can only be
+mutated when `span-id` was updated. See section "Mutating the traceparent
+field". However there are set of suggestions that will increase vendors
+interoperability.
+
+1. If component made definitive recording decision - this decision SHOULD be
+   reflected in `recorded` flag.
+2. If component needs to make a recording decision - it SHOULD respect `recorded`
+   flag value. Security considerations should be applied to protect from
+   abusive or malicious use of this flag - see security section.
+3. If component deferred or delayed decision and only a subset of telemetry will
+   be recorded - flag `recorded` should be propagated unchanged. And set to `0`
+   as a default option when trace is initiated by this component. There are two
+   additional options:
+    1. Component that makes deferred or delayed recording decision may communicate
+       priority of recording by setting `recorded` flag to `1` for a subset of
+       requests.
+    2. Component may also fall back to probability sampling to set flag
+       `recorded` to `1` for the subset of requests.
+
+### Other Flags
+
+The behavior of other flags, such as (`00000100`) is not defined and reserved for
+future use. Implementation MUST set those to zero.
 
 ## Examples of HTTP headers
 
-*Valid traceparent when one of the upstream services requested recording:*
+*Valid traceparent when caller recorded this request:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 base16(<Version>) = 00
 base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceFlags>) = 01  // requested
+base16(<TraceFlags>) = 01  // recorded
 ```
 
-*Valid traceparent when one of the upstream services requested recording:*
+*Valid traceparent when caller haven't recorded this request:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
 base16(<Version>) = 00
 base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceFlags>) = 00  // not requested
+base16(<TraceFlags>) = 00  // not recorded
 ```
 
 ## Versioning of `traceparent`
@@ -308,7 +351,10 @@ If the value of the `traceparent` field wasn't changed before propagation - `tra
 Here is the list of allowed mutations:
 
 1. **Update `span-id`**. The value of property `span-id` can be regenerated. This is the most typical mutation and should be considered a default.
-2. **Request trace capture**. The value of `requested` flag of `trace-flags` may be set to `1` if it had value `0` before. `span-id` MUST be regenerated with the `requested` flag update. This mutation typically happens to mark the importance of a current distributed trace collection.
+2. **Indicate recorded state**. The value of `recorded` flag of `trace-flags`
+   may be set to `1` if it had value `0` before or vice versa. `span-id` MUST be
+   regenerated with the `recorded` flag update. See details of `recorded` flag
+   for more information on how this flag is recommended to be used.
 3. **Update `recorded`**. The value of `recorded` reflects the caller's recording behavior: either the trace data were dropped or may have been recorded out-of-band. This mutation gives the downstream tracer information about the likelihood its parent's information was recorded.
 4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-flags` are regenerated. This mutation is used in the services defined as a front gate into secure networks and eliminates a potential denial of service attack surface. 
 
