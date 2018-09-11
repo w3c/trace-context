@@ -155,3 +155,96 @@ Content-Type: application/json
 
 	OK
 	```
+
+## Contributing
+* Make sure you have Python version >= 3.6.0 installed.
+	```
+	> python --version
+
+	Python 3.7.0
+	```
+* Install aiohttp package.
+	```
+	> pip install aiohttp
+	```
+* From the `test` folder, run self test.
+	```
+	> python self_test.py
+
+	harness listening on http://127.0.0.1:7777
+	test_multiple_requests (test.AdvancedTest) ... ok
+	test_both_traceparent_and_tracestate_missing (test.TraceContextTest) ... ok
+	test_traceparent_duplicated (test.TraceContextTest) ... ok
+	test_traceparent_header_name (test.TraceContextTest) ... ok
+	test_traceparent_header_name_valid_casing (test.TraceContextTest) ... ok
+	test_traceparent_included_tracestate_missing (test.TraceContextTest) ... ok
+	test_traceparent_span_id_all_zero (test.TraceContextTest) ... ok
+	test_traceparent_span_id_illegal_characters (test.TraceContextTest) ... ok
+	test_traceparent_span_id_too_long (test.TraceContextTest) ... ok
+	test_traceparent_span_id_too_short (test.TraceContextTest) ... ok
+	test_traceparent_trace_flags_illegal_characters (test.TraceContextTest) ... ok
+	test_traceparent_trace_flags_too_long (test.TraceContextTest) ... ok
+	test_traceparent_trace_flags_too_short (test.TraceContextTest) ... ok
+	test_traceparent_trace_id_all_zero (test.TraceContextTest) ... ok
+	test_traceparent_trace_id_illegal_characters (test.TraceContextTest) ... ok
+	test_traceparent_trace_id_too_long (test.TraceContextTest) ... ok
+	test_traceparent_trace_id_too_short (test.TraceContextTest) ... ok
+	test_traceparent_version_0x00 (test.TraceContextTest) ... ok
+	test_traceparent_version_0xcc (test.TraceContextTest) ... ok
+	test_traceparent_version_0xff (test.TraceContextTest) ... ok
+	test_traceparent_version_illegal_characters (test.TraceContextTest) ... ok
+	test_traceparent_version_too_long (test.TraceContextTest) ... ok
+	test_traceparent_version_too_short (test.TraceContextTest) ... ok
+	test_tracestate_all_allowed_characters (test.TraceContextTest) ... ok
+	test_tracestate_duplicated_keys (test.TraceContextTest) ... ok
+	test_tracestate_empty_header (test.TraceContextTest) ... ok
+	test_tracestate_header_name (test.TraceContextTest) ... ok
+	test_tracestate_header_name_valid_casing (test.TraceContextTest) ... ok
+	test_tracestate_included_traceparent_included (test.TraceContextTest) ... ok
+	test_tracestate_included_traceparent_missing (test.TraceContextTest) ... ok
+	test_tracestate_key_illegal_characters (test.TraceContextTest) ... ok
+	test_tracestate_key_illegal_vendor_format (test.TraceContextTest) ... ok
+	test_tracestate_key_length_limit (test.TraceContextTest) ... ok
+	test_tracestate_member_count_limit (test.TraceContextTest) ... ok
+	test_tracestate_multiple_headers_different_keys (test.TraceContextTest) ... ok
+	test_tracestate_ows_handling (test.TraceContextTest) ... ok
+	test_tracestate_trailing_ows (test.TraceContextTest) ... ok
+	test_ctor (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_ctor_default (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_ctor_with_variadic_arguments (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_from_string (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_repr (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_set_span_id (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_set_trace_id (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_span_id_limit (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_str (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_trace_flags_limit (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_trace_id_limit (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_version_limit (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_ctor (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_ctor_default (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_from_string (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_repr (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_set_span_id (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_set_trace_id (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_set_version (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_str (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_all_allowed_chars (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_cctor (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_ctor_kwargs (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_ctor_no_arg (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_ctor_with_dict (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_ctor_with_string (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_delimiter (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_getitem (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_method_from_string (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_method_is_valid (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_method_repr (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_pop (tracecontext.test_tracestate.TestTracestate) ... ok
+	test_setitem (tracecontext.test_tracestate.TestTracestate) ... ok
+
+	----------------------------------------------------------------------
+	Ran 70 tests in 1.358s
+
+	OK
+	```
