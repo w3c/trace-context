@@ -71,6 +71,8 @@ class DemoServer(HTTPServer):
 						temp_tracestate.from_string(value)
 					tracestate = temp_tracestate
 				except ValueError:
+					# if tracestate is malformed, reuse the traceparent instead of restart the trace
+					# traceparent = Traceparent()
 					pass
 
 			for item in arguments:
