@@ -65,10 +65,9 @@ class DemoServer(HTTPServer):
 			if traceparent is None:
 				traceparent = Traceparent()
 			else:
-				temp_tracestate = Tracestate()
 				try:
-					for key, value in tracestate_headers:
-						temp_tracestate.from_string(value)
+					temp_tracestate = Tracestate()
+					temp_tracestate.from_string(','.join(map(lambda kv: kv[1], tracestate_headers)))
 					tracestate = temp_tracestate
 				except ValueError:
 					# if tracestate is malformed, reuse the traceparent instead of restart the trace

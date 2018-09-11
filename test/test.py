@@ -100,9 +100,12 @@ class TestBase(unittest.TestCase):
 
 	def get_tracestate(self, headers):
 		tracestate = Tracestate()
+		strings = []
 		for key, value in headers:
 			if self.tracestate_name_re.match(key):
-				tracestate.from_string(value)
+				strings.append(value)
+		if strings:
+			tracestate.from_string(','.join(strings))
 		return tracestate
 
 	def make_single_request_and_get_tracecontext(self, headers):
@@ -605,6 +608,70 @@ class TraceContextTest(TestBase):
 		self.assertEqual(tracestate['foo'], '1')
 		self.assertEqual(tracestate['bar'], '2')
 		self.assertEqual(tracestate['baz'], '3')
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', ' foo=1'],
+			['tracestate', 'bar=2'],
+		])
+		self.assertEqual(tracestate['foo'], '1')
+		self.assertEqual(tracestate['bar'], '2')
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', 'foo=1 '],
+			['tracestate', 'bar=2'],
+		])
+		self.assertEqual(tracestate['foo'], '1')
+		self.assertEqual(tracestate['bar'], '2')
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', 'foo=1'],
+			['tracestate', ' bar=2'],
+		])
+		self.assertEqual(tracestate['foo'], '1')
+		self.assertEqual(tracestate['bar'], '2')
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', 'foo=1'],
+			['tracestate', 'bar=2 '],
+		])
+		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertRaises(KeyError, lambda: tracestate['bar'])
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', '\tfoo=1'],
+			['tracestate', 'bar=2'],
+		])
+		self.assertEqual(tracestate['foo'], '1')
+		self.assertEqual(tracestate['bar'], '2')
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', 'foo=1\t'],
+			['tracestate', 'bar=2'],
+		])
+		self.assertEqual(tracestate['foo'], '1')
+		self.assertEqual(tracestate['bar'], '2')
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', 'foo=1'],
+			['tracestate', '\tbar=2'],
+		])
+		self.assertEqual(tracestate['foo'], '1')
+		self.assertEqual(tracestate['bar'], '2')
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', 'foo=1'],
+			['tracestate', 'bar=2\t'],
+		])
+		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertRaises(KeyError, lambda: tracestate['bar'])
 
 	def test_tracestate_key_illegal_characters(self):
 		'''
