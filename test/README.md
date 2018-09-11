@@ -1,7 +1,7 @@
 # W3C Distributed Tracing Validation Service
 
 ## Install
-* Make sure you have Python version >= 3.5.4 installed.
+* Make sure you have Python version >= 3.6.0 installed.
 	```
 	> python --version
 
