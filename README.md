@@ -4,9 +4,16 @@ This repository is associated with the [Distributed Trace Context Working Group]
 
 Specification for distributed tracing context propagation format:
 
-- Trace Context [Report](https://w3c.github.io/distributed-tracing/report-trace-context.html).
+- Trace Context
+  [Report](https://w3c.github.io/distributed-tracing/report-trace-context.html).
+  Status: [First Public Working
+  Draft](https://www.w3.org/2017/Process-20170301/#working-draft).
   - Rationale [document](trace_context/HTTP_HEADER_FORMAT_RATIONALE.md)
-- Correlation Context [Report](https://w3c.github.io/distributed-tracing/report-correlation-context.html).
+  - Changes are tracked on GitHub, communicated in meetings and e-mails
+    distribution list.
+- Correlation Context
+  [Report](https://w3c.github.io/distributed-tracing/report-correlation-context.html).
+  Status: initial draft.
   - Rationale [document](correlation_context/HTTP_HEADER_FORMAT_RATIONALE.md)
 - Working group [charter](https://www.w3.org/2018/07/distributed-tracing.html) (as of working group creation). Live [charter document](https://w3c.github.io/distributed-tracing/charter.html).
 - Original [community group](https://www.w3.org/community/trace-context/).
