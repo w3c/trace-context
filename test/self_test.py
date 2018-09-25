@@ -46,29 +46,26 @@ class DemoServer(HTTPServer):
 		def do_POST(self):
 			self.send_response(200)
 			arguments = json.loads(str(self.rfile.read(int(self.headers['Content-Length'])), 'ascii'))
-			traceparent_headers = tuple(filter(lambda kv: kv[0].lower() == 'traceparent', self.headers.items()))
-			tracestate_headers = tuple(filter(lambda kv: kv[0].lower() == 'tracestate', self.headers.items()))
 
 			traceparent = None
 			tracestate = Tracestate()
 
-			if len(traceparent_headers) == 1:
-				try:
-					temp_traceparent = BaseTraceparent.from_string(traceparent_headers[0][1])
-					if temp_traceparent.version == 0:
-						if temp_traceparent._residue:
-							raise ValueError('illegal traceparent format')
-					traceparent = Traceparent(0, temp_traceparent.trace_id, temp_traceparent.span_id, temp_traceparent.trace_flags)
-				except ValueError:
-					pass
+			try:
+				temp_traceparent = BaseTraceparent.from_string(self.get_header('traceparent'))
+				if temp_traceparent.version == 0:
+					if temp_traceparent._residue:
+						raise ValueError('illegal traceparent format')
+				traceparent = Traceparent(0, temp_traceparent.trace_id, temp_traceparent.span_id, temp_traceparent.trace_flags)
+			except ValueError:
+				pass
 
 			if traceparent is None:
 				traceparent = Traceparent()
 			else:
 				try:
-					temp_tracestate = Tracestate()
-					temp_tracestate.from_string(','.join(map(lambda kv: kv[1], tracestate_headers)))
-					tracestate = temp_tracestate
+					header = self.get_header('tracestate', commaSeparated = True)
+					if header is not None:
+						tracestate = Tracestate(header)
 				except ValueError:
 					# if tracestate is malformed, reuse the traceparent instead of restart the trace
 					# traceparent = Traceparent()
@@ -83,6 +80,21 @@ class DemoServer(HTTPServer):
 				with self.opener_director.open(request, timeout = self.timeout) as response:
 					pass
 			self.end_headers()
+
+		def get_header(self, name, commaSeparated = False):
+			name = name.lower()
+			headers = filter(lambda kv: kv[0].lower() == name, self.headers.items())
+			# https://tools.ietf.org/html/rfc7230#section-3.2
+			# remove the leading whitespace and trailing whitespace
+			headers = map(lambda kv: kv[1].strip(' \t'), headers)
+			headers = tuple(headers)
+			if not headers:
+				return None
+			if commaSeparated:
+				return ','.join(headers)
+			if len(headers) == 1:
+				return headers[0]
+			raise ValueError('multiple header {} not allowed'.format(name))
 
 		def log_message(self, format, *args):
 			pass
