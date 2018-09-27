@@ -106,4 +106,4 @@ if __name__ == '__main__':
 
 	with DemoServer() as server:
 		os.environ['SERVICE_ENDPOINT'] = 'http://{}:{}/'.format(server.host, server.port)
-		subprocess.call(['python', '-m', 'unittest', '-v'] + sys.argv[1:])
+		sys.exit(subprocess.call(['python', '-m', 'unittest', '-v'] + sys.argv[1:]))

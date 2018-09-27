@@ -245,6 +245,11 @@ class TraceContextTest(TestBase):
 		])
 		self.assertNotEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
 
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '0000-12345678901234567890123456789012-1234567890123456-01'],
+		])
+		self.assertNotEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+
 	def test_traceparent_version_too_short(self):
 		'''
 		harness sends an invalid traceparent with version less than 2 HEXDIG
@@ -831,4 +836,5 @@ Example:
 			suite.addTests(loader.loadTestsFromName(name, module = sys.modules[__name__]))
 	else:
 		suite.addTests(loader.loadTestsFromModule(sys.modules[__name__]))
-	unittest.TextTestRunner(verbosity = 2).run(suite)
+	result = unittest.TextTestRunner(verbosity = 2).run(suite)
+	sys.exit(len(result.errors) + len(result.failures))

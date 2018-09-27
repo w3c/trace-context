@@ -85,7 +85,7 @@ class TestTracestate(unittest.TestCase):
 		self.assertFalse(Tracestate(state.to_string()[:513]).is_valid())
 
 	def test_method_repr(self):
-		state = Tracestate(Tracestate('foo=1, bar=2, baz=3'))
+		state = Tracestate('foo=1, bar=2, baz=3')
 		self.assertEqual(repr(state), "Tracestate('foo=1,bar=2,baz=3')")
 
 	def test_pop(self):
