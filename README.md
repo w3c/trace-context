@@ -1,3 +1,5 @@
+[![Build Status](https://img.shields.io/travis/w3c/distributed-tracing/master.svg?label=validation%20service)](./test/)
+
 # Distributed Tracing Working group
 
 This repository is associated with the [Distributed Trace Context Working Group](https://www.w3.org/2018/distributed-tracing/).
