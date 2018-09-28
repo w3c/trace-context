@@ -1,3 +1,5 @@
+[![Build Status](https://img.shields.io/travis/w3c/distributed-tracing/master.svg?label=self%20test)](https://travis-ci.org/w3c/distributed-tracing)
+
 # W3C Distributed Tracing Validation Service
 
 ## Install
