@@ -1,0 +1,12 @@
+matrix:
+  include:
+    - language: python
+      python: 3.6
+      before_install:
+        - pip install aiohttp
+      script:
+        - cd ./test
+        - python ./self_test.py
+
+notifications:
+  email: false
