@@ -203,7 +203,7 @@ class TraceContextTest(TestBase):
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', 'cc-12345678901234567890123456789012-1234567890123456-01-what-the-future-will-be-like'],
 		])
-		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertEqual(traceparent.trace_id.hex(), '123456789012345678901234567890123')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', 'cc-12345678901234567890123456789012-1234567890123456-01.what-the-future-will-be-like'],
