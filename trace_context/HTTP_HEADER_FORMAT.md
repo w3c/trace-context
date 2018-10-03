@@ -184,14 +184,29 @@ versions of `traceparent` header will be additive to the current one.
 
 Implementation should follow the following rules when parsing headers with an unexpected format:
 
-1. Pass thru services should not analyze version. Pass thru service needs to expect that headers may have bigger size limits in the future and only disallow prohibitively large headers.
-2. When version prefix cannot be parsed (it's not 2 hex characters followed by dash (`-`)), implementation should restart the trace.
-3. If higher version is detected - implementation SHOULD try to parse it.
-  a. If the size of header is shorter than 55 characters - implementation should not parse header and should restart the trace.
-  b. Try parse `trace-id`: from the first dash - next 32 characters. Implementation MUST check 32 characters to be hex. Make sure they are followed by dash.
-  c. Try parse `span-id`: from the second dash at 35th position - 16 characters. Implementation MUST check 16 characters to be hex.  Make sure this is followed by a dash.
-  d. Try parse sampling bit of `flags`:  2 characters from third dash. Following with either end of string or a dash.
-  If all three values were parsed successfully - implementation should use them. Implementation MUST NOT parse or assume anything about any fields unknown for this version. Implementation MUST use these fields to construct the new `traceparent` field according to the highest version of the specification known to the implementation (in this specification it is `00`).
+1. Pass thru services should not analyze version. Pass thru service
+   needs to expect that headers may have bigger size limits in the
+   future and only disallow prohibitively large headers.
+2. When version prefix cannot be parsed (it's not 2 hex characters
+   followed by dash (`-`)), implementation should restart the trace.
+3. If higher version is detected - implementation SHOULD try to parse
+   it.
+  1. If the size of header is shorter than 55 characters -implementation
+     should not parse header and should restart the trace.
+  2. Try parse `trace-id`: from the first dash - next 32 characters.
+     Implementation MUST check 32 characters to be hex. Make sure they
+     are followed by dash.
+  3. Try parse `span-id`: from the second dash at 35th position - 16
+     characters. Implementation MUST check 16 characters to be hex. Make
+     sure this is followed by a dash.
+  4. Try parse sampling bit of `flags`:  2 characters from third dash.
+     Following with either end of string or a dash. If all three values
+     were parsed successfully - implementation should use them.
+     Implementation MUST NOT parse or assume anything about any fields
+     unknown for this version. Implementation MUST use these fields to
+     construct the new `traceparent` field according to the highest
+     version of the specification known to the implementation (in this
+     specification it is `00`).
 
 # Tracestate field
 
