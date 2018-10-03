@@ -220,13 +220,14 @@ The `OWS` rule defines an optional whitespace. It is used where zero or more whi
 
 The `tracestate` field value is a `list` as defined below. The `list` is a series of `list-members` separated by commas `,`, and a `list-member` is a key/value pair separated by an equals sign `=`. Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`.
 
-Empty and whitespace-only list elements are allowed as a list value. But the use
-of empty `tracestate` header should be considered an exception. The reason for
-allowing of empty value in `tracestate` is a difficulty for implementor to
-recognize the empty value when multiple `tracestate` headers were sent.
-Whitespace characters are allowed for a similar reason as some frameworks will
-inject whitespace after `,` separator automatically even in case of an empty
-header.
+Empty and whitespace-only list members are allowed. Libraries and
+platforms MUST accept empty `tracestate` headers, but SHOULD avoid
+sending them. The reason for allowing of empty list members in
+`tracestate` is a difficulty for implementor to recognize the empty
+value when multiple `tracestate` headers were sent. Whitespace
+characters are allowed for a similar reason as some frameworks will
+inject whitespace after `,` separator automatically even in case of an
+empty header.
 
 A simple example of a `list` with two `list-member`s might look like: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
 
