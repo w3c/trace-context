@@ -191,22 +191,23 @@ Implementation should follow the following rules when parsing headers with an un
    followed by dash (`-`)), implementation should restart the trace.
 3. If higher version is detected - implementation SHOULD try to parse
    it.
-  1. If the size of header is shorter than 55 characters -implementation
-     should not parse header and should restart the trace.
-  2. Try parse `trace-id`: from the first dash - next 32 characters.
-     Implementation MUST check 32 characters to be hex. Make sure they
-     are followed by dash.
-  3. Try parse `span-id`: from the second dash at 35th position - 16
-     characters. Implementation MUST check 16 characters to be hex. Make
-     sure this is followed by a dash.
-  4. Try parse sampling bit of `flags`:  2 characters from third dash.
-     Following with either end of string or a dash. If all three values
-     were parsed successfully - implementation should use them.
-     Implementation MUST NOT parse or assume anything about any fields
-     unknown for this version. Implementation MUST use these fields to
-     construct the new `traceparent` field according to the highest
-     version of the specification known to the implementation (in this
-     specification it is `00`).
+    1. If the size of header is shorter than 55 characters
+       -implementation should not parse header and should restart the
+       trace.
+    2. Try parse `trace-id`: from the first dash - next 32 characters.
+       Implementation MUST check 32 characters to be hex. Make sure they
+       are followed by dash.
+    3. Try parse `span-id`: from the second dash at 35th position - 16
+       characters. Implementation MUST check 16 characters to be hex.
+       Make sure this is followed by a dash.
+    4. Try parse sampling bit of `flags`:  2 characters from third dash.
+       Following with either end of string or a dash. If all three
+       values were parsed successfully - implementation should use them.
+       Implementation MUST NOT parse or assume anything about any fields
+       unknown for this version. Implementation MUST use these fields to
+       construct the new `traceparent` field according to the highest
+       version of the specification known to the implementation (in this
+       specification it is `00`).
 
 # Tracestate field
 
