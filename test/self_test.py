@@ -4,6 +4,8 @@ from threading import Thread
 from tracecontext import BaseTraceparent, Traceparent, Tracestate
 from urllib.request import HTTPHandler, OpenerDirector, Request
 
+test_data = []
+
 class DemoServer(HTTPServer):
 	def __init__(self, host = '127.0.0.1', port = None, timeout = 5):
 		self.host = host
@@ -44,11 +46,18 @@ class DemoServer(HTTPServer):
 		server_version = 'DemoServer/0.1'
 
 		def do_POST(self):
+			global test_data
+
 			self.send_response(200)
 			arguments = json.loads(str(self.rfile.read(int(self.headers['Content-Length'])), 'ascii'))
 
 			traceparent = None
 			tracestate = Tracestate()
+
+			test_data.append({
+				'headers': self.get_headers('traceparent') + self.get_headers('tracestate'),
+				'status': 0,
+			})
 
 			try:
 				temp_traceparent = BaseTraceparent.from_string(self.get_header('traceparent'))
@@ -56,20 +65,25 @@ class DemoServer(HTTPServer):
 					if temp_traceparent._residue:
 						raise ValueError('illegal traceparent format')
 				traceparent = Traceparent(0, temp_traceparent.trace_id, temp_traceparent.span_id, temp_traceparent.trace_flags)
+				test_data[-1]['status'] += 1
 			except ValueError:
 				pass
 
+			try:
+				header = self.get_header('tracestate', commaSeparated = True)
+				if header:
+					tracestate = Tracestate(header)
+					test_data[-1]['status'] += 1
+			except ValueError:
+				# if tracestate is malformed, reuse the traceparent instead of restart the trace
+				# traceparent = Traceparent()
+				pass
+
 			if traceparent is None:
+				# if traceparent is malformed, discard tracestate
 				traceparent = Traceparent()
-			else:
-				try:
-					header = self.get_header('tracestate', commaSeparated = True)
-					if header is not None:
-						tracestate = Tracestate(header)
-				except ValueError:
-					# if tracestate is malformed, reuse the traceparent instead of restart the trace
-					# traceparent = Traceparent()
-					pass
+				tracestate = Tracestate()
+				test_data[-1]['status'] = 0
 
 			for item in arguments:
 				headers = {}
@@ -81,13 +95,18 @@ class DemoServer(HTTPServer):
 					pass
 			self.end_headers()
 
-		def get_header(self, name, commaSeparated = False):
+		def get_headers(self, name):
 			name = name.lower()
 			headers = filter(lambda kv: kv[0].lower() == name, self.headers.items())
+			return tuple(headers)
+
+		def get_header(self, name, commaSeparated = False):
+			headers = self.get_headers(name)
 			# https://tools.ietf.org/html/rfc7230#section-3.2
 			# remove the leading whitespace and trailing whitespace
 			headers = map(lambda kv: kv[1].strip(' \t'), headers)
 			headers = tuple(headers)
+
 			if not headers:
 				return None
 			if commaSeparated:
@@ -103,7 +122,10 @@ if __name__ == '__main__':
 	import os
 	import subprocess
 	import sys
-
 	with DemoServer() as server:
 		os.environ['SERVICE_ENDPOINT'] = 'http://{}:{}/'.format(server.host, server.port)
-		sys.exit(subprocess.call(['python', '-m', 'unittest', '-v'] + sys.argv[1:]))
+		errno = subprocess.call(['python', '-m', 'unittest', '-v'] + sys.argv[1:])
+		ofile = open("test_data.json", "w")
+		ofile.write('[\n' + ',\n'.join(map(lambda x: '\t' + json.dumps(x), test_data)) + '\n' + ']' + '\n')
+		ofile.close()
+		sys.exit(errno)
