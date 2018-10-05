@@ -72,7 +72,7 @@ class DemoServer(HTTPServer):
 				header = self.get_header('tracestate', commaSeparated = True)
 				if header:
 					tracestate = Tracestate(header)
-					if 'is_traceparent_valid' in test_data[-1] and test_data[-1]['is_traceparent_valid']:
+					if test_data[-1]['is_traceparent_valid']:
 						test_data[-1]['is_tracestate_valid'] = True
 			except ValueError:
 				# if tracestate is malformed, reuse the traceparent instead of restart the trace
