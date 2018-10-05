@@ -56,7 +56,6 @@ class DemoServer(HTTPServer):
 
 			test_data.append({
 				'headers': self.get_headers('traceparent') + self.get_headers('tracestate'),
-				'status': 0,
 			})
 
 			try:
@@ -65,25 +64,25 @@ class DemoServer(HTTPServer):
 					if temp_traceparent._residue:
 						raise ValueError('illegal traceparent format')
 				traceparent = Traceparent(0, temp_traceparent.trace_id, temp_traceparent.span_id, temp_traceparent.trace_flags)
-				test_data[-1]['status'] += 1
+				test_data[-1]['is_traceparent_valid'] = True
 			except ValueError:
-				pass
+				test_data[-1]['is_traceparent_valid'] = False
 
 			try:
 				header = self.get_header('tracestate', commaSeparated = True)
 				if header:
 					tracestate = Tracestate(header)
-					test_data[-1]['status'] += 1
+					if 'is_traceparent_valid' in test_data[-1] and test_data[-1]['is_traceparent_valid']:
+						test_data[-1]['is_tracestate_valid'] = True
 			except ValueError:
 				# if tracestate is malformed, reuse the traceparent instead of restart the trace
 				# traceparent = Traceparent()
-				pass
+				test_data[-1]['is_tracestate_valid'] = False
 
 			if traceparent is None:
 				# if traceparent is malformed, discard tracestate
 				traceparent = Traceparent()
 				tracestate = Tracestate()
-				test_data[-1]['status'] = 0
 
 			for item in arguments:
 				headers = {}
