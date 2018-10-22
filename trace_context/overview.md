@@ -13,4 +13,4 @@ Trace context is represented by a set of name/value pairs describing the identit
 
 Notably, the `tracestate` field is unreliant on data in the `traceparent`.
 
-Libraries and platforms MUST propagate `traceparent` and `tracestate` headers to guarantee that trace will not be broken.
+Libraries and platforms MUST propagate `traceparent` and `tracestate` headers to guarantee that trace will not be broken.  
