@@ -279,7 +279,7 @@ The `tracestate` field value is a `list` as defined below. The `list` is a serie
 A simple example of a `list` with two `list-member`s might look like: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
 
 ```
-list  = list-member 0*31( OWS "," OWS list-member )
+list  = list-member 0*31("," list-member )
 list-member = key "=" value
 ```
 
