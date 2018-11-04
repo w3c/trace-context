@@ -502,7 +502,7 @@ class TraceContextTest(TestBase):
 			['tracestate', ''],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
-		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
@@ -510,7 +510,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=1'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
-		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertEqual(tracestate['foo'], '1')
 
 	def test_tracestate_multiple_headers_different_keys(self):
 		'''

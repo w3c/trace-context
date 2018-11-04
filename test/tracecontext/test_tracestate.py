@@ -18,7 +18,6 @@ class TestTracestate(unittest.TestCase):
 		state = Tracestate('foo=1,bar=2,baz=3')
 		self.assertEqual(state.to_string(), 'foo=1,bar=2,baz=3')
 
-		self.assertRaises(ValueError, lambda: Tracestate(''))
 		self.assertRaises(ValueError, lambda: Tracestate('foobarbaz'))
 
 	def test_cctor(self):

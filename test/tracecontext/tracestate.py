@@ -48,13 +48,14 @@ class Tracestate(object):
 
 	def from_string(self, string):
 		for member in re.split(self._DELIMITER_FORMAT_RE, string):
-			match = self._MEMBER_FORMAT_RE.match(member)
-			if not match:
-				raise ValueError('illegal key-value format {!r}'.format(member))
-			key, eq, value = match.groups()
-			if key in self._traits:
-				raise ValueError('conflict key {!r}'.format(key))
-			self._traits[key] = value
+			if member:
+				match = self._MEMBER_FORMAT_RE.match(member)
+				if not match:
+					raise ValueError('illegal key-value format {!r}'.format(member))
+				key, eq, value = match.groups()
+				if key in self._traits:
+					raise ValueError('conflict key {!r}'.format(key))
+				self._traits[key] = value
 		return self
 
 	def to_string(self):

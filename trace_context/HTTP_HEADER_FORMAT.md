@@ -268,6 +268,11 @@ Platforms and libraries MUST expect header name in any casing and SHOULD send he
 
 ## Header value
 
+Multiple `tracestate` headers are allowed. Values from multiple headers in
+incoming requests SHOULD be combined in a single header according to the
+[RFC7230](https://tools.ietf.org/html/rfc7230#page-24) and send as a single
+header in outgoing request.
+
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule in [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes the OWS rule from [RFC7230 section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
 `DIGIT` rule defines number `0`-`9`.
@@ -276,16 +281,26 @@ The `OWS` rule defines an optional whitespace. It is used where zero or more whi
 
 The `tracestate` field value is a `list` as defined below. The `list` is a series of `list-members` separated by commas `,`, and a `list-member` is a key/value pair separated by an equals sign `=`. Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`.
 
+Empty and whitespace-only list members are allowed. Libraries and
+platforms MUST accept empty `tracestate` headers, but SHOULD avoid
+sending them. The reason for allowing of empty list members in
+`tracestate` is a difficulty for implementor to recognize the empty
+value when multiple `tracestate` headers were sent. Whitespace
+characters are allowed for a similar reason as some frameworks will
+inject whitespace after `,` separator automatically even in case of an
+empty header.
+
 A simple example of a `list` with two `list-member`s might look like: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
 
-```
+``` abnf
 list  = list-member 0*31( OWS "," OWS list-member )
 list-member = key "=" value
+list-member = OWS
 ```
 
 Identifiers are short (up to 256 characters) textual identifiers.
 
-```
+``` abnf
 key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
 key = lcalpha 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" ) "@" lcalpha 0*13( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
 lcalpha    = %x61-7A ; a-z
@@ -295,7 +310,7 @@ Note that identifiers MUST begin with a lowercase letter, and can only contain l
 
 Value is opaque string up to 256 characters printable ASCII [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs, newlines, carriage returns, etc.
 
-```
+``` abnf
 value    = 0*255(chr) nblk-chr
 nblk-chr = %x21-2B / %x2D-3C / %x3E-7E
 chr      = %x20 / nblk-chr
@@ -325,20 +340,6 @@ There might be multiple `tracestate` headers in a single request according to [R
 `tracestate` field contains essential information for request correlation. Platforms and tracing systems MUST propagate this header. Compliance with the specification will require storing of `tracestate` as part of the request payload or associated metadata. Allowing the long field values can make compliance to the specification impossible. Thus, the aggressive limit of 512 characters was chosen.
 
 If the `tracestate` value has more than 512 characters, the tracer CAN decide to forward the `tracestate`. When propagating `tracestate` with the excessive length - the assumption SHOULD be that the receiver will drop this header.
-
-## Name format
-
-Name starts with the beginning of the string or separator `,` and ends with the
-equal sign `=`. The contents of the name are any URL encoded string that does
-not contain an equal sign `=`. Names should intuitively identify the tracing
-system even if multiple systems per vendor are present.
-
-## Value format
-
-Value starts after equal sign and ends with a separator `,` or end of string.
-In the case of a generic tracing system, it contains the same data as the most
-recent `traceparent` value. Other systems may have different formatting, such
-as Base64 encoded opaque values.
 
 ## Examples of HTTP headers
 
