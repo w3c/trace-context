@@ -15,8 +15,6 @@ Specification for distributed tracing context propagation format:
 
 ## Team Communication
 
-## Team Communication
-
 See [communication](https://github.com/w3c/distributed-tracing-wg#team-communication)
 
 We appreciate feedback and contributions. Please make sure to read rationale documents when you have a question about particular
