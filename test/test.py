@@ -18,6 +18,9 @@ def environ(name, default = None):
 			raise EnvironmentError('environment variable {} is not defined'.format(name))
 	return os.environ[name]
 
+STRICT_LEVEL = int(environ('STRICT_LEVEL', '2'))
+print('STRICT_LEVEL: {}'.format(STRICT_LEVEL))
+
 def setUpModule():
 	global client
 	global server
@@ -704,6 +707,7 @@ class TraceContextTest(TestBase):
 		])
 		self.assertRaises(KeyError, lambda: tracestate['bar'])
 
+	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_member_count_limit(self):
 		'''
 		harness sends a request with a valid tracestate header with 32 list members
@@ -812,6 +816,7 @@ Environment Variables:
 	HARNESS_BIND_HOST  the host/address which the test harness binds to (default to HARNESS_HOST)
 	HARNESS_BIND_PORT  the port which the test harness binds to (default to HARNESS_PORT)
 	SERVICE_ENDPOINT   your test service endpoint (no default value)
+	STRICT_LEVEL       the level of test strictness (default 2)
 
 Example:
 	python {0} http://127.0.0.1:5000/test
