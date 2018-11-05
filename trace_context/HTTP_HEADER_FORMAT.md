@@ -49,6 +49,8 @@ which tracing system corresponds with `traceparent`. In this case, since
 
 # TraceParent field
 
+Field `traceparent` identifies the request in a tracing system.
+
 ## Header name
 
 In order to increase interoperability across multiple protocols and encourage successful integration by default it is recommended to keep the header name lower case. Header name is a single word without any delimiters like hyphen (`-`).
@@ -256,7 +258,12 @@ Implementation should follow the following rules when parsing headers with an un
 
 # Tracestate field
 
-The `tracestate` HTTP header field conveys information about request position in multiple distributed tracing graphs.
+The `tracestate` HTTP header field conveys information about request
+position in multiple distributed tracing graphs. This header is a
+companion header for the `traceparent`. If library or platform failed to
+parse `traceparent` - it MUST NOT attempt to parse the `tracestate`.
+Note, that opposite it not true - failure to parse `tracestate` MUST NOT
+affect the parsing of `traceparent`.
 
 ## Header name
 
