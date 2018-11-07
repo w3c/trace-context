@@ -26,12 +26,16 @@ This specification defines formats to pass trace context information across syst
 to share this with the community so that various tracing and diagnostics products can operate
 together.
 
+## References
+
+- Cloud Events define [distributed tracing
+  extension](https://github.com/cloudevents/spec/blob/master/extensions/distributed-tracing.md)
+
 ## Reference Implementations
 
 TODO: add link here
 
 ## Why are we doing this
-
 
 See [Why](https://github.com/w3c/distributed-tracing-wg#why-are-we-doing-this)
 
