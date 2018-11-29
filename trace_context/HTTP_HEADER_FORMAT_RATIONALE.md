@@ -23,6 +23,21 @@ We've been discussing to make parts of the `traceparent` header optional. One pr
 
 Making `trace-flags` optional doesn't save a lot, but makes specification more complicated. And it potentially can lead to incompatible implementations which do not expect `trace-flags`.
 
+## Span nomenclature
+
+We were using the term `span-id` in the `traceparent`, but not all tracing
+systems are built around span model, e.g. X-Trace, Canopy, SolarWinds, are built
+around event model, which is considered more expressive than the span model.
+There is nothing in the spec actually requires the model to be span-based, and
+passing the ID of the happened-before "thing" should work for both types of
+trace models. We considered names `call-id`, `request-id`. However out of all
+replacements `parent-id` is probably the best name. First, it matched the header
+name. Second it indicates a difference between caller and callee. Discussing
+AMQP we realized that `message-id` header defined by AMQP refers to individual
+message, and semantically not the same as traceparent. Message id can be used to
+dedup messages on the server when traceparent only defines the source this
+message came from.
+
 ## `tracestate`
 
 - The names should be human readable, but values shoulb be opaque. Cryptic names can
@@ -50,7 +65,7 @@ tracestate - typically you only need a first pair. It also allows you to meaning
 ## Mutations of `tracestate`
 
 Two questions that comes up frequently is whether the `tracestate` header HAVE TO
-be mutated on every mutation of `span-id` to identify the vendor which made this
+be mutated on every mutation of `parent-id` to identify the vendor which made this
 change and whether two different vendors can modify the `tracestate` entries in
 a single component.
 
@@ -135,7 +150,7 @@ One variation is whether original or new header that you cannot recognize is pre
 - Option 2 is better. It's easy, doesn't restrict future version in any way and re-started trace should be understood by new systems. So only one "connection" is lost. And the lost connection issue can be solved by storing the original header in `tracestate`. Drawbacks are also obvious. First, single old component always breaks traces. Second, it's harder to transition without customer disatisfaction of broken traces. 
 
   Storing original value also has negative effects. Valid `traceparent` is 55 characters (out of 512 allowed for `tracestate`). And "bad" headers could be much longer pushing valuable `tracestate` pairs out. Also this requirement increases the chance of abuse. When a bad actor will start sending a header with the version `99` that is only understood by that actor. And the fact that every system passes thru the original value allows this actor to build a complete solution based on this header.
-- Option 3 with the fallback to option 2 seems to allow the easiest transition between versions by forcing a lot of restrictions on the future. Initial proposal was to try to parse individual parts like `trace-id` than `span-id`. Assuming `span-id` size or format may change without changing `trace-id`. However the majority sees potential for abuse here. So we suggest to force future versions to be additive to the current format. And if parsing fails at any stage - simply restart the trace.
+- Option 3 with the fallback to option 2 seems to allow the easiest transition between versions by forcing a lot of restrictions on the future. Initial proposal was to try to parse individual parts like `trace-id` than `parent-id`. Assuming `parent-id` size or format may change without changing `trace-id`. However the majority sees potential for abuse here. So we suggest to force future versions to be additive to the current format. And if parsing fails at any stage - simply restart the trace.
 
 ## Response headers
 

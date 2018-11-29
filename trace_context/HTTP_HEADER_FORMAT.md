@@ -82,10 +82,10 @@ Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version
 The following `version-format` definition is used for version `00`.
 
 ``` abnf
-version-format   = trace-id "-" span-id "-" trace-flags
+version-format   = trace-id "-" parent-id "-" trace-flags
 
 trace-id         = 32HEXDIG  ; 16 bytes array identifier. All zeroes forbidden
-span-id          = 16HEXDIG  ; 8 bytes array identifier. All zeroes forbidden
+parent-id        = 16HEXDIG  ; 8 bytes array identifier. All zeroes forbidden
 trace-flags      = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See below for details
 ```
 
@@ -115,12 +115,14 @@ specification.
 Implementation HAVE TO ignore the `traceparent` when the `trace-id` is invalid.
 For instance, if it contains non-allowed characters.
 
-### Span-id
+### Parent-id
 
-Is the ID of the caller span (parent). It is represented as an 8-byte array, for
-example, `00f067aa0ba902b7`. All bytes `0` is considered invalid.
+Is the ID of this call as known by the caller. It is also known as `span-id` as
+a few telemetry systems call the execution of a client call a span. It is
+represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes `0`
+is considered invalid.
 
-Implementation HAVE TO ignore the `traceparent` when the `span-id` is invalid.
+Implementation HAVE TO ignore the `traceparent` when the `parent-id` is invalid.
 For instance, if it contains non-allowed characters.
 
 ## Trace-flags
@@ -190,7 +192,7 @@ marked for recording by caller will also be recorded by SaaS service. So caller
 can troubleshoot the behavior of every recorded request.
 
 Flag `recorded` has no restriction on it's mutations except that it can only be
-mutated when `span-id` was updated. See section "Mutating the traceparent
+mutated when `parent-id` was updated. See section "Mutating the traceparent
 field". However there are set of suggestions that will increase vendors
 interoperability.
 
@@ -220,20 +222,20 @@ for future use. Implementation MUST set those to zero.
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-base16(<Version>) = 00
-base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
-base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceFlags>) = 01  // recorded
+base16(version) = 00
+base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
+base16(parent-id) = 00f067aa0ba902b7
+base16(trace-flags) = 01  // recorded
 ```
 
 *Valid traceparent when caller haven't recorded this request:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
-base16(<Version>) = 00
-base16(<TraceId>) = 4bf92f3577b34da6a3ce929d0e0e4736
-base16(<SpanId>) = 00f067aa0ba902b7
-base16(<TraceFlags>) = 00  // not recorded
+base16(version) = 00
+base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
+base16(parent-id) = 00f067aa0ba902b7
+base16(trace-flags) = 00  // not recorded
 ```
 
 ## Versioning of `traceparent`
@@ -256,7 +258,7 @@ unexpected format:
     2. Try parse `trace-id`: from the first dash - next 32 characters.
        Implementation MUST check 32 characters to be hex. Make sure they are
        followed by dash.
-    3. Try parse `span-id`: from the second dash at 35th position - 16
+    3. Try parse `parent-id`: from the second dash at 35th position - 16
        characters. Implementation MUST check 16 characters to be hex. Make sure
        this is followed by a dash.
     4. Try parse sampling bit of `flags`:  2 characters from third dash.
@@ -434,17 +436,19 @@ information.
 
 Here is the list of allowed mutations:
 
-1. **Update `span-id`**. The value of property `span-id` can be regenerated.
-   This is the most typical mutation and should be considered a default.
+1. **Update `parent-id`**. The value of property `parent-id` can be set to the
+   new value representing the ID of the current operation. This is the most
+   typical mutation and should be considered a default.
 2. **Indicate recorded state**. The value of `recorded` flag of `trace-flags`
-   may be set to `1` if it had value `0` before or vice versa. `span-id` MUST be
-   regenerated with the `recorded` flag update. See details of `recorded` flag
-   for more information on how this flag is recommended to be used.
+   may be set to `1` if it had value `0` before or vice versa. `parent-id` MUST
+   be set to the new value with the `recorded` flag update. See details of
+   `recorded` flag for more information on how this flag is recommended to be
+   used.
 3. **Update `recorded`**. The value of `recorded` reflects the caller's
    recording behavior: either the trace data were dropped or may have been
    recorded out-of-band. This mutation gives the downstream tracer information
    about the likelihood its parent's information was recorded.
-4. **Restarting trace**. All properties - `trace-id`, `span-id`, `trace-flags`
+4. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
    surface.
