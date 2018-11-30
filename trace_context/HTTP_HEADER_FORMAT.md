@@ -98,7 +98,7 @@ invalid.
 `Trace-id` is used to uniquely identify a distributed trace. So implementation
 should generate globally unique values. Many algorithms of unique identification
 generation are based on some constant part - time or host based and a random
-values. There are systems that make random sampling decisions based on the value
+value. There are systems that make random sampling decisions based on the value
 of `trace-id`. So to increase interoperability it is recommended to keep the
 random part on the right side of `trace-id` value.
 
@@ -112,7 +112,7 @@ even though a system may operate with a shorter `trace-id` for distributed trace
 reporting - full `trace-id` should be propagated to conform to the
 specification.
 
-Implementation HAVE TO ignore the `traceparent` when the `trace-id` is invalid.
+Implementations HAVE TO ignore the `traceparent` when the `trace-id` is invalid.
 For instance, if it contains non-allowed characters.
 
 ### Span-id
