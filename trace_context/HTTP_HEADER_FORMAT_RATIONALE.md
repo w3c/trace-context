@@ -23,7 +23,7 @@ We've been discussing to make parts of the `traceparent` header optional. One pr
 
 Making `trace-flags` optional doesn't save a lot, but makes specification more complicated. And it potentially can lead to incompatible implementations which do not expect `trace-flags`.
 
-## Span nomenclature
+## Span/parent nomenclature
 
 We were using the term `span-id` in the `traceparent`, but not all tracing
 systems are built around span model, e.g. X-Trace, Canopy, SolarWinds, are built

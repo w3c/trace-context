@@ -63,7 +63,7 @@ class DemoServer(HTTPServer):
 				if temp_traceparent.version == 0:
 					if temp_traceparent._residue:
 						raise ValueError('illegal traceparent format')
-				traceparent = Traceparent(0, temp_traceparent.trace_id, temp_traceparent.span_id, temp_traceparent.trace_flags)
+				traceparent = Traceparent(0, temp_traceparent.trace_id, temp_traceparent.parent_id, temp_traceparent.trace_flags)
 				test_data[-1]['is_traceparent_valid'] = True
 			except ValueError:
 				test_data[-1]['is_traceparent_valid'] = False

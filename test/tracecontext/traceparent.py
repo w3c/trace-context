@@ -4,15 +4,15 @@ import uuid
 class BaseTraceparent(object):
 	_VERSION_FORMAT_RE = re.compile('^[0-9a-f]{2}$')
 	_TRACE_ID_FORMAT_RE = re.compile('^[0-9a-f]{32}$')
-	_SPAN_ID_FORMAT_RE = re.compile('^[0-9a-f]{16}$')
+	_PARENT_ID_FORMAT_RE = re.compile('^[0-9a-f]{16}$')
 	_TRACE_FLAGS_FORMAT_RE = re.compile('^[0-9a-f]{2}$')
 	_ZERO_TRACE_ID = b'\0' * 16
-	_ZERO_SPAN_ID = b'\0' * 8
+	_ZERO_PARENT_ID = b'\0' * 8
 
-	def __init__(self, version = 0, trace_id = None, span_id = None, trace_flags = 0, *_residue):
+	def __init__(self, version = 0, trace_id = None, parent_id = None, trace_flags = 0, *_residue):
 		self.version = version
 		self.trace_id = trace_id
-		self.span_id = span_id
+		self.parent_id = parent_id
 		self.trace_flags = trace_flags
 		self._residue = _residue
 
@@ -30,7 +30,7 @@ class BaseTraceparent(object):
 		return cls(*value)
 
 	def to_string(self):
-		retval = '{}-{}-{}-{}'.format(self._version.hex(), self._trace_id.hex(), self._span_id.hex(), self._trace_flags.hex())
+		retval = '{}-{}-{}-{}'.format(self._version.hex(), self._trace_id.hex(), self._parent_id.hex(), self._trace_flags.hex())
 		if self._residue:
 			retval += '-' + '-'.join(self._residue)
 		return retval
@@ -73,22 +73,22 @@ class BaseTraceparent(object):
 		else:
 			raise ValueError('unsupported trace_id type')
 
-	def get_span_id(self):
-		return self._span_id
+	def get_parent_id(self):
+		return self._parent_id
 
-	def set_span_id(self, span_id):
-		if span_id is None:
-			self.set_span_id(self._ZERO_SPAN_ID)
-		elif isinstance(span_id, bytes):
-			if len(span_id) != 8:
-				raise ValueError('span_id must contain 8 bytes')
-			self._span_id = span_id
-		elif isinstance(span_id, str):
-			if not self._SPAN_ID_FORMAT_RE.match(span_id):
-				raise ValueError('span_id does not match {}'.format(self._SPAN_ID_FORMAT_RE))
-			self.set_span_id(bytes.fromhex(span_id))
+	def set_parent_id(self, parent_id):
+		if parent_id is None:
+			self.set_parent_id(self._ZERO_PARENT_ID)
+		elif isinstance(parent_id, bytes):
+			if len(parent_id) != 8:
+				raise ValueError('parent_id must contain 8 bytes')
+			self._parent_id = parent_id
+		elif isinstance(parent_id, str):
+			if not self._PARENT_ID_FORMAT_RE.match(parent_id):
+				raise ValueError('parent_id does not match {}'.format(self._PARENT_ID_FORMAT_RE))
+			self.set_parent_id(bytes.fromhex(parent_id))
 		else:
-			raise ValueError('unsupported span_id type')
+			raise ValueError('unsupported parent_id type')
 
 	def get_trace_flags(self):
 		return ord(self._trace_flags)
@@ -111,16 +111,16 @@ class BaseTraceparent(object):
 
 	version = property(get_version, set_version)
 	trace_id = property(get_trace_id, set_trace_id)
-	span_id = property(get_span_id, set_span_id)
+	parent_id = property(get_parent_id, set_parent_id)
 	trace_flags = property(get_trace_flags, set_trace_flags)
 
 class Traceparent(BaseTraceparent):
-	def __init__(self, version = 0, trace_id = None, span_id = None, trace_flags = 0):
+	def __init__(self, version = 0, trace_id = None, parent_id = None, trace_flags = 0):
 		if trace_id is None:
 			trace_id = uuid.uuid1().hex
-		if span_id is None:
-			span_id = uuid.uuid4().hex[:16]
-		super().__init__(version, trace_id, span_id, trace_flags)
+		if parent_id is None:
+			parent_id = uuid.uuid4().hex[:16]
+		super().__init__(version, trace_id, parent_id, trace_flags)
 
 	def set_version(self, version):
 		if version != 0 and version != b'\0' and version != '00':
@@ -132,15 +132,15 @@ class Traceparent(BaseTraceparent):
 			raise ValueError('all zero trace_id is not allowed')
 		super().set_trace_id(trace_id)
 
-	def set_span_id(self, span_id):
-		if span_id == self._ZERO_SPAN_ID:
-			raise ValueError('all zero span_id is not allowed')
-		super().set_span_id(span_id)
+	def set_parent_id(self, parent_id):
+		if parent_id == self._ZERO_PARENT_ID:
+			raise ValueError('all zero parent_id is not allowed')
+		super().set_parent_id(parent_id)
 
 	def set_trace_flags(self, trace_flags):
 		super().set_trace_flags(trace_flags)
 
 	version = property(BaseTraceparent.get_version, set_version)
 	trace_id = property(BaseTraceparent.get_trace_id, set_trace_id)
-	span_id = property(BaseTraceparent.get_span_id, set_span_id)
+	parent_id = property(BaseTraceparent.get_parent_id, set_parent_id)
 	trace_flags = property(BaseTraceparent.get_trace_flags, set_trace_flags)

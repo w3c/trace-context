@@ -123,13 +123,13 @@ class TraceContextTest(TestBase):
 	def test_traceparent_included_tracestate_missing(self):
 		'''
 		harness sends a request with traceparent but without tracestate
-		expects a valid traceparent from the output header, with the same trace_id but different span_id
+		expects a valid traceparent from the output header, with the same trace_id but different parent_id
 		'''
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-01'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
-		self.assertNotEqual(traceparent.span_id.hex(), '1234567890123456')
+		self.assertNotEqual(traceparent.parent_id.hex(), '1234567890123456')
 
 	def test_traceparent_duplicated(self):
 		'''
@@ -310,9 +310,9 @@ class TraceContextTest(TestBase):
 		])
 		self.assertNotEqual(traceparent.trace_id.hex(), '1234567890123456789012345678901')
 
-	def test_traceparent_span_id_all_zero(self):
+	def test_traceparent_parent_id_all_zero(self):
 		'''
-		harness sends an invalid traceparent with span_id = 0000000000000000
+		harness sends an invalid traceparent with parent_id = 0000000000000000
 		expects a valid traceparent from the output header, with a newly generated trace_id
 		'''
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -320,9 +320,9 @@ class TraceContextTest(TestBase):
 		])
 		self.assertNotEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
 
-	def test_traceparent_span_id_illegal_characters(self):
+	def test_traceparent_parent_id_illegal_characters(self):
 		'''
-		harness sends an invalid traceparent with illegal characters in span_id
+		harness sends an invalid traceparent with illegal characters in parent_id
 		expects a valid traceparent from the output header, with a newly generated trace_id
 		'''
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -335,9 +335,9 @@ class TraceContextTest(TestBase):
 		])
 		self.assertNotEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
 
-	def test_traceparent_span_id_too_long(self):
+	def test_traceparent_parent_id_too_long(self):
 		'''
-		harness sends an invalid traceparent with span_id more than 16 HEXDIG
+		harness sends an invalid traceparent with parent_id more than 16 HEXDIG
 		expects a valid traceparent from the output header, with a newly generated trace_id
 		'''
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -345,9 +345,9 @@ class TraceContextTest(TestBase):
 		])
 		self.assertNotEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
 
-	def test_traceparent_span_id_too_short(self):
+	def test_traceparent_parent_id_too_short(self):
 		'''
-		harness sends an invalid traceparent with span_id less than 16 HEXDIG
+		harness sends an invalid traceparent with parent_id less than 16 HEXDIG
 		expects a valid traceparent from the output header, with a newly generated trace_id
 		'''
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -780,25 +780,25 @@ class AdvancedTest(TestBase):
 	def test_multiple_requests(self):
 		'''
 		harness asks vendor service to callback multiple times
-		expects a different span_id each time
+		expects a different parent_id each time
 		'''
-		span_ids = set()
+		parent_ids = set()
 		for response in self.make_request([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-01'],
 		], 3):
 			traceparent = self.get_traceparent(response['headers'])
 			self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
-			span_ids.add(traceparent.span_id.hex())
-		self.assertEqual(len(span_ids), 3)
+			parent_ids.add(traceparent.parent_id.hex())
+		self.assertEqual(len(parent_ids), 3)
 
 		trace_ids = set()
-		span_ids = set()
+		parent_ids = set()
 		for response in self.make_request([], 3):
 			traceparent = self.get_traceparent(response['headers'])
 			trace_ids.add(traceparent.trace_id.hex())
-			span_ids.add(traceparent.span_id.hex())
+			parent_ids.add(traceparent.parent_id.hex())
 		self.assertEqual(len(trace_ids), 1)
-		self.assertEqual(len(span_ids), 3)
+		self.assertEqual(len(parent_ids), 3)
 
 
 if __name__ == '__main__':
