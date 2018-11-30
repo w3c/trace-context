@@ -162,7 +162,7 @@ unset.
 
 Many distributed tracing scenarios may be broken when only a subset of calls
 participated in a distributed trace were recorded. At certain load recording
-information about every incoming and outgoing request become prohibitively
+information about every incoming and outgoing request becomes prohibitively
 expensive. Making a random or component-specific decision for data collection
 will lead to fragmented data in every distributed trace. Thus it is typical for
 tracing vendors and platforms to pass recording decision for given distributed
