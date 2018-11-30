@@ -183,13 +183,13 @@ interoperability between vendors. It allows to communicate recording decision
 and enable better experience for the customer.
 
 For example, when SaaS services participate in distributed trace - this service
-has no knowledge of tracing system used by it's caller. But this service may
+has no knowledge of tracing system used by its caller. But this service may
 produce records of incoming requests for monitoring or troubleshooting purposes.
 Flag `recorded` can be used to ensure that information about requests that were
 marked for recording by caller will also be recorded by SaaS service. So caller
 can troubleshoot the behavior of every recorded request.
 
-Flag `recorded` has no restriction on it's mutations except that it can only be
+Flag `recorded` has no restriction on its mutations except that it can only be
 mutated when `span-id` was updated. See section "Mutating the traceparent
 field". However there are set of suggestions that will increase vendors
 interoperability.
