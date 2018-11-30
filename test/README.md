@@ -180,10 +180,10 @@ Content-Type: application/json
 	test_traceparent_header_name (test.TraceContextTest) ... ok
 	test_traceparent_header_name_valid_casing (test.TraceContextTest) ... ok
 	test_traceparent_included_tracestate_missing (test.TraceContextTest) ... ok
-	test_traceparent_span_id_all_zero (test.TraceContextTest) ... ok
-	test_traceparent_span_id_illegal_characters (test.TraceContextTest) ... ok
-	test_traceparent_span_id_too_long (test.TraceContextTest) ... ok
-	test_traceparent_span_id_too_short (test.TraceContextTest) ... ok
+	test_traceparent_parent_id_all_zero (test.TraceContextTest) ... ok
+	test_traceparent_parent_id_illegal_characters (test.TraceContextTest) ... ok
+	test_traceparent_parent_id_too_long (test.TraceContextTest) ... ok
+	test_traceparent_parent_id_too_short (test.TraceContextTest) ... ok
 	test_traceparent_trace_flags_illegal_characters (test.TraceContextTest) ... ok
 	test_traceparent_trace_flags_too_long (test.TraceContextTest) ... ok
 	test_traceparent_trace_flags_too_short (test.TraceContextTest) ... ok
@@ -216,9 +216,9 @@ Content-Type: application/json
 	test_ctor_with_variadic_arguments (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
 	test_from_string (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
 	test_repr (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
-	test_set_span_id (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_set_parent_id (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
 	test_set_trace_id (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
-	test_span_id_limit (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
+	test_parent_id_limit (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
 	test_str (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
 	test_trace_flags_limit (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
 	test_trace_id_limit (tracecontext.test_traceparent.BaseTraceparentTest) ... ok
@@ -227,7 +227,7 @@ Content-Type: application/json
 	test_ctor_default (tracecontext.test_traceparent.TraceparentTest) ... ok
 	test_from_string (tracecontext.test_traceparent.TraceparentTest) ... ok
 	test_repr (tracecontext.test_traceparent.TraceparentTest) ... ok
-	test_set_span_id (tracecontext.test_traceparent.TraceparentTest) ... ok
+	test_set_parent_id (tracecontext.test_traceparent.TraceparentTest) ... ok
 	test_set_trace_id (tracecontext.test_traceparent.TraceparentTest) ... ok
 	test_set_version (tracecontext.test_traceparent.TraceparentTest) ... ok
 	test_str (tracecontext.test_traceparent.TraceparentTest) ... ok

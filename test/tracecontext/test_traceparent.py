@@ -6,7 +6,7 @@ class BaseTraceparentTest(unittest.TestCase):
 		traceparent = BaseTraceparent()
 		self.assertEqual(traceparent.version, 0)
 		self.assertEqual(traceparent.trace_id, b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0')
-		self.assertEqual(traceparent.span_id, b'\0\0\0\0\0\0\0\0')
+		self.assertEqual(traceparent.parent_id, b'\0\0\0\0\0\0\0\0')
 		self.assertEqual(traceparent.trace_flags, 0)
 
 	def test_ctor(self):
@@ -32,12 +32,12 @@ class BaseTraceparentTest(unittest.TestCase):
 		self.assertRaises(ValueError, lambda: BaseTraceparent(trace_id = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'))
 		self.assertRaises(ValueError, lambda: BaseTraceparent(trace_id = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'))
 
-	def test_span_id_limit(self):
-		traceparent = BaseTraceparent(span_id = b'\0\0\0\0\0\0\0\0')
-		self.assertEqual(traceparent.span_id, b'\0\0\0\0\0\0\0\0')
+	def test_parent_id_limit(self):
+		traceparent = BaseTraceparent(parent_id = b'\0\0\0\0\0\0\0\0')
+		self.assertEqual(traceparent.parent_id, b'\0\0\0\0\0\0\0\0')
 
-		self.assertRaises(ValueError, lambda: BaseTraceparent(span_id = b'\0\0\0\0\0\0\0'))
-		self.assertRaises(ValueError, lambda: BaseTraceparent(span_id = b'\0\0\0\0\0\0\0\0\0'))
+		self.assertRaises(ValueError, lambda: BaseTraceparent(parent_id = b'\0\0\0\0\0\0\0'))
+		self.assertRaises(ValueError, lambda: BaseTraceparent(parent_id = b'\0\0\0\0\0\0\0\0\0'))
 
 	def test_trace_flags_limit(self):
 		traceparent = BaseTraceparent(trace_flags = 0)
@@ -95,27 +95,27 @@ class BaseTraceparentTest(unittest.TestCase):
 		traceparent.set_trace_id('ffffffffffffffffffffffffffffffff')
 		self.assertRaises(ValueError, lambda: traceparent.set_trace_id('fffffffffffffffffffffffffffffffff'))
 
-	def test_set_span_id(self):
+	def test_set_parent_id(self):
 		traceparent = BaseTraceparent()
-		traceparent.set_span_id(None)
-		traceparent.set_span_id(b'\xff\xff\xff\xff\xff\xff\xff\xff')
-		self.assertRaises(ValueError, lambda: traceparent.set_span_id('fffffffffffffff'))
-		traceparent.set_span_id('ffffffffffffffff')
-		self.assertRaises(ValueError, lambda: traceparent.set_span_id('fffffffffffffffff'))
+		traceparent.set_parent_id(None)
+		traceparent.set_parent_id(b'\xff\xff\xff\xff\xff\xff\xff\xff')
+		self.assertRaises(ValueError, lambda: traceparent.set_parent_id('fffffffffffffff'))
+		traceparent.set_parent_id('ffffffffffffffff')
+		self.assertRaises(ValueError, lambda: traceparent.set_parent_id('fffffffffffffffff'))
 
 class TraceparentTest(unittest.TestCase):
 	def test_ctor_default(self):
 		traceparent = Traceparent()
 		self.assertEqual(traceparent.version, 0)
 		self.assertNotEqual(traceparent.trace_id, b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0')
-		self.assertNotEqual(traceparent.span_id, b'\0\0\0\0\0\0\0\0')
+		self.assertNotEqual(traceparent.parent_id, b'\0\0\0\0\0\0\0\0')
 		self.assertEqual(traceparent.trace_flags, 0)
 
 	def test_ctor(self):
 		self.assertRaises(ValueError, lambda: Traceparent(version = 1))
 		self.assertRaises(ValueError, lambda: Traceparent(version = 0xff))
 		self.assertRaises(ValueError, lambda: Traceparent(trace_id = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'))
-		self.assertRaises(ValueError, lambda: Traceparent(span_id = b'\0\0\0\0\0\0\0\0'))
+		self.assertRaises(ValueError, lambda: Traceparent(parent_id = b'\0\0\0\0\0\0\0\0'))
 
 	def test_from_string(self):
 		traceparent = Traceparent.from_string('00-12345678901234567890123456789012-1234567890123456-00')
@@ -149,9 +149,9 @@ class TraceparentTest(unittest.TestCase):
 		traceparent = Traceparent()
 		self.assertRaises(ValueError, lambda: traceparent.set_trace_id(None))
 
-	def test_set_span_id(self):
+	def test_set_parent_id(self):
 		traceparent = Traceparent()
-		self.assertRaises(ValueError, lambda: traceparent.set_span_id(None))
+		self.assertRaises(ValueError, lambda: traceparent.set_parent_id(None))
 
 if __name__ == '__main__':
 	unittest.main()
