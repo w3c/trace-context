@@ -13,10 +13,11 @@ consistency and may be used in future for the versioning of the `traceparent`
 field.
 
 ``` abnf
-traceparent     = version "0" trace-id "1" parent-id "2" recorded
+traceparent     = version version_format
+version_format  = "0" trace-id "1" parent-id "2" recorded
 trace-id        = 16BYTES
 parent-id       = 8BYTES
-trace-options   = 1BYTE   ; only the least significant bit is counted
+trace-flags   = 1BYTE   ; only the least significant bit is counted
 ```
 
 Unknown field identifier (anything beyond `0`, `1` and `2`) should be treated as
@@ -34,11 +35,11 @@ invalid `traceparent`. All zeroes in `trace-id` and `parent-id` invalidates the
 
 This corresponds to:
 
-- `traceId` is
+- `trace-id` is
   `{75, 249, 47, 53, 119, 179, 77, 166, 163, 206, 146, 157, 0, 14, 71, 54}` or
   `4bf9273577b34da6a3ce929d000e4736`.
-- `spanId` is `{52, 240, 103, 170, 11, 169, 2, 183}` or `34f067aa0ba902b7`.
-- `traceOptions` is `1` with the meaning `recorded` is true.
+- `span-id` is `{52, 240, 103, 170, 11, 169, 2, 183}` or `34f067aa0ba902b7`.
+- `trace-flags` is `1` with the meaning `recorded` is true.
 
 ## `tracestate` binary format
 
