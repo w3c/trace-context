@@ -1,7 +1,10 @@
 # Binary format
 
 Binary format document describes how to encode each field - `traceparent` and
-`tracestate`.
+`tracestate`. The binary format should be used to encode the values of these
+fields. This specification does not specify how these fields should be stored
+and send as a part of a binary payload. The basic implementation may serialize
+those as size of the field followed by the value.
 
 # `Traceparent` binary format
 
@@ -14,7 +17,7 @@ field.
 
 ``` abnf
 traceparent     = version version_format
-version_format  = "0" trace-id "1" parent-id "2" recorded
+version_format  = "{ 0x0 }" trace-id "{ 0x1 }" parent-id "{ 0x2 }" recorded
 trace-id        = 16BYTES
 parent-id       = 8BYTES
 trace-flags   = 1BYTE   ; only the least significant bit is counted
@@ -46,6 +49,7 @@ This corresponds to:
 List of up to 32 name-value pairs. Each list member starts with the 1 byte field
 identifier `0`. The format of list member is a single byte key length followed
 by the key value and single byte value length followed by the encoded value.
+Strings are transmitted in ASCII encoding.
 
 ``` abnf
 tracestate      = list-member 0*31( list-member )
@@ -53,3 +57,8 @@ list-member     = "0" key-len key value-len value
 key-len         = 1BYTE ; length of the key string
 value-len       = 1BYTE ; length of the value string
 ```
+
+Zero length key (`key-len == 0`) indicates the end of the `tracestate`. So when
+`tracestate` should be serialized into the buffer that is longer than it
+requires - `{ 0, 0 }` (field id `0` and key-len `0`) will indicate the end of
+the `tracestate`.
