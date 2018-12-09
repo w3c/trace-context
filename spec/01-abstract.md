@@ -1,7 +1,39 @@
-Distributed tracing is a set of tools and practices to monitor the health and reliability of a distributed application. A distributed application is an application that consists of multiple components that are deployed and operated separately. It is also known as micro-service.
+# Problem Statement
 
-The main concept behind distributed tracing is event correlation. Event correlation is a way to correlate events from one component to the events from another. It allows to find the cause-and-effect relationship between these events. For instance – find which user action in a browser caused a failure in the business logic layer.
+Distributed tracing is a methodology implemented by tracing tools to follow, analyze
+and debug a transaction across multiple software components. Typically, a trace
+traverses more than one component which requires it to be uniquely identifiable
+across all participating systems. Passing along this unique identification is
+provided by *trace context propagation*.
 
-To correlate events between components, these components need to exchange and store a piece of information called context. Typically context consists of an originating event identifier, an originating component identity and other event properties. Context has two parts. The first part is a trace context. Trace context consists of properties crucial for event correlation. The second part is correlation context. Correlation context carries user-defined properties. These properties may be helpful for correlation scenarios. But they are not required and components may choose to not carry or store them.
+Today, trace context propagation is implemented individually by each vendor.
+In multi-vendor environments, this causes interoperability problems, like:
 
-Unifying the format of distributed tracing context as well as aligning on semantic meaning of the values is the main objective of this working group. The goal is to share this with the community so that various tracing and diagnostics products can operate together.
+- Traces that are collected by different tracing vendors cannot be linked together
+  as there is no shared unique identifier.
+- Traces that cross boundaries between different tracing vendors break as there
+  is no uniformly agreed set of identification that is forwarded.
+- Cloud platform vendors, as well as hardware vendors, cannot guarantee to support
+  trace context propagation as there is no standard to follow.
+
+In the past, these problems did not have a significant impact as most applications
+were monitored by a single tracing tool and stayed within the boundaries of a single
+platform provider. Today, an increasing number of applications are highly
+distributed and leverage multiple middleware services and cloud platforms.
+
+## Solution
+
+The trace context specification defines a universally agreed-upon format for the
+exchange of trace context propagation data - referred to as *trace context*. Trace
+context solves the problems described above by
+
+- providing a unique identifier for individual traces, allowing traces of multiple
+  providers to be linked together.
+- providing an agreed-upon mechanism to forward vendor-specific trace data and
+  avoid broken traces when multiple trace tools participate in a single transaction.
+- providing an industry standard that platform- and hardware-providers can support.
+
+A unified approach for propagating trace data improves visibility into the behavior
+of distributed applications, facilitating problem and performance analysis.
+The interoperability provided by trace-context is a prerequisite to manage modern
+micro-service based applications.
