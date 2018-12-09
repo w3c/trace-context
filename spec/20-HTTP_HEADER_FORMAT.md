@@ -48,7 +48,7 @@ wrote `traceparent`, its `tracestate` entry should be left-most.
 
 # Traceparent field
 
-Field `traceparent` identifies the request in a tracing system.
+The `traceparent` field uniquely identifies indivual requests across multiple tracing systems.
 
 ## Header name
 
@@ -154,7 +154,7 @@ static final byte FLAG_RECORDED = 1; // 00000001
 boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED
 ```
 
-Current version of specification only supports a single flag called `recorded`.
+This specification only defines a single flag called `recorded`.
 
 ### Recorded Flag (00000001)
 
