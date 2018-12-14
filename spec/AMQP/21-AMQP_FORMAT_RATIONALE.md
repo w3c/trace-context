@@ -28,3 +28,22 @@ implementation for parsing it.
 
 Maps in AMQP preserving the order so there is no conflict with the semantics of
 the field.
+
+## Prefix of the field names
+
+The properties are typically prefixed because they’re generic and might
+interfere with an app’s use of the same names. So, for instance, instead of
+`traceparent` prefixed name like `w3c:traceparent` can be used. In general AMQP
+apps tend to be more metadata heavy than HTTP. For instance, `http:` is used in
+the HTTP-over-AMQP spec.
+
+The question is whether prefix is required for trace context and if so - what
+may be the name of the prefix. Options may be `w3c` for the origin of the spec,
+`tcx` for trace context, `dt` for distributed tracing.
+
+However in the current spec, even if customer decided to use the same name, the
+chance that customer didn’t mean to override those properties intentionally is
+very small. Those are rare names. So prefix doesn’t add much, but increases a
+chance for an error and interoperability.
+
+So suggestion is to keep the name un-prefixed.
