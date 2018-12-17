@@ -1,6 +1,6 @@
 # Processing Model
 
-This section defines the behaviour of a tracing system when a new request is received by a component. As stated above tracing systems can decide for each individual request whether they want to _forward_ a trace or _participate_ in a trace. The processing model for both scenarios will be described individualy and adds a seperate processing model when a tracing system is the first system to start a trace. 
+This section defines the behaviour of a tracing system when a new request is received by a component. As stated above tracing systems can decide for each individual request whether they want to _forward_ a trace context or _participate_ in a trace context. The processing model for both scenarios will be described individualy and adds a seperate processing model when a tracing system is the first system to start a trace. 
 
 ## Processing Model in Forwarding Mode
 
