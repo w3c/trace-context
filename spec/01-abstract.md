@@ -1,4 +1,4 @@
-# Problem Statement
+## Problem Statement
 
 Distributed tracing is a methodology implemented by tracing tools enabling to follow, analyze and debug a transaction across multiple software components. Typically, a transaction passes more than one component which requires a transaction to be uniquely identified across all software components. Passing along this unique identification is referred to as context propagation.
 
@@ -9,7 +9,7 @@ Today context propagation is implemented in proprietary formats individually by 
 
 In the past this problem did not have significant impact as most applications where under monitored by a single tracing tool. Today, an increasing number of applications are hgihly highly-distributed and leverage an increasing number of cloud platform and middleware services. Most of these services come with their own tracing capababilities which results in big interoperabiity problems and lack of visibility for developers and appliation operators.
 
-# Solution
+## Solution
 
 The trace context specification defines a universally agreed format for the exchange of context propagation data - referred to as trace context. Trace context solved the problems described above by
 
