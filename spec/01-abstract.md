@@ -7,7 +7,7 @@ Today context propagation is implemented in proprietary formats individually by 
 - Traces that are collected by two tracing providers cannot be linked together as there is no unique identifier linking the individual pieces together. 
 - Traces are broken each time they are passed between components monitored by different tracing as there is no uniformly agree set of identifcation taht is forwarded.
 
-In the past this problem did not have significant impact as most applications where under monitored by a single tracing tool. Today, an increasing number of applications are hgihly highly-distributed and leverage an increasing number of cloud platform and middleware services. Most of these services come with their own tracing capababilities which results in big interoperabiity problems and lack of visibility for developers and appliation operators.
+In the past this problem did not have significant impact as most applications were under monitored by a single tracing tool. Today, an increasing number of applications are highly distributed and leverage an increasing number of cloud platform and middleware services. Most of these services come with their own tracing capababilities which results in big interoperabiity problems and lack of visibility for developers and appliation operators.
 
 ## Solution
 
