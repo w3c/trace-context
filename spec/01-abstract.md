@@ -13,7 +13,7 @@ In the past, these problems did not have a significant impact as most applicatio
 
 ## Solution
 
-The trace context specification defines a universally agreed format for the exchange of context propagation data - referred to as *trace context*. Trace context solves the problems described above by
+The trace context specification defines a universally agreed-upon format for the exchange of context propagation data - referred to as *trace context*. Trace context solves the problems described above by
 
 - providing a unique identifier for individual tracing, allowing traces of multiple providers to be linked together and 
 - providing an agreed-upon mechanism to forward vendor-specific trace data and avoid broken traces when multiple trace tools participate in a single transaction. 
