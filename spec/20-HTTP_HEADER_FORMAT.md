@@ -4,7 +4,7 @@ This section describes the representation and propagation of the distributed tra
 
 ## Relationship between the headers
 
-The `traceparent` header represents the incoming request in a tracing system in a common format. The `tracestate` header includes the parent in a potentially vendor-specific format.
+The `traceparent` header represents the incoming request into a tracing system in a common format. The `tracestate` header includes the parent in a potentially vendor-specific format.
 
 For example, a client traced in the congo system adds the following headers to an outbound HTTP request.
 
@@ -14,7 +14,7 @@ tracestate: congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4
 ```
 
 If the receiving server is traced in the `rojo` tracing system, it carries over
-the state it received and adds a new entry with the position in its trace.
+the state it received and adds a new entry to the top of `tracestate`.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
@@ -34,12 +34,11 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
 tracestate: congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4,rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 ```
 
-Notice when `congo` wrote its `traceparent` entry, it reuses the last trace ID
+> **PENDING DECISION - maybe TMI?**
+Note: When `congo` wrote its `traceparent` entry, it reused the last trace ID
 which helps in consistency for those doing correlation. However, the value of its entry `tracestate` is opaque and different. This is ok.
 
-Finally, you'll see `tracestate` retains an entry for `rojo` exactly as it was,
-except pushed to the right. The left-most position lets the next server know
-which tracing system corresponds with `traceparent`. In this case, since `congo` wrote `traceparent`, its `tracestate` entry should be left-most.
+After this transition, `tracestate` contains an entry for `rojo` with the same value but pushed to the right. The left-most position implicitely tells which tracing system corresponds with the current `traceparent`. According to that, since `congo` wrote `traceparent`, its `tracestate` entry should be left-most.
 
 ## Traceparent field
 The HTTP header field `traceparent` uniquely identifies a request within a participating component.
