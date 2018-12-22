@@ -1,12 +1,13 @@
-# Trace context HTTP headers format
+# Trace context HTTP headers
 
 This section describes the representation and propagation of the distributed trace context through its HTTP headers `traceparent` and `tracestate`.
 
-## Relationship between the headers
+## Semantic
 
-The `traceparent` header represents the incoming request into a tracing system in a common format. The `tracestate` header includes the parent in a potentially vendor-specific format.
+The `traceparent` header represents an incoming request into a participating component in a common format. The `tracestate` header includes the parent in a potentially vendor-specific format.
 
-For example, a client traced in the congo system adds the following headers to an outbound HTTP request.
+## Example
+A client traced in the congo system adds the following headers to an outbound HTTP request.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
@@ -20,11 +21,11 @@ the state it received and adds a new entry to the top of `tracestate`.
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4
 ```
-
+> **NEEDS EDIT - the generic tracing system is defined in the rationale doc which is not part of the spec?**
 You'll notice that the `rojo` system reuses the value of `traceparent` in its
 entry in `tracestate`. This means it is a generic tracing system. Otherwise,
 `tracestate` entries are opaque.
-> **NEEDS EDIT - the generic tracing system is defined in the rationale doc which is not part of the spec?**
+
 
 If the receiving server of the above is `congo` again, it continues from its
 last position, overwriting its entry with one representing the new parent.
