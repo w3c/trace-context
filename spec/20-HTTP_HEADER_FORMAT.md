@@ -4,7 +4,7 @@ This section describes the representation and propagation of the distributed tra
 
 ## Semantic
 
-The `traceparent` header identifies an incoming request into a participating component. 
+The `traceparent` header identifies an incoming request into a participating component.
 
 The `tracestate` header contains a list of participating components as key-value pairs, where the key identifies the component and the value contains potentially proprietary data needed for processing by the component.
 As the components append their entry to the top of the list, while shifting other entries to the right, the left-most position implicitly tells which tracing system corresponds with the current `traceparent`.
@@ -91,19 +91,19 @@ Represents the ID of the whole trace forest as 16-byte array and is used to uniq
 * A `trace-id` with all bytes set to `0` is not allowed.
 * Implementations SHOULD generate globally unique values.
 * Implementations HAVE TO ignore the `traceparent` if the `trace-id` does not comply with this specification.
-* If a system operates with a shorter `trace-id` - it SHOULD fill-in the extra bytes with random values rather than zeros. 
+* If a system operates with a shorter `trace-id` - it SHOULD fill-in the extra bytes with random values rather than zeros.
 
   **Example:**
-  A system uses a 8-byte unique identifier like `3ce929d0e0e4736`. Instead of setting the `trace-id` value to `0000000000000003ce929d0e0e4736` it is recommended to generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where `4bf92f3577b34da6a` is a random value or a function of time & host value. 
+  A system uses a 8-byte unique identifier like `3ce929d0e0e4736`. Instead of setting the `trace-id` value to `0000000000000003ce929d0e0e4736` it is recommended to generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where `4bf92f3577b34da6a` is a random value or a function of time & host value.
 * Even though a system may internally operate with a shorter unique identifier for distributed trace reporting - the full `trace-id` MUST BE propagated.
 
 #### parent-id
 
-Represents the ID of this call as known by the caller as 8-byte array. 
+Represents the ID of this call as known by the caller as 8-byte array.
 
 **Example:** `00f067aa0ba902b7`.
 
-> **Note:** `parent-id` is sometimes also referred to as `span-id` as some telemetry systems call the execution of a client call a *span*.
+**Note:** `parent-id` is sometimes also referred to as `span-id` as some telemetry systems call the execution of a client call a *span*.
 
 ##### Rules
 
@@ -119,9 +119,10 @@ flags such as sampling or trace level.
 
 `trace-flags` is hex-encoded. For example, all `8` flags set would be `ff` and no flags set would be `00`.
 
-> **Note:** Bit fields can not be interpreted by decoding the absolute hex value. Instead, the flags need to be evaluated using bitwise operators.
+**Note:** Bit fields can not be interpreted by decoding the absolute hex value. Instead, the flags need to be evaluated using bitwise operators.
 
 **Example for evaluating `trace-flags`:**
+
 ```java
 static final byte FLAG_RECORDED = 1; // 00000001
 // [...]
@@ -129,6 +130,7 @@ boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED
 ```
 
 **Note:** The encoded flags are recommendations given by the caller rather than strict rules to follow for three reasons:
+
 1. Trust and abuse
 2. Bug in caller
 3. Different load between caller service and callee service might force the callee to downsample.
@@ -153,7 +155,7 @@ For example, when a SaaS services participates in a distributed trace, this serv
 The flag `recorded` can be used to ensure that information about requests that were marked for recording by the caller will also be recorded by SaaS service enabling the caller to troubleshoot the behavior of every recorded request.
 
 The `recorded` flag has no restriction on its mutations except that it can only be
-mutated when `parent-id` was updated. See section "Mutating the traceparent field". However there are set of recommendations for better vendor interoperability.
+mutated when `parent-id` was updated. See section "Mutating the `traceparent` field". However there are set of recommendations for better vendor interoperability.
 
 ##### Recommendations
 
@@ -173,7 +175,7 @@ The behavior of other flags, such as (`00000100`) is not defined and is reserved
 
 **Request recorded by the caller:**
 
-```
+```text
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 base16(version) = 00
 base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
@@ -183,7 +185,7 @@ base16(trace-flags) = 01  // recorded
 
 **Request NOT recorded by the caller:**
 
-```
+```text
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
 base16(version) = 00
 base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
@@ -193,12 +195,13 @@ base16(trace-flags) = 00  // not recorded
 
 ### Versioning of `traceparent`
 
-> **FIXME - what does this mean?** Implementation is opinionated about future version of the specification. 
+> **FIXME - what does this mean?** Implementation is opinionated about future version of the specification.
 
 The current version of this specification assumes that future versions of the `traceparent` header will be additive to the current one.
 
 > **MOVE(d) TO PROCESSING MODEL?**
 An implementation should follow these rules when parsing headers with an unexpected format:
+
 1. Pass thru services should not analyze version. Pass thru service needs to expect that headers may have bigger size limits in the future and only disallow prohibitively large headers.
 2. When version prefix cannot be parsed (it's not 2 hex characters followed by
    dash (`-`)), implementation should restart the trace.
@@ -254,9 +257,9 @@ lcalpha    = %x61-7A ; a-z
 ```
 
 Note that identifiers MUST begin with a lowercase letter, and can only contain lowercase letters `a`-`z`, digits `0`-`9`, underscores `_`, dashes `-`,
-asterisks `*`, and forward slashes `/`. 
+asterisks `*`, and forward slashes `/`.
 
-For multi-tenant vendor scenarios the `@` sign MAY be used to augment a `key` with a vendor specific prefix that identifies a tenant. 
+For multi-tenant vendor scenarios the `@` sign MAY be used to augment a `key` with a vendor specific prefix that identifies a tenant.
 
 **Example:**
 A vendor uses the key `congo` and identifies a tenant with the id `fw529a3039`. To distinguish traces that cross different tenants, the vendor creates a key of the form `fw529a3039@congo`.
@@ -271,10 +274,12 @@ value    = 0*255(chr) nblk-chr
 nblk-chr = %x21-2B / %x2D-3C / %x3E-7E
 chr      = %x20 / nblk-chr
 ```
+
 #### Rules
+
 * If `traceparent` is invalid, `tracestate` MUST NOT be accepted. On the contrary, an invalid `tracestate` MUST NOT affect the proper handling of a valid `traceparent` header.
 * Multiple `tracestate` headers are allowed. Values from multiple headers in incoming requests SHOULD be combined in a single header according to the [RFC7230](https://tools.ietf.org/html/rfc7230#page-24) and sent as a single header in outgoing request.
-* Empty and whitespace-only `list-member` entries are allowed. 
+* Empty and whitespace-only `list-member` entries are allowed.
 * A participating system MUST propagate AT LEAST five `list-member` entries. It MAY drop `list-member` entries that exceed this limit. When dropping entries, the system SHOULD start dropping items starting at the right side (end) of the list. When propagating `tracestate` with the excessive length, the assumption SHOULD be that the receiver will trim the list to the length of five.
 * Libraries and platforms MUST accept empty `tracestate` headers, but SHOULD avoid sending them. The reason for allowing of empty list members in `tracestate` is a difficulty for implementors to recognize the empty value when multiple `tracestate` headers are received. Whitespace characters are allowed for similar reasons as some frameworks will inject whitespace after the `,` separator automatically even when the header is empty.
 
@@ -283,7 +288,7 @@ chr      = %x20 / nblk-chr
 > **PENDING - this was changed in favor of the 5 item limit** Maximum length of a combined header MUST be less than 512 characters. This length includes commas required to separate list items. But SHOULD NOT include optional white space (OWA) characters.
 
 `tracestate` field contains essential information for request correlation.
-Platforms and tracing systems MUST propagate this header. Compliance with the specification will require storing of `tracestate` as part of the request payload or associated metadata. 
+Platforms and tracing systems MUST propagate this header. Compliance with the specification will require storing of `tracestate` as part of the request payload or associated metadata.
 > **PENDING - this was changed in favor of the 5 item limit - see rules**
 Allowing the long field values can make compliance to the specification impossible. Thus, the aggressive limit of 512 characters was chosen.
 > **PENDING - this was changed in favor of the 5 item limit - see rules**
@@ -314,7 +319,7 @@ tracestate: congo=congosFirstPosition,rojo=rojosFirstPosition,congo=congosSecond
 The value of a concatenation of trace graph key-value pairs. Only one entry per key is allowed because the entry represents that last position in the trace.
 Hence implementors must overwrite their entry upon reentry to their tracing system.
 
-According to that, the resulting, valid `tracestate` header would be: 
+According to that, the resulting, valid `tracestate` header would be:
 
 ```http
 tracestate: congo=congosSecondPosition,rojo=rojosFirstPosition // VALID
@@ -327,10 +332,10 @@ header. An implementation needs to attempt to parse `tracestate` if a higher
 version is detected to the best of its abilities. It is the implementor's decision
 whether to use partially-parsed `tracestate` key-value pairs or not.
 
-# Mutating the traceparent field
+## Mutating the `traceparent` field
 
+### Base mutations
 
-## Base mutations
 > **MOVE(D) to processing model?**
 Library or platform receiving `traceparent` request header MUST send it to
 outgoing requests. It MAY mutate the value of this header before passing to
@@ -354,7 +359,8 @@ Here is the list of allowed mutations:
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
 
-# Mutating the tracestate field
+## Mutating the `tracestate` field
+
 > **MOVE(D) to processing model?**
 
 Library or platform receiving `tracestate` request header MUST send it to
