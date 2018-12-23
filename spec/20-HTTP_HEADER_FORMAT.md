@@ -4,10 +4,16 @@ This section describes the representation and propagation of the distributed tra
 
 ## Semantic
 
-The `traceparent` header represents an incoming request into a participating component in a common format. The `tracestate` header includes the parent in a potentially vendor-specific format.
+The `traceparent` header identifies an incoming request into a participating component. 
+
+The `tracestate` header contains a list of participating components as key-value pairs, where the key identifies the component and the value contains potentially proprietary data needed for processing by the component.
+As the components append their entry to the top of the list, while shifting other entries to the right, the left-most position implicitly tells which tracing system corresponds with the current `traceparent`.
 
 ## Example
-A client traced in the congo system adds the following headers to an outbound HTTP request.
+
+A software system is traced by two components called `congo` and `rojo`.
+
+A request traced in the `congo` system adds the following headers to an outbound HTTP request.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
@@ -21,11 +27,11 @@ the state it received and adds a new entry to the top of `tracestate`.
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4
 ```
-> **NEEDS EDIT - the generic tracing system is defined in the rationale doc which is not part of the spec?**
+
+> **FIXME - the generic tracing system is defined in the rationale doc which is not part of the spec?**
 You'll notice that the `rojo` system reuses the value of `traceparent` in its
 entry in `tracestate`. This means it is a generic tracing system. Otherwise,
 `tracestate` entries are opaque.
-
 
 If the receiving server of the above is `congo` again, it continues from its
 last position, overwriting its entry with one representing the new parent.
@@ -35,19 +41,20 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
 tracestate: congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4,rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 ```
 
-> **PENDING DECISION - maybe TMI?**
+> **FIXME - maybe TMI?**
 Note: When `congo` wrote its `traceparent` entry, it reused the last trace ID
 which helps in consistency for those doing correlation. However, the value of its entry `tracestate` is opaque and different. This is ok.
 
-After this transition, `tracestate` contains an entry for `rojo` with the same value but pushed to the right. The left-most position implicitely tells which tracing system corresponds with the current `traceparent`. According to that, since `congo` wrote `traceparent`, its `tracestate` entry should be left-most.
+After that, `tracestate` contains an entry for `rojo` with the same value but pushed to the right.  According to that, since `congo` wrote `traceparent`, its `tracestate` entry should be left-most.
 
-## Traceparent field
+## HTTP-Header `traceparent`
+
 The HTTP header field `traceparent` uniquely identifies a request within a participating component.
 
-### Rules
 Platforms and libraries MUST expect this header name in any casing and SHOULD send it in lower case.
 
 ### Header value
+
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
 [RFC5234](https://tools.ietf.org/html/rfc5234), including the HEXDIG rules from that document.
 
@@ -61,7 +68,7 @@ version         = 2HEXDIG   ; this document assumes version 00. Version 255 is f
 `version` is a 8-bit unsigned integer representing 1 byte. Possible values range from `00` to `FE`.
 The current specification expects `version` to be set to `00`.
 
-For version `00` the `version-format` is defined as follows:
+For version `00`, `version-format` is defined as follows:
 
 ``` abnf
 version-format   = trace-id "-" parent-id "-" trace-flags
@@ -72,14 +79,17 @@ trace-flags      = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See 
 ```
 
 #### trace-id
-Represents the ID of the whole trace forest as 16-byte array.
-A `trace-id` with all bytes set to `0` is not allowed.
 
-**Example:** `4bf92f3577b34da6a3ce929d0e0e4736`. 
+Represents the ID of the whole trace forest as 16-byte array and is used to uniquely identify a distributed trace throughout all participating systems.
 
-`trace-id` is used to uniquely identify a distributed trace. Consequently, an implementation SHOULD generate globally unique values. Many algorithms of unique ID generation are based on some constant part (time or host-based) and a random value. Some systems make random sampling decisions based on the value of `trace-id`. So to increase interoperability, it is recommended to keep the random part on the right side of the `trace-id` value.
+**Example:** `4bf92f3577b34da6a3ce929d0e0e4736`.
+
+> **Note:** Many algorithms of unique ID generation are based on some constant part (time or host-based) and a random value. Some systems make random sampling decisions based on the value of `trace-id`. To increase interoperability, it is recommended to keep the random part on the right side of the `trace-id` value.
 
 ##### Rules
+
+* A `trace-id` with all bytes set to `0` is not allowed.
+* Implementations SHOULD generate globally unique values.
 * Implementations HAVE TO ignore the `traceparent` if the `trace-id` does not comply with this specification.
 * If a system operates with a shorter `trace-id` - it SHOULD fill-in the extra bytes with random values rather than zeros. 
 
@@ -88,29 +98,37 @@ A `trace-id` with all bytes set to `0` is not allowed.
 * Even though a system may internally operate with a shorter unique identifier for distributed trace reporting - the full `trace-id` MUST BE propagated.
 
 #### parent-id
-Represents the ID of this call as known by the caller. It is also known as `span-id` as
-a few telemetry systems call the execution of a client call a span. It is
-represented as an 8-byte array, for example, `00f067aa0ba902b7`.
-A `parent-id` with all bytes set to `0` is not allowed.
+
+Represents the ID of this call as known by the caller as 8-byte array. 
+
+**Example:** `00f067aa0ba902b7`.
+
+> **Note:** `parent-id` is sometimes also referred to as `span-id` as some telemetry systems call the execution of a client call a *span*.
 
 ##### Rules
+
+* A `parent-id` with all bytes set to `0` is not allowed.
 * Implementations HAVE TO ignore the `traceparent` if the `parent-id` does not comply with this specification.
 
 #### trace-flags
+
 Contains an [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that consists of tracing
 flags such as sampling or trace level.
-`trace-flags` is hex-encoded. For example, all `8` flags set would be `ff` and no flags set would be `00`.
-Please note that bit fields can not be interpreted by decoding the absolute hex value. Instead, the flags need to be evaluated using bitwise operators.
 
-**Example:**
+**Example:** `01`.
+
+`trace-flags` is hex-encoded. For example, all `8` flags set would be `ff` and no flags set would be `00`.
+
+> **Note:** Bit fields can not be interpreted by decoding the absolute hex value. Instead, the flags need to be evaluated using bitwise operators.
+
+**Example for evaluating `trace-flags`:**
 ```java
 static final byte FLAG_RECORDED = 1; // 00000001
 // [...]
 boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED
 ```
 
- The encoded flags are recommendations given by the caller rather than strict rules to follow for three reasons:
-
+**Note:** The encoded flags are recommendations given by the caller rather than strict rules to follow for three reasons:
 1. Trust and abuse
 2. Bug in caller
 3. Different load between caller service and callee service might force the callee to downsample.
@@ -120,6 +138,7 @@ More information can be found in the security section of this specification.
 The current version of the specification only supports a single flag called `recorded`.
 
 #### Recorded Flag (00000001)
+
 > **NEEDS EDITING - this whole section should be reviewed for grammar and clarity.**
 
 When set, the least significant bit documents that the caller may have recorded trace data. A caller that does not record trace data out-of-band leaves this flag unset.
@@ -137,6 +156,7 @@ The `recorded` flag has no restriction on its mutations except that it can only 
 mutated when `parent-id` was updated. See section "Mutating the traceparent field". However there are set of recommendations for better vendor interoperability.
 
 ##### Recommendations
+
 1. If a component made a definitive recording decision - this decision SHOULD be reflected in the `recorded` flag.
 2. If a component needs to make a recording decision - it SHOULD respect the `recorded` flag value. Security considerations should be applied to protect from abusive or malicious use of this flag - see security section.
 3. If a component deferred or delayed the decision and only a subset of telemetry will be recorded - the flag `recorded` should be propagated unchanged. And set to `0` as a default option when a trace is initiated by this component. There are two additional scenarios:
@@ -147,11 +167,11 @@ mutated when `parent-id` was updated. See section "Mutating the traceparent fiel
 
 #### Other Flags
 
-The behavior of other flags, such as (`00000100`) is not defined and is reserved for future use. Implementation MUST set these flags to zero.
+The behavior of other flags, such as (`00000100`) is not defined and is reserved for future use. An implementation MUST set these flags to zero.
 
 ### Examples
 
-*Valid traceparent when the caller recorded a request:*
+**Request recorded by the caller:**
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
@@ -161,7 +181,7 @@ base16(parent-id) = 00f067aa0ba902b7
 base16(trace-flags) = 01  // recorded
 ```
 
-*Valid traceparent when caller hasn't recorded a request:*
+**Request NOT recorded by the caller:**
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
@@ -173,7 +193,7 @@ base16(trace-flags) = 00  // not recorded
 
 ### Versioning of `traceparent`
 
-> **NEEDS EDITING - what does this mean?** Implementation is opinionated about future version of the specification. 
+> **FIXME - what does this mean?** Implementation is opinionated about future version of the specification. 
 
 The current version of this specification assumes that future versions of the `traceparent` header will be additive to the current one.
 
@@ -191,12 +211,12 @@ An implementation should follow these rules when parsing headers with an unexpec
     4. Try parse sampling bit of `flags`:  2 characters from third dash.
        Following with either end of string or a dash. If all three values were parsed successfully - implementation should use them. Implementation MUST NOT parse or assume anything about any fields unknown for this version. Implementation MUST use these fields to construct the new `traceparent` field according to the highest version of the specification known to the implementation (in this specification it is `00`).
 
-## Tracestate field
+## HTTP-Header `tracestate`
+
 The  HTTP header field `tracestate` carries information about a requests position in
 multiple distributed tracing graphs. This header complements `traceparent`.
 
-### Rules
-* Platforms and libraries MUST expect this header name in any casing and SHOULD send it in lower case.
+Platforms and libraries MUST expect this header name in any casing and SHOULD send it in lower case.
 
 ### Header value
 
@@ -207,7 +227,7 @@ This section uses the Augmented Backus-Naur Form (ABNF) notation of
 
 A `DIGIT` is a number between `0` and `9`.
 
-> **MAY NEED EDIT - if we refer to another definition, should we still explain it here?**
+> **FIXME - if we refer to another definition, should we still explain it here?**
 The `OWS` rule defines an optional whitespace. It is used where zero or more whitespace characters might appear. When it is preferred to improve readability - a sender SHOULD generate the optional whitespace as a single space; otherwise, a sender SHOULD NOT generate optional whitespace. See details in corresponding RFC.
 
 The `tracestate` field value is a `list` as defined below. The `list` is a
@@ -239,7 +259,7 @@ asterisks `*`, and forward slashes `/`.
 For multi-tenant vendor scenarios the `@` sign MAY be used to augment a `key` with a vendor specific prefix that identifies a tenant. 
 
 **Example:**
-A vendor uses the `key` `congo` and identifies a tenant with the id `fw529a3039`. To distinguish traces that cross different tenants, the vendor creates a `key` of the form `fw529a3039@congo`.
+A vendor uses the key `congo` and identifies a tenant with the id `fw529a3039`. To distinguish traces that cross different tenants, the vendor creates a key of the form `fw529a3039@congo`.
 
 `value` is an opaque string with up to 256 characters printable ASCII
 [RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range
@@ -258,8 +278,7 @@ chr      = %x20 / nblk-chr
 * A participating system MUST propagate AT LEAST five `list-member` entries. It MAY drop `list-member` entries that exceed this limit. When dropping entries, the system SHOULD start dropping items starting at the right side (end) of the list. When propagating `tracestate` with the excessive length, the assumption SHOULD be that the receiver will trim the list to the length of five.
 * Libraries and platforms MUST accept empty `tracestate` headers, but SHOULD avoid sending them. The reason for allowing of empty list members in `tracestate` is a difficulty for implementors to recognize the empty value when multiple `tracestate` headers are received. Whitespace characters are allowed for similar reasons as some frameworks will inject whitespace after the `,` separator automatically even when the header is empty.
 
-
-#### Limits:
+#### Limits
 
 > **PENDING - this was changed in favor of the 5 item limit** Maximum length of a combined header MUST be less than 512 characters. This length includes commas required to separate list items. But SHOULD NOT include optional white space (OWA) characters.
 
@@ -272,19 +291,20 @@ If the `tracestate` value has more than 512 characters, the tracer CAN decide to
 
 ## Examples
 
-### Single tracing system (generic format):
+**Single tracing system (generic format):**
 
 ``` http
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 ```
 
-### Multiple tracing systems (with different formatting):
+**Multiple tracing systems (with different formatting):**
 
 ``` http
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4
 ```
 
-### Handling roundtrips
+**Handling roundtrips:**
+
 If a tracing system key is `congo`, and a trace started in their system, went through a system with the key `rojo` and later returned to `congo`, the following `tracestate` would be *invalid*:
 
 ```http
