@@ -29,6 +29,15 @@ implementation for parsing it.
 Maps in AMQP preserving the order so there is no conflict with the semantics of
 the field.
 
+## Why use both - application and message properties
+
+Trace context is defined in an app in a context that mostly operates with the
+application-properties collection. So ideally trace context should be set and
+carried as part of application-properties collection. However,
+application-properties are immutable so there should be a fallback mechanism to
+use message-annotations if tracing must be implemented by one of message
+brokers.
+
 ## Prefix of the field names
 
 The properties are typically prefixed because they’re generic and might

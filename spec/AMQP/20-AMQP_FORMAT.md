@@ -15,8 +15,8 @@ AMQP defines message as a payload with the additional annotations sections.
 There are two annotation sections this specification refers -
 "application-properties" and "message-annotations". See
 [3.2](http://docs.oasis-open.org/amqp/core/v1.0/os/amqp-core-messaging-v1.0-os.html#section-message-format)
-of OASIS Advanced Message Queuing Protocol (AMQP) Version 1.0, Part 3:
-Messaging.
+of *OASIS Advanced Message Queuing Protocol (AMQP) Version 1.0, Part 3:
+Messaging* (AMQP specification).
 
 AMQP message section "application-properties" is immutable collection of
 properties that is defined by message publisher and can be read by the message
@@ -42,6 +42,9 @@ constructs that can be used to investigate failed publish or read operations.
 It is recommended, however, for AMQP implementations to make the best effort
 attempt to read the trace context from the message and use it while reporting
 such problems.
+
+TODO: do we need to define a way to specify trace context of read operation? Is
+there anything in AMQP protocol that can be used to carry this context?
 
 ## `traceparent` AMQP format
 
@@ -114,5 +117,5 @@ truncating or reusing some fields.
 
 ## Batching
 
-TODO: Batching of messages – recommended semantics of TraceContext fields when
+TODO: Batching of messages – recommended semantics of trace context fields when
 batching is happening. Should anything be said about it?
