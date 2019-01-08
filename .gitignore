@@ -21,3 +21,6 @@ bin
 
 # Vim
 .swp
+
+# VSCode
+.vscode
