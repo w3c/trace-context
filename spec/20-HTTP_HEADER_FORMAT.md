@@ -34,6 +34,12 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4
 ```
 
+> **FIXME - the generic tracing system is defined in the rationale doc which is
+> not part of the spec?**
+You'll notice that the `rojo` system reuses the value of `traceparent` in its
+entry in `tracestate`. This means it is a generic tracing system. Otherwise,
+`tracestate` entries are opaque.
+
 If the receiving server of the above is `congo` again, it continues from its
 last position, overwriting its entry with one representing the new parent.
 
@@ -41,6 +47,11 @@ last position, overwriting its entry with one representing the new parent.
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
 tracestate: congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4,rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 ```
+
+> **FIXME - maybe TMI?**
+Note: When `congo` wrote its `traceparent` entry, it reused the last trace ID
+which helps in consistency for those doing correlation. However, the value of
+its entry `tracestate` is opaque and different. This is ok.
 
 After that, `tracestate` contains an entry for `rojo` with the same value but
 pushed to the right.  According to that, since `congo` wrote `traceparent`, its
@@ -299,6 +310,12 @@ This section uses the Augmented Backus-Naur Form (ABNF) notation of
 It also includes the OWS rule from [RFC7230 section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
 A `DIGIT` is a number between `0` and `9`.
+
+> **FIXME - if we refer to another definition, should we still explain it here?**
+The `OWS` rule defines an optional whitespace. It is used where zero or more
+whitespace characters might appear. When it is preferred to improve readability -
+a sender SHOULD generate the optional whitespace as a single space; otherwise, a
+sender SHOULD NOT generate optional whitespace. See details in corresponding RFC.
 
 The `tracestate` field value is a `list` as defined below. The `list` is a
 series of `list-member` separated by commas `,`, and a `list-member` is a
