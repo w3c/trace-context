@@ -46,7 +46,7 @@ After that, `tracestate` contains an entry for `rojo` with the same value but
 pushed to the right.  According to that, since `congo` wrote `traceparent`, its
 `tracestate` entry should be left-most.
 
-## HTTP-Header `traceparent`
+## HTTP-Header field `traceparent`
 
 The HTTP header field `traceparent` uniquely identifies a request within a
 participating component.
@@ -283,7 +283,7 @@ unexpected format:
        field according to the highest version of the specification known to the
        implementation (in this specification it is `00`).
 
-## HTTP-Header `tracestate`
+## HTTP-Header field `tracestate`
 
 The  HTTP header field `tracestate` carries information about a requests position
 in multiple distributed tracing graphs. This header complements `traceparent`.
