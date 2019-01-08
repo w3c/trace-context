@@ -263,8 +263,6 @@ base16(trace-flags) = 00  // not recorded
 
 ### Versioning of `traceparent`
 
-> **FIXME - what does this mean?** Implementation is opinionated about future version of the specification.
-
 The current version of this specification assumes that future versions of the
 `traceparent` header will be additive to the current one.
 
