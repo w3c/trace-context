@@ -102,7 +102,7 @@ all participating systems.
 
 **Example:** `4bf92f3577b34da6a3ce929d0e0e4736`.
 
-> **Note:** Many algorithms of unique ID generation are based on some constant
+> **Note:** Many algorithms for unique ID generation are based on some constant
 > part (time or host-based) and a random value. Some systems make random
 > sampling decisions based on the value of `trace-id`. To increase
 > interoperability, it is recommended to keep the random part on the right side
@@ -113,9 +113,9 @@ all participating systems.
 * A `trace-id` with all bytes set to `0` is not allowed.
 * Implementations SHOULD generate globally unique values.
 * Implementations HAVE TO ignore the `traceparent` if the `trace-id` does not
-* comply with this specification.
+  comply with this specification.
 * If a system operates with a shorter `trace-id` - it SHOULD fill-in the extra
-* bytes with random values rather than zeros.
+  bytes with random values rather than zeros.
 
   **Example:**
   A system uses a 8-byte unique identifier like `3ce929d0e0e4736`. Instead of
