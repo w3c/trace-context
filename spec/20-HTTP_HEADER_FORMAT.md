@@ -7,8 +7,8 @@ trace context through its HTTP headers `traceparent` and `tracestate`.
 
 The `traceparent` header identifies an incoming request into a participating component.
 
-The `tracestate` header contains a list of participating components as key-value
-pairs, where the key identifies the component and the value contains potentially
+The `tracestate` header contains an ordered set of participating components
+as key-value pairs, where the key identifies the component and the value contains potentially
 proprietary data needed for processing by the component.
 As the components append their entry to the top of the list, while shifting
 other entries to the right, the left-most position implicitly tells which
