@@ -65,7 +65,7 @@ participating component.
 Platforms and libraries MUST expect this header name in any casing and SHOULD
 send it in lower case.
 
-### Header value
+### Field value
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
 [RFC5234](https://tools.ietf.org/html/rfc5234), including the HEXDIG rules from
@@ -300,7 +300,7 @@ in multiple distributed tracing graphs. This header complements `traceparent`.
 Platforms and libraries MUST expect this header name in any casing and SHOULD send
 it in lower case.
 
-### Header value
+### Field value
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
 [RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule in
