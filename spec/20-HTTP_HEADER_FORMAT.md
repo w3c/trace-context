@@ -96,8 +96,9 @@ below for details
 
 #### trace-id
 
-Represents the ID of the whole trace forest as 16-byte array and is used to
-uniquely identify a distributed trace throughout all participating systems.
+Contains the ID of the whole trace graph as 16-byte array represented as
+hexadecimal string and is used to uniquely identify a distributed trace throughout
+all participating systems.
 
 **Example:** `4bf92f3577b34da6a3ce929d0e0e4736`.
 
@@ -126,7 +127,8 @@ uniquely identify a distributed trace throughout all participating systems.
 
 #### parent-id
 
-Represents the ID of this call as known by the caller as 8-byte array.
+Contains the ID of this call as known by the caller as 8-byte array represented as
+hexadecimal string.
 
 **Example:** `00f067aa0ba902b7`.
 
