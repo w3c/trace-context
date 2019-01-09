@@ -10,11 +10,11 @@ Today, context propagation is implemented individually by each vendor.
 In multi-vendor environments, this causes interoperability problems, like:
 
 - Traces that are collected by different tracing vendors cannot be linked together
-- as there is no shared unique identifier.
+  as there is no shared unique identifier.
 - Traces that cross boundaries between different tracing vendors break as there
-- is no uniformly agreed set of identification that is forwarded.
+  is no uniformly agreed set of identification that is forwarded.
 - Cloud platform vendors, as well as hardware vendors, cannot guarantee to support
-- context propagation as there is no standardized way of context propagation.
+  context propagation as there is no standardized way of context propagation.
 
 In the past, these problems did not have a significant impact as most applications
 were monitored by a single tracing tool and stayed within the boundaries of a single
