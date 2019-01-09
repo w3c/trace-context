@@ -4,9 +4,9 @@ Distributed tracing is a methodology implemented by tracing tools to follow, ana
 and debug a transaction across multiple software components. Typically, a trace
 traverses more than one component which requires it to be uniquely identifiable
 across all participating systems. Passing along this unique identification is
-referred to as *context propagation*.
+referred to as *trace context propagation*.
 
-Today, context propagation is implemented individually by each vendor.
+Today, trace context propagation is implemented individually by each vendor.
 In multi-vendor environments, this causes interoperability problems, like:
 
 - Traces that are collected by different tracing vendors cannot be linked together
@@ -14,7 +14,7 @@ In multi-vendor environments, this causes interoperability problems, like:
 - Traces that cross boundaries between different tracing vendors break as there
   is no uniformly agreed set of identification that is forwarded.
 - Cloud platform vendors, as well as hardware vendors, cannot guarantee to support
-  context propagation as there is no standardized way of context propagation.
+  trace context propagation as there is no standard to follow.
 
 In the past, these problems did not have a significant impact as most applications
 were monitored by a single tracing tool and stayed within the boundaries of a single
@@ -24,7 +24,7 @@ distributed and leverage multiple middleware services and cloud platforms.
 ## Solution
 
 The trace context specification defines a universally agreed-upon format for the
-exchange of context propagation data - referred to as *trace context*. Trace
+exchange of trace context propagation data - referred to as *trace context*. Trace
 context solves the problems described above by
 
 - providing a unique identifier for individual traces, allowing traces of multiple
