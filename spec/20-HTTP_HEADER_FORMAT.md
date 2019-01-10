@@ -48,11 +48,6 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
 tracestate: congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4,rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 ```
 
-> **FIXME - maybe TMI?**
-Note: When `congo` wrote its `traceparent` entry, it reused the last trace ID
-which helps in consistency for those doing correlation. However, the value of
-its entry `tracestate` is opaque and different. This is ok.
-
 After that, `tracestate` contains an entry for `rojo` with the same value but
 pushed to the right.  According to that, since `congo` wrote `traceparent`, its
 `tracestate` entry should be left-most.
