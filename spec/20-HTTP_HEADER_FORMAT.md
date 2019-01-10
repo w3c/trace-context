@@ -304,12 +304,6 @@ It also includes the OWS rule from [RFC7230 section 3.2.3](https://tools.ietf.or
 
 A `DIGIT` is a number between `0` and `9`.
 
-> **FIXME - if we refer to another definition, should we still explain it here?**
-The `OWS` rule defines an optional whitespace. It is used where zero or more
-whitespace characters might appear. When it is preferred to improve readability -
-a sender SHOULD generate the optional whitespace as a single space; otherwise, a
-sender SHOULD NOT generate optional whitespace. See details in corresponding RFC.
-
 The `tracestate` field value is a `list` as defined below. The `list` is a
 series of `list-member` separated by commas `,`, and a `list-member` is a
 key/value pair separated by an equals sign `=`. Spaces and horizontal tabs
