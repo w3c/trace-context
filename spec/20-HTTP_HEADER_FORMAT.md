@@ -128,8 +128,6 @@ hexadecimal string.
 
 **Example:** `00f067aa0ba902b7`.
 
-**Note:** `parent-id` is sometimes also referred to as `span-id` as some
-telemetry systems call the execution of a client call a *span*.
 
 ##### Rules
 
