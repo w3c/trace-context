@@ -98,11 +98,10 @@ all participating systems.
 
 **Example:** `4bf92f3577b34da6a3ce929d0e0e4736`.
 
-> **Note:** Many algorithms for unique ID generation are based on some constant
-> part (time or host-based) and a random value. Some systems make random
-> sampling decisions based on the value of `trace-id`. To increase
-> interoperability, it is recommended to keep the random part on the right side
-> of the `trace-id` value.
+> **Note:** As some systems rely on randomness of the whole `trace-id`, please
+> make sure that the generated ID does not contain encoded information
+> that leads to non-random parts (e.g. using a host ID as prefix).
+> A randomness as provided by UUID v4 is considered to be sufficient.
 
 ##### Rules
 
