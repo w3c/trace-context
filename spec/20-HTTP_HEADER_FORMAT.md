@@ -34,12 +34,6 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4
 ```
 
-> **FIXME - the generic tracing system is defined in the rationale doc which is
-> not part of the spec?**
-You'll notice that the `rojo` system reuses the value of `traceparent` in its
-entry in `tracestate`. This means it is a generic tracing system. Otherwise,
-`tracestate` entries are opaque.
-
 If the receiving server of the above is `congo` again, it continues from its
 last position, overwriting its entry with one representing the new parent.
 
