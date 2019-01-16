@@ -277,6 +277,8 @@ This section uses the Augmented Backus-Naur Form (ABNF) notation of
 [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1).
 It also includes the OWS rule from [RFC7230 section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
+> The OWS rule defines an optional whitespace. It is used where zero or more whitespace characters might appear. When it is preferred to improve readability - a sender SHOULD generate the optional whitespace as a single space; otherwise, a sender SHOULD NOT generate optional whitespace. See details in [corresponding RFC](https://tools.ietf.org/html/rfc7230#section-3.2.3).
+
 A `DIGIT` is a number between `0` and `9`.
 
 The `tracestate` field value is a `list` as defined below. The `list` is a
