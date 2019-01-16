@@ -98,9 +98,9 @@ all participating systems.
 
 **Example:** `4bf92f3577b34da6a3ce929d0e0e4736`.
 
-> **Note:** As some systems rely on randomness of the whole `trace-id`, please
-> make sure that the generated ID does not contain encoded information
-> that leads to non-random parts (e.g. using a host ID as prefix).
+> **Note:** As some systems rely on randomness of the `trace-id` as a whole,
+> the provided ID MUST NOT contain encoded information that leads to non-random
+> parts (e.g. using a host ID as prefix).
 > A randomness as provided by UUID v4 is considered to be sufficient.
 
 ##### Rules
