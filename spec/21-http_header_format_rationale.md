@@ -50,9 +50,9 @@ copy of the `traceparent` format or an opaque string.
 
 The specification calls for ordering of values in tracestate. This requirement allows better interoperability between tracing vendors.
 
-A typical distributed trace is clustered - components calling each other are often monitored
+A typical <a>distributed trace</a> is clustered - components calling each other are often monitored
 by the same tracing vendor. So information supplied by the tracing system which originated a
-request will typically be less and less important deeper in a distributed trace. Immediate
+request will typically be less and less important deeper in a <a>distributed trace</a>. Immediate
 caller's information on the other hand typically is more valuable as it is more likely being
 monitored by the same tracing vendor. Thus, it is logical to move immediate caller's
 information to the beginning of the `tracestate` list. So less important values will be
@@ -146,7 +146,7 @@ Versioning options are:
 
 One variation is whether original or new header that you cannot recognize is preserved in `tracestate`.
 
-- Option 1 is least favorable as it makes one bad header break the entire distributed trace.
+- Option 1 is least favorable as it makes one bad header break the entire <a>distributed trace</a>.
 - Option 2 is better. It's easy, doesn't restrict future version in any way and re-started trace should be understood by new systems. So only one "connection" is lost. And the lost connection issue can be solved by storing the original header in `tracestate`. Drawbacks are also obvious. First, single old component always breaks traces. Second, it's harder to transition without customer disatisfaction of broken traces. 
 
   Storing original value also has negative effects. Valid `traceparent` is 55 characters (out of 512 allowed for `tracestate`). And "bad" headers could be much longer pushing valuable `tracestate` pairs out. Also this requirement increases the chance of abuse. When a bad actor will start sending a header with the version `99` that is only understood by that actor. And the fact that every system passes thru the original value allows this actor to build a complete solution based on this header.

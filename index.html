@@ -63,5 +63,21 @@
 
         <section data-include="spec/50-privacy.md" data-include-format='markdown'></section>
         <section data-include="spec/51-security.md" data-include-format='markdown'></section>
+        
+        <section class="informative">
+          <h1>Glossary</h1>
+          <dt><dfn data-lt="distributed traces">Distributed trace</dfn></dt>
+          <dd>
+            Distributed trace is a set of events, triggered as a result
+            of a single logical operation, consolidated across various
+            components of an application. Events in distributed trace
+            span across process, network and security boundaries.
+            Distributed trace may be initiated with the "button click"
+            event in the browser and include events representing call to
+            the backend component as well as subsequent events
+            representing calls to the external authentication service,
+            database or another component.
+          </dd>
+        </section>
   </body>
 </html>
