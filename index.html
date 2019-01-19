@@ -68,15 +68,15 @@
           <h1>Glossary</h1>
           <dt><dfn data-lt="distributed traces">Distributed trace</dfn></dt>
           <dd>
-            Distributed trace is a set of events, triggered as a result
+            A distributed trace is a set of events, triggered as a result
             of a single logical operation, consolidated across various
-            components of an application. Events in distributed trace
-            span across process, network and security boundaries.
-            Distributed trace may be initiated with the "button click"
-            event in the browser and include events representing call to
-            the backend component as well as subsequent events
-            representing calls to the external authentication service,
-            database or another component.
+            components of an application. A distributed traces contains
+            events that cross process, network and security boundaries.
+            A distributed trace may be initiated when someone presses a
+            button to start an action on a website - in this example, the
+            trace will represent calls made between the downstream services
+            that handled the chain of requests initiated by this button
+            being pressed.
           </dd>
         </section>
   </body>
