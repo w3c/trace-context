@@ -34,12 +34,6 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4
 ```
 
-> **FIXME - the generic tracing system is defined in the rationale doc which is
-> not part of the spec?**
-You'll notice that the `rojo` system reuses the value of `traceparent` in its
-entry in `tracestate`. This means it is a generic tracing system. Otherwise,
-`tracestate` entries are opaque.
-
 If the receiving server of the above is `congo` again, it continues from its
 last position, overwriting its entry with one representing the new parent.
 
@@ -48,10 +42,6 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
 tracestate: congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4,rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 ```
 
-> **FIXME - maybe TMI?**
-Note: When `congo` wrote its `traceparent` entry, it reused the last trace ID
-which helps in consistency for those doing correlation. However, the value of
-its entry `tracestate` is opaque and different. This is ok.
 
 After that, `tracestate` contains an entry for `rojo` with the same value but
 pushed to the right.  According to that, since `congo` wrote `traceparent`, its
@@ -102,11 +92,10 @@ all participating systems.
 
 **Example:** `4bf92f3577b34da6a3ce929d0e0e4736`.
 
-> **Note:** Many algorithms for unique ID generation are based on some constant
-> part (time or host-based) and a random value. Some systems make random
-> sampling decisions based on the value of `trace-id`. To increase
-> interoperability, it is recommended to keep the random part on the right side
-> of the `trace-id` value.
+> **Note:** As some systems rely on randomness of the `trace-id` as a whole,
+> the provided ID MUST NOT contain encoded information that leads to non-random
+> parts (e.g. using a host ID as prefix).
+> A randomness as provided by UUID v4 is considered to be sufficient.
 
 ##### Rules
 
@@ -132,8 +121,6 @@ hexadecimal string.
 
 **Example:** `00f067aa0ba902b7`.
 
-**Note:** `parent-id` is sometimes also referred to as `span-id` as some
-telemetry systems call the execution of a client call a *span*.
 
 ##### Rules
 
@@ -266,32 +253,6 @@ base16(trace-flags) = 00  // not recorded
 The current version of this specification assumes that future versions of the
 `traceparent` header will be additive to the current one.
 
-> **MOVE(d) TO PROCESSING MODEL?**
-An implementation should follow these rules when parsing headers with an
-unexpected format:
-
-1. Pass thru services should not analyze version. Pass thru service needs to
-   expect that headers may have bigger size limits in the future and only
-   disallow prohibitively large headers.
-2. When version prefix cannot be parsed (it's not 2 hex characters followed by
-   dash (`-`)), implementation should restart the trace.
-3. If higher version is detected - implementation SHOULD try to parse it.
-    1. If the size of header is shorter than 55 characters -implementation
-       should not parse header and should restart the trace.
-    2. Try parse `trace-id`: from the first dash - next 32 characters.
-       Implementation MUST check 32 characters to be hex. Make sure they are
-       followed by dash.
-    3. Try parse `parent-id`: from the second dash at 35th position - 16
-       characters. Implementation MUST check 16 characters to be hex. Make sure
-       this is followed by a dash.
-    4. Try parse sampling bit of `flags`:  2 characters from third dash.
-       Following with either end of string or a dash. If all three values were
-       parsed successfully - implementation should use them. Implementation MUST
-       NOT parse or assume anything about any fields unknown for this version.
-       Implementation MUST use these fields to construct the new `traceparent`
-       field according to the highest version of the specification known to the
-       implementation (in this specification it is `00`).
-
 ## HTTP-Header field `tracestate`
 
 The  HTTP header field `tracestate` carries information about a requests position
@@ -307,13 +268,9 @@ This section uses the Augmented Backus-Naur Form (ABNF) notation of
 [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1).
 It also includes the OWS rule from [RFC7230 section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
-A `DIGIT` is a number between `0` and `9`.
+> The OWS rule defines an optional whitespace. It is used where zero or more whitespace characters might appear. When it is preferred to improve readability - a sender SHOULD generate the optional whitespace as a single space; otherwise, a sender SHOULD NOT generate optional whitespace. See details in the [corresponding RFC](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
-> **FIXME - if we refer to another definition, should we still explain it here?**
-The `OWS` rule defines an optional whitespace. It is used where zero or more
-whitespace characters might appear. When it is preferred to improve readability -
-a sender SHOULD generate the optional whitespace as a single space; otherwise, a
-sender SHOULD NOT generate optional whitespace. See details in corresponding RFC.
+A `DIGIT` is a number between `0` and `9`.
 
 The `tracestate` field value is a `list` as defined below. The `list` is a
 series of `list-member` separated by commas `,`, and a `list-member` is a
