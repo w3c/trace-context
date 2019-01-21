@@ -1,19 +1,39 @@
-## Problem Statement
+# Problem Statement
 
-Distributed tracing is a methodology implemented by tracing tools enabling to follow, analyze and debug a transaction across multiple software components. Typically, a transaction passes more than one component which requires a transaction to be uniquely identified across all software components. Passing along this unique identification is referred to as context propagation.
+Distributed tracing is a methodology implemented by tracing tools to follow, analyze
+and debug a transaction across multiple software components. Typically, a trace
+traverses more than one component which requires it to be uniquely identifiable
+across all participating systems. Passing along this unique identification is
+provided by *trace context propagation*.
 
-Today context propagation is implemented in proprietary formats individually by each tracing tool provider. This results in siginficant interoperability problems between tracing tools than manifest in two major ways:
+Today, trace context propagation is implemented individually by each vendor.
+In multi-vendor environments, this causes interoperability problems, like:
 
-- Traces that are collected by two tracing providers cannot be linked together as there is no unique identifier linking the individual pieces together. 
-- Traces are broken each time they are passed between components monitored by different tracing as there is no uniformly agree set of identifcation taht is forwarded.
+- Traces that are collected by different tracing vendors cannot be linked together
+  as there is no shared unique identifier.
+- Traces that cross boundaries between different tracing vendors break as there
+  is no uniformly agreed set of identification that is forwarded.
+- Cloud platform vendors, as well as hardware vendors, cannot guarantee to support
+  trace context propagation as there is no standard to follow.
 
-In the past this problem did not have significant impact as most applications were under monitored by a single tracing tool. Today, an increasing number of applications are highly distributed and leverage an increasing number of cloud platform and middleware services. Most of these services come with their own tracing capababilities which results in big interoperabiity problems and lack of visibility for developers and appliation operators.
+In the past, these problems did not have a significant impact as most applications
+were monitored by a single tracing tool and stayed within the boundaries of a single
+platform provider. Today, an increasing number of applications are highly
+distributed and leverage multiple middleware services and cloud platforms.
 
 ## Solution
 
-The trace context specification defines a universally agreed format for the exchange of context propagation data - referred to as trace context. Trace context solved the problems described above by
+The trace context specification defines a universally agreed-upon format for the
+exchange of trace context propagation data - referred to as *trace context*. Trace
+context solves the problems described above by
 
-- providing a unique identifier for individual tracing allowing traces of multiple providers being linked together and 
-- providing an agreed-upon mechanism to forward vendor-specific trace data avoid broken tracing when multiple trace tools particpate in a single transaction. 
+- providing a unique identifier for individual traces, allowing traces of multiple
+  providers to be linked together.
+- providing an agreed-upon mechanism to forward vendor-specific trace data and
+  avoid broken traces when multiple trace tools participate in a single transaction.
+- providing an industry standard that platform- and hardware-providers can support.
 
-Providing a unified approach for managing trace data massively increases visibility into the behaviour of distributed applications supporting problem and performance analysis. The  interoperability provided by trace-context is a prerequisite to manage modern micro-service based applications. 
+A unified approach for propagating trace data improves visibility into the behavior
+of distributed applications, facilitating problem and performance analysis.
+The interoperability provided by trace-context is a prerequisite to manage modern
+micro-service based applications.
