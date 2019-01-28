@@ -1,0 +1,3 @@
+# MQTT format rationale
+
+TBD

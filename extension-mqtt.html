@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>Trace Context: MQTT protocol</title>
+    <script
+     src='https://www.w3.org/Tools/respec/respec-w3c-common'
+     class='remove' defer></script>
+    <script class='remove'>
+      var respecConfig = {
+        specStatus: "ED",
+        editors: [{
+          name: "Sergey Kanzhelev",
+          company: "Microsoft",
+          companyURL: "https://microsoft.com",
+          w3cid: "103966"
+        },
+        {
+          name: "Clemens Vasters",
+          company: "Microsoft",
+          companyURL: "https://microsoft.com",
+          w3cid: "104128"
+        }],
+        github: {
+          repoURL: "https://github.com/w3c/trace-context/",
+          branch: "master",
+        },
+        edDraftURI: "https://w3c.github.io/trace-context/extension-mqtt.html",
+        shortName: "trace-context",
+        format: "markdown",
+        subjectPrefix: "trace-context",
+        wg: "Distributed Tracing Working Group",
+        wgPublicList: "public-trace-context",
+        wgURI: "https://www.w3.org/2018/distributed-tracing/",
+        otherLinks: [{
+          key: 'Discussions',
+          data: [{
+            value: 'We are on Gitter.',
+            href: 'https://gitter.im/TraceContext/Lobby'
+          }]
+        }],
+        wgPatentURI: "https://www.w3.org/2004/01/pp-impl/108594/status"
+      };
+    </script>
+  </head>
+  <body>
+        <section id='abstract' data-include="spec/MQTT/01-abstract.md" data-include-format='markdown'></section>
+        <section id='sotd' data-include="spec/MQTT/02-sotd.md" data-include-format='markdown'></section>
+        
+        <section data-include="spec/MQTT/20-MQTT5_FORMAT.md" data-include-format='markdown'></section>
+        
+        <!-- Note, this section is a recommendation and it is not a part of a standard -->
+        <section data-include="spec/MQTT/20-MQTT3_FORMAT.md" data-include-format='markdown'  class="informative"></section>
+  </body>
+</html>
