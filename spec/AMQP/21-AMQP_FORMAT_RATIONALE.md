@@ -38,6 +38,34 @@ application-properties are immutable so there should be a fallback mechanism to
 use message-annotations if tracing must be implemented by one of message
 brokers.
 
+## Why not delivery-annotations
+
+There are three grand scenarios:
+
+*Application trace context* through a simple AMQP brokered entity. If you send a
+message into a queue from an app and then pull that message from the queue with
+the same or another app and nothing else interesting happens,
+application-properties is the right place, because you're not doing any tracing
+of the broker, you're just passing the context alongside the message.
+
+*Application context plus routing context*. If you have a chain of AMQP entities
+as you might have in a complex routing scenario, you might want to enrich the
+context as the message is being passed on. In that case, the prior scenario
+still exists, i.e. you will still want the option to have the context
+information as set by the message producer and use that for application level
+tracing unencumbered by whatever the routing layer might be tracking. As the
+routing layer gets it hand on the message for tracing, it basically forks the
+context off into the message-annotations and that's being manipulated on the
+route. As the message reaches the destination, you now have the app-level
+context from the producer in the application-properties AND the routing context
+that was layered on top of that in the message-annotations.
+
+Hop to hop tracing: A delivery-annotations usage scenario would be purely
+additive to either of the prior two, allowing any intermediary to spawn a new
+context for itself or to propagate a context only via subset of hops. I think
+that is fairly esoteric at this point and we should NOT take that into a spec
+unless someone shows a hard use-case.
+
 ## Prefix of the field names
 
 The properties are typically prefixed because they’re generic and might
