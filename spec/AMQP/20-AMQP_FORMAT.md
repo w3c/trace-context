@@ -117,5 +117,16 @@ truncating or reusing some fields.
 
 ## Batching
 
-TODO: Batching of messages – recommended semantics of trace context fields when
-batching is happening. Should anything be said about it?
+The specification defines a binding to the AMQP "message format 0", i.e. the
+layout that is defined in the Messaging section of the the AMQP spec, but does
+not provide any further detail on HOW those messages are being transferred.
+
+AMQP is enormously efficient when filling link credit with sending messages in
+sequence without any special overlaid batching. And is often used without
+batching.
+
+Message brokers like Azure Service Bus, Azure Event Hub and others have a
+special message format that can batch multiple AMQP messages into one. However
+the way to bind to that format is by specifying a binding to the individual
+messages and then have the proprietary batching model pick that up via the
+binding to the standard message.
