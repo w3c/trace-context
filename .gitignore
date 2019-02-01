@@ -21,4 +21,6 @@ bin
 
 # Vim
 .swp
-.vscode/settings.json
+
+# VSCode
+.vscode
