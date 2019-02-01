@@ -68,12 +68,14 @@ send it in lower case.
 ### Field value
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
-[RFC5234](https://tools.ietf.org/html/rfc5234), including the HEXDIG rules from
-that document.
+[RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule from
+that document. `DIGIT` rule defines a single number character `0`-`9`.
 
 ``` abnf
+HEXDIGLC = DIGIT / "a" / "b" / "c" / "d" / "e" / "f" ; lower case hex character
+
 value           = version "-" version-format
-version         = 2HEXDIG   ; this document assumes version 00. Version 255 is forbidden
+version         = 2HEXDIGLC   ; this document assumes version 00. Version 255 is forbidden
 ```
 
 `value` is US-ASCII encoded (which is UTF-8 compliant). The `-` character (dash)
@@ -88,10 +90,9 @@ For version `00`, `version-format` is defined as follows:
 ``` abnf
 version-format   = trace-id "-" parent-id "-" trace-flags
 
-trace-id         = 32HEXDIG  ; 16 bytes array identifier. All zeroes forbidden
-parent-id        = 16HEXDIG  ; 8 bytes array identifier. All zeroes forbidden
-trace-flags      = 2HEXDIG   ; 8 bit flags. Currently only one bit is used. See
-below for details
+trace-id         = 32HEXDIGLC  ; 16 bytes array identifier. All zeroes forbidden
+parent-id        = 16HEXDIGLC  ; 8 bytes array identifier. All zeroes forbidden
+trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently only one bit is used. See below for details
 ```
 
 #### trace-id
@@ -304,8 +305,9 @@ it in lower case.
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
 [RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule in
-[appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1).
-It also includes the OWS rule from [RFC7230 section 3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
+[appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It
+also includes the `OWS` rule from [RFC7230 section
+3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
 
 A `DIGIT` is a number between `0` and `9`.
 
