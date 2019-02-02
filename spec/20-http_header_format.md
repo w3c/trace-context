@@ -8,8 +8,8 @@ trace context through its HTTP headers `traceparent` and `tracestate`.
 The `traceparent` header identifies an incoming request into a participating component.
 
 The `tracestate` header contains an ordered set of participating components
-as key-value pairs, where the key identifies the component and the value contains potentially
-proprietary data needed for processing by the component.
+as key-value pairs, where the key identifies the component and the value contains
+potentially proprietary data needed for processing by the component.
 As the components append their entry to the top of the set, while shifting
 other entries to the right, the left-most position implicitly tells which
 tracing system corresponds with the current `traceparent`.
@@ -120,7 +120,6 @@ Contains the ID of this call as known by the caller as 8-byte array represented 
 hexadecimal string.
 
 **Example:** `00f067aa0ba902b7`.
-
 
 ##### Rules
 
@@ -337,7 +336,7 @@ chr      = %x20 / nblk-chr
 * A participating system MUST propagate AT LEAST five `list-member` entries. It
   MAY drop `list-member` entries that exceed this limit. When dropping entries,
   the system SHOULD start dropping items starting at the right side (end) of the
-  list. When propagating `tracestate` with the excessive length, the assumption
+  list. When propagating `tracestate` with an exceeding length, the assumption
   SHOULD be that the receiver will trim the list to the length of five.
 * Libraries and platforms MUST accept empty `tracestate` headers, but SHOULD
   avoid sending them. The reason for allowing of empty list members in `tracestate`
@@ -345,25 +344,6 @@ chr      = %x20 / nblk-chr
   `tracestate` headers are received. Whitespace characters are allowed for similar
   reasons as some frameworks will inject whitespace after the `,` separator
   automatically even when the header is empty.
-
-#### Limits
-
-> **PENDING - this was changed in favor of the 5 item limit** Maximum length of
-> a combined header MUST be less than 512 characters.
-> This length includes commas required to separate list items. But SHOULD NOT
-> include optional white space (OWA) characters.
-
-`tracestate` field contains essential information for request correlation.
-Platforms and tracing systems MUST propagate this header. Compliance with the
-specification will require storing of `tracestate` as part of the request payload
-or associated metadata.
-> **PENDING - this was changed in favor of the 5 item limit - see rules**
-Allowing the long field values can make compliance to the specification
-impossible. Thus, the aggressive limit of 512 characters was chosen.
-> **PENDING - this was changed in favor of the 5 item limit - see rules**
-If the `tracestate` value has more than 512 characters, the tracer CAN decide to
-forward the `tracestate`. When propagating `tracestate` with the excessive
-length - the assumption SHOULD be that the receiver will drop this header.
 
 ## Examples
 
@@ -406,62 +386,3 @@ The version of `tracestate` is defined by the version prefix of the `traceparent
 header. An implementation needs to attempt to parse `tracestate` if a higher
 version is detected to the best of its abilities. It is the implementor's decision
 whether to use partially-parsed `tracestate` key-value pairs or not.
-
-## Mutating the `traceparent` field
-
-### Base mutations
-
-> **MOVE(D) to processing model?**
-Library or platform receiving `traceparent` request header MUST send it to
-outgoing requests. It MAY mutate the value of this header before passing to
-outgoing requests.
-
-If the value of the `traceparent` field wasn't changed before propagation -
-`tracestate` MUST NOT be modified as well. Unmodified headers propagation is
-typically implemented in pass-thru services like proxies. This behavior may also
-be implemented in a service which currently does not collect distributed tracing
-information.
-
-Here is the list of allowed mutations:
-
-1. **Update `parent-id`**. The value of property `parent-id` can be set to the
-   new value representing the ID of the current operation. This is the most
-   typical mutation and should be considered a default.
-2. **Indicate recorded state**. The value of `recorded` flag of `trace-flags`
-   may be set to `1` if it had value `0` before or vice versa. `parent-id` MUST
-   be set to the new value with the `recorded` flag update. See details of
-   `recorded` flag for more information on how this flag is recommended to be used.
-3. **Update `recorded`**. The value of `recorded` reflects the caller's
-   recording behavior: either the trace data were dropped or may have been
-   recorded out-of-band. This mutation gives the downstream tracer information
-   about the likelihood its parent's information was recorded.
-4. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
-   are regenerated. This mutation is used in the services defined as a front
-   gate into secure networks and eliminates a potential denial of service attack
-   surface.
-
-Libraries and platforms MUST NOT make any other mutations to the `traceparent` header.
-
-## Mutating the `tracestate` field
-
-> **MOVE(D) to processing model?**
-
-Library or platform receiving `tracestate` request header MUST send it to
-outgoing requests. It MAY mutate the value of this header before passing to
-outgoing requests. The main concept of `tracestate` mutations is that the order
-of unmodified key-value pairs MUST be preserved. Modified keys MUST be moved to
-the beginning of the list.
-
-Here is the list of allowed mutations:
-
-1. **Update key value**. The value of any key can be updated. Modified keys MUST
-2. be moved to the beginning of the list. This is the most common mutation resuming
-   the trace.
-3. **Add new key-value pair**. New key-value pair should be added into the beginning
-   of the list.
-4. **Delete the key-value pair**. Any key-value pair MAY be deleted. It is highly
-   discouraged to delete keys that weren't generated by the same tracing system
-   or platform. Deletion of unknown key-value pair will break correlation in other
-   systems. This mutation enables two scenarios. The first is proxies can block
-   certain `tracestate` keys for privacy and security concerns. The second scenario
-   is a truncation of long `tracestate`'s.

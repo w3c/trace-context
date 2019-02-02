@@ -24,9 +24,10 @@ sampled.
 3. If the tracing system supports the version number, it validates `trace-id`
    and `parent-id`.
    - If `trace-id` and `parent-id` are valid, the tracing system adds the entire
-`trace-context` to all outgoing request originating from the current incoming request.
-   - If either `trace-id` or `parent-id` is invalid, the
-   tracing system does not add the trace context to any outgoing requests.
+     `trace-context` to all outgoing request originating from the current
+     incoming request.
+   - If either `trace-id` or `parent-id` is invalid, the tracing system does not
+     add the trace context to any outgoing requests.
     > **PENDING DECISION**: We never explicitly defined this, but I think this
     is what should happen. (Issue: https://github.com/w3c/trace-context/issues/220)
 
@@ -46,6 +47,7 @@ trace-context headers. The request is then considered as sampled.
   supported by the current version of this specification and ignore all other
   values. If parsing fails, the tracing system creates a new `traceparent` header
   and removes all entries from `tracecontext`.
+
 3. When the tracing system supports the version number it validates `trace-id`
 and `parent-id`.
    - If either `trace-id`, `parent-id` or `flags`  are invalid,  the tracing

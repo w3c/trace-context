@@ -1,21 +1,24 @@
 # Security
 
-There are two types of potential security risks associated with this specification: information exposure
-and denial of service attacks against the tracing system.
+There are two types of potential security risks associated with this specification:
+information exposure and denial of service attacks against the tracing system.
 
-Services and platforms relying on `traceparent` and `tracestate` headers should also follow all the
-best practices of parsing potentially malicious headers. Including checking for header length and content of header
-values. These practices help to avoid buffer overflow and html injection attacks.
+Services and platforms relying on `traceparent` and `tracestate` headers should
+also follow all the best practices of parsing potentially malicious headers.
+Including checking for header length and content of header values.
+These practices help to avoid buffer overflow and html injection attacks.
 
 ## Information exposure
 
-As mentioned in the privacy section, information in `traceparent` and `tracestate` headers may carry information that can be
-considered sensitive. For example, `traceparent` may allow one call to be correlated to the data sent with another call.
-`tracestate` may imply the version of monitoring software used by the caller. This information could potentially be used to 
-create a larger attack.
+As mentioned in the privacy section, information in `traceparent` and `tracestate`
+headers may carry information that can be considered sensitive. For example,
+`traceparent` may allow one call to be correlated to the data sent with another call.
+`tracestate` may imply the version of monitoring software used by the caller.
+This information could potentially be used to create a larger attack.
 
-Application owners should either ensure that no proprietary or confidential information is stored in the `tracestate`, or
-they should ensure that `tracestate` isn't present in requests to external systems.
+Application owners should either ensure that no proprietary or confidential
+information is stored in the `tracestate`, or they should ensure that `tracestate`
+isn't present in requests to external systems.
 
 ## Denial of service
 
@@ -35,6 +38,10 @@ recording can also be implemented.
 
 ## Other risks
 
-Application owners need to make sure to test all code paths leading to the sending of `traceparent` and `tracestate` headers. For
-example, in single page browser applications it is typical to make cross-origin calls. If one of these code path leads
-to the sending of `traceparent` and `tracestate` headers - cross-origin calls restricted via `Access-Control-Allow-Headers` [header](https://www.w3.org/TR/cors/#access-control-allow-headers-response-header), it may fail.
+Application owners need to make sure to test all code paths leading to the
+sending of `traceparent` and `tracestate` headers. For example, in single page
+browser applications it is typical to make cross-origin calls.
+If one of these code path leads to the sending of `traceparent` and `tracestate`
+headers - cross-origin calls restricted via `Access-Control-Allow-Headers`
+[header](https://www.w3.org/TR/cors/#access-control-allow-headers-response-header),
+it may fail.
