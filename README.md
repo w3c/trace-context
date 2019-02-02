@@ -2,7 +2,8 @@
 
 # Trace Context Specification
 
-This repository is associated with the [Trace Context](https://w3c.github.io/trace-context/) specification.
+This repository is associated with the [Trace Context](https://w3c.github.io/trace-context/)
+specification.
 
 Specification for distributed tracing context propagation format:
 
@@ -17,14 +18,14 @@ Specification for distributed tracing context propagation format:
 
 See [communication](https://github.com/w3c/distributed-tracing-wg#team-communication)
 
-We appreciate feedback and contributions. Please make sure to read rationale documents when you have a question about particular
-decision made in specification.
+We appreciate feedback and contributions. Please make sure to read rationale
+documents when you have a question about particular decision made in specification.
 
 ## Goal
 
-This specification defines formats to pass trace context information across systems. Our goal is
-to share this with the community so that various tracing and diagnostics products can operate
-together.
+This specification defines formats to pass trace context information across systems.
+Our goal is to share this with the community so that various tracing and diagnostics
+products can operate together.
 
 ## References
 
