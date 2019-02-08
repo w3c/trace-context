@@ -9,3 +9,4 @@ different maturity level than this specification.
 
 - [AMQP](https://w3c.github.io/trace-context/extension-amqp.html).
 - [Binary](https://w3c.github.io/trace-context/extension-binary.html).
+- [Cloud Events extension (external)](https://github.com/cloudevents/spec/blob/master/extensions/distributed-tracing.md).
