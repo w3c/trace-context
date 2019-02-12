@@ -85,7 +85,19 @@ and `parent-id`.
 
 ## Processing Model for starting or restarting a trace
 
-1. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
-   are regenerated. This mutation is used in services defined as a front
-   gate into secure networks and eliminates a potential denial of service attack
-   surface.
+The process for starting a new trace and restarting an existing trace are similar.
+Restarting a trace is highly discouraged as it breaks end-to-end visibility.
+
+Possible reasons for _restarting_ a trace are:
+
+- Crossing of a trust boundary
+- Receiving an invalid traceparent header
+
+1. **Generating the traceparent header:**
+
+   All properties - `trace-id`, `parent-id`, `trace-flags`
+   are generated.
+
+2. **Generating the tracestate header:**
+
+   A new key-value pair can be added to the empty list.
