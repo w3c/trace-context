@@ -12,9 +12,8 @@ but does not modify the trace-context headers.
 
 1. The tracing system receives a `traceparent` header and may receive a `tracecontext`.
 2. The tracing system tries to parse the version of the `traceparent` header.
-   - If the version prefix cannot be parsed (it's not 2 hex characters followed by
-  a dash (`-`)), the implementation should restart the trace.
-    > **PENDING DECISION**: If a system is in forwarding only mode. It cannot
+   - If the version prefix cannot be parsed, the implementation should restart
+   the trace. > **PENDING DECISION**: If a system is in forwarding only mode. It cannot
     start a trace. (Issue: https://github.com/w3c/trace-context/issues/220)
 
    - If the version is higher than supported by the tracing
@@ -37,9 +36,8 @@ tracecontext headers. The request is then considered as sampled.
 
 1. The tracing system receives a `traceparent` header and may receive `tracecontext`.
 2. The tracing system tries to parse the version of the `traceparent` header.
-   - If the version prefix cannot be parsed (it's not 2 hex characters followed
-  by a dash (`-`)), the tracing system creates a new `traceparent` header and
-  removes all entries from `tracecontext`.
+   - If the version prefix cannot be parsed, the tracing system creates a new `traceparent`
+     header and removes all entries from `tracecontext`.
    - If the version number is higher than supported by the tracing implementation,
   the implementation uses the format defined in this specification to parse
   `trace-id` and `parent-id`. The tracing system will only parse `flags` values
@@ -47,7 +45,7 @@ tracecontext headers. The request is then considered as sampled.
   values. If parsing fails, the tracing system creates a new `traceparent` header
   and removes all entries from `tracecontext`.
 
-3. When the tracing system supports the version number it validates `trace-id`
+1. When the tracing system supports the version number it validates `trace-id`
 and `parent-id`.
    - If either `trace-id`, `parent-id` or `flags`  are invalid,  the tracing
   system creates a new `traceparent` header and removes all entries from `tracecontext`.
