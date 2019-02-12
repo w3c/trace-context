@@ -34,7 +34,7 @@ sampled.
 ## Processing Model in Participation Mode
 
 In participation mode, the tracing system decides to forward **and** modify
-trace-context headers. The request is then considered as sampled.
+tracecontext headers. The request is then considered as sampled.
 
 1. The tracing system receives a `traceparent` header and may receive `tracecontext`.
 2. The tracing system tries to parse the version of the `traceparent` header.
