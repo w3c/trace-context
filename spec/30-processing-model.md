@@ -49,16 +49,16 @@ tracecontext headers. The request is then considered as sampled.
 and `parent-id`.
    - If either `trace-id`, `parent-id` or `flags`  are invalid,  the tracing
   system creates a new `traceparent` header and removes all entries from `tracecontext`.
-4. After the system has validated the traceparent, it validates the tracestate.
+2. After the system has validated the traceparent, it validates the tracestate.
     > **PENDING DECISION**: How do we do this exactly?
 
-5. The tracing system modifies the `traceparent` header.
-    - **Update `parent-id`**. The value of property `parent-id` can be set to
-    the new value representing the ID of the current operation. This is the most
-    common mutation and should be considered a default.
+3. The tracing system modifies the `traceparent` header.
+    - **Update `parent-id`**. The value of property `parent-id` MUST be set to
+    the new value representing the ID of the current operation.
+
     > **PENDING DECISION**: This definition is not entirely clear.
     - **Indicate recorded state**. The value of `recorded` flag of `trace-flags`
-    may be set to `1` if it had the value `0` before or vice versa. `parent-id`
+    MAY be set to `1` if it had the value `0` before or vice versa. `parent-id`
     MUST be set to the new value with the `recorded` flag updated.
     See details of `recorded` flag for more information on how this flag is
     recommended to be used.
@@ -66,7 +66,7 @@ and `parent-id`.
     recording behavior: either the trace data were dropped or may have been
     recorded out-of-band. This mutation gives the downstream tracer information
     about the likelihood its parent's information was recorded.
-6. Tracing System modifies the `tracestate` header
+4. Tracing System modifies the `tracestate` header
     - **Update key value**. The value of any key can be updated. Modified keys
     MUST be moved to the beginning of the list. This is the most common mutation
     resuming the trace.
