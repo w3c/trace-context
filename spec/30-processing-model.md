@@ -83,7 +83,7 @@ and `parent-id`.
     concerns.
       - Truncation of long `tracestate` entries.
 
-## Processing Model for (re)starting a trace
+## Processing Model for starting or restarting a trace
 
 1. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in services defined as a front
