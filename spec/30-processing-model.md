@@ -7,9 +7,8 @@ a system needs to be able to start or restart a trace.
 
 ## Processing Model in Forwarding Mode
 
-In forwarding mode, a tracing system decides to forward tracing information but
-does not modify the trace-context headers. The request is then considered as not
-sampled.
+In forwarding mode, a tracing system decides to forward tracing information
+but does not modify the trace-context headers.
 
 1. The tracing system receives a `traceparent` header and may receive a `tracecontext`.
 2. The tracing system tries to parse the version of the `traceparent` header.
