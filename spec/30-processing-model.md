@@ -53,6 +53,8 @@ and `parent-id`.
     > **PENDING DECISION**: How do we do this exactly?
 
 3. The tracing system modifies the `traceparent` header.
+   > **NOTE:** If a system may leave traceparent unchanged is being discussed.
+   See [issue #250](https://github.com/w3c/trace-context/issues/250).
     - **Update `parent-id`**. The value of property `parent-id` MUST be set to
     the new value representing the ID of the current operation.
 
