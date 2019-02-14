@@ -805,13 +805,12 @@ class AdvancedTest(TestBase):
 			traceparent = self.get_traceparent(response['headers'])
 			trace_ids.add(traceparent.trace_id.hex())
 			parent_ids.add(traceparent.parent_id.hex())
-		self.assertEqual(len(trace_ids), 1)
 		self.assertEqual(len(parent_ids), 3)
 
 	def test_multiple_requests_with_illegal_traceparent(self):
 		'''
 		harness sends an invalid traceparent and asks vendor service to callback multiple times
-		expects a new trace_id generated and used for all the callbacks
+		expects new trace_id(s) generated
 		'''
 		trace_ids = set()
 		parent_ids = set()
@@ -821,7 +820,6 @@ class AdvancedTest(TestBase):
 			traceparent = self.get_traceparent(response['headers'])
 			trace_ids.add(traceparent.trace_id.hex())
 			parent_ids.add(traceparent.parent_id.hex())
-		self.assertEqual(len(trace_ids), 1)
 		self.assertFalse('00000000000000000000000000000000' in trace_ids)
 		self.assertEqual(len(parent_ids), 3)
 
