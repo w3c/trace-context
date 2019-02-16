@@ -392,7 +392,7 @@ tracing system may propagate them as they came, combine into a single
 header or split into multiple headers differently following the RFC
 specification.
 
-Platforms and tracing vendors SHOULD propagate at lease 512 characters
+Platforms and tracing vendors SHOULD propagate at least 512 characters
 of a combined header. This length includes commas required to separate
 list items. But does not include optional white space (`OWA`)
 characters.

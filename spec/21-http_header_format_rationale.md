@@ -105,12 +105,12 @@ Opaque nature of `tracestate` value raises many questions and biggest
 one is what guarantees we can request from protocol implementors on
 propagating and storing this field.
 
-On one hand - field value should be small so implementors can satisfy
+On the one hand, field value should be small so implementors can satisfy
 the requirement to pass the value all the time. It is especially
 critical for various messaging systems where metadata like `tracestate`
 is not paid for by the customer and provided for free.
 
-On other hand - in order for the field to be useful there should be some
+On the other hand, in order for the field to be useful there should be some
 guarantees that it will in fact be propagated in most of the cases.
 
 Without changing definition of `tracestate` to make it less opaque, any
