@@ -127,6 +127,13 @@ context will provide a relieve valve for people who want to have freedom
 propagating relatively big payload across the components of a
 distributed trace.
 
+Specification allows removing and adding as many `tracestate` entries as
+implementation needs. This freedom is required to satisfy privacy and
+interoperability concerns. Thus all suggestions specification is making
+regarding the size of `tracestate` field will only be a recommendation
+that would improve vendors interoperability and cannot be "enforced" in
+practice.
+
 Possible solutions:
 
 1. Declare the arbitrary max length that HAVE TO be propagated.
@@ -155,17 +162,20 @@ utilizes the full length of a `tracestate` and ultimately blocking the
 interoperability.
 
 Problem with this proposal is that limits proposed for the individual
-entry were still quite high for cloud providers.
+entry (e.g. `128`) were still quite high for cloud providers.
 
 Also even though seemingly this proposal makes interoperability better,
 abuse of using multiple entries by a single vendor is still unavoidable.
+
+Good way to discourage vendors to use long `tracestate` values is to
+suggest to remove those first when limit was reached.
 
 #### 3. Make max length the decision of the implementor
 
 Options above "protected" vendors from implementors who will take
 optional nature of `tracestate` and will not propagate `tracestate`.
 However the reality is that for many platforms even larger `tracestate`
-fields propagation is not a big issue.
+fields propagation is not a concern.
 
 So there was a proposal that the spec will suggest the length limits,
 and define the algorithm of trimming `tracestate`. However the final
@@ -173,7 +183,8 @@ decision of an actual implementation to the platform.
 
 One of the side effects of this proposal is that it encourages tracing
 vendors to minimize the use of `tracestate` for non-essential scenarios
-to ensure propagation of an essential fields.
+to ensure propagation of an essential fields. Which is aligned with the
+spirit of `tracestate`.
 
 ### Maximum number of elements
 

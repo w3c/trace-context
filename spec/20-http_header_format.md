@@ -403,12 +403,13 @@ may be expensive. In this case the maximum size of propagated
 propagating `tracestate` SHOULD be weighted against the value of
 monitoring scenarios enabled for the end users.
 
-In situation when `tracestate` MUST be truncated due to size limitations
-platform of tracing vendor SHOULD truncate whole list entries starting
-from the end of tracestate. Note, other truncation strategies like
-whitelist entries, blacklist entries or size-based truncation MAY be
-used, but highly discouraged. Those strategies will decrease
-interoperability of various tracing vendors.
+In situation when `tracestate` needs to be truncated due to size
+limitations platform of tracing vendor MUST truncate whole entries.
+Entries larger than `128` characters long SHOULD be removed first. Than
+entries SHOULD be removed starting from the end of `tracestate`. Note,
+other truncation strategies like whitelist entries, blacklist entries or
+size-based truncation MAY be used, but highly discouraged. Those
+strategies will decrease interoperability of various tracing vendors.
 
 ## Examples of HTTP headers
 
