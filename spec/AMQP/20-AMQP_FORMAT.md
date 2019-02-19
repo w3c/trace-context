@@ -1,3 +1,0 @@
-# AMQP format
-
-TBD

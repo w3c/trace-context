@@ -1,3 +1,0 @@
-# Binary format
-
-TBD
