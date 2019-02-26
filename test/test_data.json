@@ -1,4 +1,5 @@
 [
+	{"headers": [["traceparent", "00-00000000000000000000000000000000-1234567890123456-01"]], "is_traceparent_valid": false},
 	{"headers": [["traceparent", "00-12345678901234567890123456789012-1234567890123456-01"]], "is_traceparent_valid": true},
 	{"headers": [], "is_traceparent_valid": false},
 	{"headers": [], "is_traceparent_valid": false},

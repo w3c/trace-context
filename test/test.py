@@ -777,29 +777,51 @@ class TraceContextTest(TestBase):
 		self.assertRaises(KeyError, lambda: tracestate['foo'])
 
 class AdvancedTest(TestBase):
-	def test_multiple_requests(self):
+	def test_multiple_requests_with_valid_traceparent(self):
 		'''
-		harness asks vendor service to callback multiple times
-		expects a different parent_id each time
+		harness sends a valid traceparent and asks vendor service to callback multiple times
+		expects the trace_id to be inherited by all the callbacks
 		'''
+		trace_ids = set()
 		parent_ids = set()
 		for response in self.make_request([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-01'],
 		], 3):
 			traceparent = self.get_traceparent(response['headers'])
-			self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+			trace_ids.add(traceparent.trace_id.hex())
 			parent_ids.add(traceparent.parent_id.hex())
+		self.assertEqual(len(trace_ids), 1)
+		self.assertTrue('12345678901234567890123456789012' in trace_ids)
 		self.assertEqual(len(parent_ids), 3)
 
+	def test_multiple_requests_without_traceparent(self):
+		'''
+		harness asks vendor service to callback multiple times
+		expects a different parent_id each time
+		'''
 		trace_ids = set()
 		parent_ids = set()
 		for response in self.make_request([], 3):
 			traceparent = self.get_traceparent(response['headers'])
 			trace_ids.add(traceparent.trace_id.hex())
 			parent_ids.add(traceparent.parent_id.hex())
-		self.assertEqual(len(trace_ids), 1)
 		self.assertEqual(len(parent_ids), 3)
 
+	def test_multiple_requests_with_illegal_traceparent(self):
+		'''
+		harness sends an invalid traceparent and asks vendor service to callback multiple times
+		expects new trace_id(s) generated
+		'''
+		trace_ids = set()
+		parent_ids = set()
+		for response in self.make_request([
+			['traceparent', '00-00000000000000000000000000000000-1234567890123456-01'],
+		], 3):
+			traceparent = self.get_traceparent(response['headers'])
+			trace_ids.add(traceparent.trace_id.hex())
+			parent_ids.add(traceparent.parent_id.hex())
+		self.assertFalse('00000000000000000000000000000000' in trace_ids)
+		self.assertEqual(len(parent_ids), 3)
 
 if __name__ == '__main__':
 	if len(sys.argv) >= 2:
