@@ -65,7 +65,7 @@ header name in lower case.
 ## Field value
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
-[RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule from
+[[!RFC5234]], including the DIGIT rule from
 that document. `DIGIT` rule defines a single number character `0`-`9`.
 
 ``` abnf
@@ -129,7 +129,7 @@ For instance, if it contains non-allowed characters.
 
 ## Trace-flags
 
-An [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that controls tracing
+An <a data-cite='!BIT-FIELD'>8-bit field</a> that controls tracing
 flags such as sampling, trace level etc. These flags are recommendations given
 by the caller rather than strict rules to follow for three reasons:
 
@@ -294,15 +294,15 @@ header name in lower case.
 ## Header value
 
 Multiple `tracestate` headers are allowed. Values from multiple headers in
-incoming requests SHOULD be combined in a single header according to the
-[RFC7230](https://tools.ietf.org/html/rfc7230#page-24) and send as a single
+incoming requests SHOULD be combined in a single header according to
+<a data-cite='!RFC7230#page-24'>Field Order</a> [[!RFC7230]] and send as a single
 header in outgoing request.
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
-[RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule in
-[appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It
-also includes the `OWS` rule from [RFC7230 section
-3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
+[[!RFC5234]], including the DIGIT rule in
+<a data-cite='!RFC5234#appendix-B.1'>appendix B.1 for RFC5234</a>. It
+also includes the `OWS` rule from <a data-cite='!RFC7230#section-3.2.3'>RFC7230 section
+3.2.3</a>.
 
 `DIGIT` rule defines number `0`-`9`.
 
@@ -352,7 +352,7 @@ in the beginning of key like `fw529a3039@dt` - `fw529a3039` is a tenant id and
 (searching for all vendor's keys).
 
 Value is opaque string up to 256 characters printable ASCII
-[RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range
+[[!RFC0020]] characters (i.e., the range
 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs,
 newlines, carriage returns, etc.
 
