@@ -97,7 +97,7 @@ Is the ID of the whole trace forest. It is represented as a 16-bytes array, for
 example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` are considered
 invalid.
 
-`Trace-id` is used to uniquely identify a distributed trace. So implementation
+`Trace-id` is used to uniquely identify a <a>distributed trace</a>. So implementation
 should generate globally unique values. Many algorithms of unique identification
 generation are based on some constant part - time or host based and a random
 value. There are systems that make random sampling decisions based on the value
@@ -110,7 +110,7 @@ works with a 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting
 `trace-id` value to `0000000000000003ce929d0e0e4736` it is recommended to
 generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where
 `4bf92f3577b34da6a` is a random value or a function of time & host value. Note,
-even though a system may operate with a shorter `trace-id` for distributed trace
+even though a system may operate with a shorter `trace-id` for <a>distributed trace</a>
 reporting - full `trace-id` should be propagated to conform to the
 specification.
 
@@ -165,16 +165,16 @@ trace data. A caller who does not record trace data out-of-band leaves this flag
 unset.
 
 Many distributed tracing scenarios may be broken when only a subset of calls
-participated in a distributed trace were recorded. At certain load recording
+participated in a <a>distributed trace</a> were recorded. At certain load recording
 information about every incoming and outgoing request becomes prohibitively
 expensive. Making a random or component-specific decision for data collection
-will lead to fragmented data in every distributed trace. Thus it is typical for
+will lead to fragmented data in every <a>distributed trace</a>. Thus it is typical for
 tracing vendors and platforms to pass recording decision for given distributed
 trace or information needed to make this decision.
 
 There is no consensus on what is the best algorithm to make a recording
 decision. Various techniques include: probability sampling (sample 1 out of 100
-distributed traced by flipping a coin), delayed decision (make collection
+<a>distributed traces</a> by flipping a coin), delayed decision (make collection
 decision based on duration or a result of a call), deferred sampling (let callee
 decide whether information about this request need to be collected). There are
 variations and customizations of every technique which can be tracing vendor
@@ -186,7 +186,7 @@ tracing system or a platform. Flag `recorded` is introduced for better
 interoperability between vendors. It allows to communicate recording decision
 and enable better experience for the customer.
 
-For example, when SaaS services participate in distributed trace - this service
+For example, when SaaS services participate in <a>distributed trace</a> - this service
 has no knowledge of tracing system used by its caller. But this service may
 produce records of incoming requests for monitoring or troubleshooting purposes.
 Flag `recorded` can be used to ensure that information about requests that were
