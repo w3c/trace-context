@@ -13,8 +13,7 @@ but does not modify the tracecontext headers.
 1. The tracing system receives a `traceparent` header and may receive a `tracecontext`.
 2. The tracing system tries to parse the version of the `traceparent` header.
    - If the version prefix cannot be parsed, the implementation should restart
-   the trace. > **PENDING DECISION**: If a system is in forwarding only mode. It cannot
-    start a trace. (Issue: https://github.com/w3c/trace-context/issues/220)
+   the trace.
 
    - If the version is higher than supported by the tracing
    system, it does no further validations.
@@ -26,8 +25,6 @@ but does not modify the tracecontext headers.
      incoming request.
    - If either `trace-id` or `parent-id` is invalid, the tracing system does not
      add the trace context to any outgoing requests.
-    > **PENDING DECISION**: We never explicitly defined this, but I think this
-    is what should happen. (Issue: https://github.com/w3c/trace-context/issues/220)
 
 ## Processing Model in Participation Mode
 
@@ -50,15 +47,12 @@ and `parent-id`.
    - If either `trace-id`, `parent-id` or `flags`  are invalid,  the tracing
   system creates a new `traceparent` header and removes all entries from `tracecontext`.
 2. After the system has validated the traceparent, it validates the tracestate.
-    > **PENDING DECISION**: How do we do this exactly?
 
 3. The tracing system modifies the `traceparent` header.
    > **NOTE:** If a system may leave traceparent unchanged is being discussed.
    See [issue #250](https://github.com/w3c/trace-context/issues/250).
     - **Update `parent-id`**. The value of property `parent-id` MUST be set to
     the new value representing the ID of the current operation.
-
-    > **PENDING DECISION**: This definition is not entirely clear.
     - **Indicate recorded state**. The value of `recorded` flag of `trace-flags`
     MAY be set to `1` if it had the value `0` before or vice versa. `parent-id`
     MUST be set to the new value with the `recorded` flag updated.

@@ -163,8 +163,6 @@ The current version of the specification only supports a single flag called
 
 #### Recorded Flag (00000001)
 
-> **NEEDS EDITING - this whole section should be reviewed for grammar and clarity.**
-
 When set, the least significant bit documents that the caller may have recorded
 trace data. A caller that does not record trace data out-of-band leaves this
 flag unset.
@@ -217,7 +215,7 @@ interoperability.
     1. A component that makes a deferred or delayed recording decision MAY
        communicate the priority of recording by setting the `recorded` flag to
        `1` for a subset of requests.
-    1. A component may also fall back to probability sampling to set the `recorded`
+    2. A component may also fall back to probability sampling to set the `recorded`
        flag to `1` for the subset of requests.
 
 #### Other Flags
