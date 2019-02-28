@@ -932,4 +932,3 @@ Here is the list of allowed mutations:
    systems. This mutation enables two scenarios. The first is proxies can block
    certain `tracestate` keys for privacy and security concerns. The second scenario
    is a truncation of long `tracestate`'s.
-)
