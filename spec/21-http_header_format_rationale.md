@@ -101,9 +101,9 @@ providing backward compatibility with older protocols. But `tracestate`
 is not limited to this use and will drive innovations and new scenarios
 going forward.
 
-Opaque nature of `tracestate` value raises many questions and biggest
-one is what guarantees we can request from protocol implementors on
-propagating and storing this field.
+The opaque nature of `tracestate` introduces some tension between
+guarantees to vendors around propagating vendor-specific data with
+traces vs. storage and propagation constraints.
 
 On the one hand, field value should be small so implementors can satisfy
 the requirement to pass the value all the time. It is especially
@@ -127,12 +127,12 @@ context will provide a relieve valve for people who want to have freedom
 propagating relatively big payload across the components of a
 distributed trace.
 
-Specification allows removing and adding as many `tracestate` entries as
-implementation needs. This freedom is required to satisfy privacy and
-interoperability concerns. Thus all suggestions specification is making
-regarding the size of `tracestate` field will only be a recommendation
-that would improve vendors interoperability and cannot be "enforced" in
-practice.
+This specification allows removing and adding as many `tracestate`
+entries as an implementation needs. This freedom is required to satisfy
+privacy and interoperability concerns. Thus all suggestions
+specification is making regarding the size of `tracestate` field will
+only be a recommendation that would improve vendors interoperability and
+cannot be "enforced" in practice.
 
 Possible solutions:
 
