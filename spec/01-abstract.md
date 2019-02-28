@@ -1,10 +1,10 @@
 # Problem Statement
 
 Distributed tracing is a methodology implemented by tracing tools to follow, analyze
-and debug a transaction across multiple software components. Typically, a trace
-traverses more than one component which requires it to be uniquely identifiable
-across all participating systems. Passing along this unique identification is
-provided by *trace context propagation*.
+and debug a transaction across multiple software components. Typically, a
+<a>distributed trace</a> traverses more than one component which requires it to
+be uniquely identifiable across all participating systems.
+Passing along this unique identification is provided by *trace context propagation*.
 
 Today, trace context propagation is implemented individually by each vendor.
 In multi-vendor environments, this causes interoperability problems, like:
