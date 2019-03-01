@@ -22,6 +22,7 @@ Platforms and tracing systems extremely sensitive to personal information exposu
 
 ## Other risks
 
-In implementations where headers `traceparent` and `tracestate` used as response
-headers - information exposure to the cross-origin call may occur.
-Implementation should ensure caller or limit header data to non-sensitive information.
+In implementations where headers traceparent and tracestate are included in
+responses, these values may inadvertently be passed to cross-origin callers.
+Implementations should ensure that they only include these response headers when
+responding to systems that participated in the trace.
