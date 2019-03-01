@@ -453,7 +453,10 @@ Here is the list of allowed mutations:
 4. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
-   surface.
+   surface. Implementation SHOULD clean up `tracestate` collection on
+   `traceparent` restart. In rare cases when original `tracestate` entries must
+   be preserved after restart - it SHOULD be an explicit decision, not a default
+   behavior.
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent`
 header.
