@@ -37,4 +37,4 @@ recording can also be implemented.
 
 Application owners need to make sure to test all code paths leading to the sending of `traceparent` and `tracestate` headers. For
 example, in single page browser applications it is typical to make cross-origin calls. If one of these code path leads
-to the sending of `traceparent` and `tracestate` headers - cross-origin calls restricted via `Access-Control-Allow-Headers` [header](https://www.w3.org/TR/cors/#access-control-allow-headers-response-header), it may fail.
+to the sending of `traceparent` and `tracestate` headers - cross-origin calls restricted via <a data-cite='FETCH#http-access-control-request-headers'>`Access-Control-Allow-Headers`</a> [[FETCH]], it may fail.
