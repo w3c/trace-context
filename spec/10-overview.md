@@ -2,7 +2,7 @@
 
 Trace context is split into two individual propagation fields supporting interoperability and vendor-specifc extensability:
 
-- `traceparent` describes the position of the incoming request in its trace graph in a portable, fixed-length format. Its design focuses on fast parsing. Every tracing tool MUST properly set `tracestate` even when it only relies on vendor-specif informaiton in `tracestate`
+- `traceparent` describes the position of the incoming request in its trace graph in a portable, fixed-length format. Its design focuses on fast parsing. Every tracing tool MUST properly set `tracestate` even when it only relies on vendor-specific information in `tracestate`
 - `tracestate` extends `traceparent` with vendor-specific data represented by a set of name/value pairs. Storing information in `tracestate` is optional.
 
 Tracing tools can provide two levels of compliant behaviour interacting with trace context:
