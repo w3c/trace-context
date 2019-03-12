@@ -134,13 +134,15 @@ specification is making regarding the size of `tracestate` field will
 only be a recommendation that would improve vendors interoperability and
 cannot be "enforced" in practice.
 
-Possible solutions:
+There solutions to address this problem were discussed:
 
 1. Declare the arbitrary max length that HAVE TO be propagated.
 2. Limit based on number of entries, not the size. Declare arbitrary
    minimum number of entries required for propagation.
 3. Make max length the decision of the implementor. Suggest arbitrary
    max length in specification that implementors SHOULD propagate.
+
+These solutions has the following pros and cons.
 
 #### 1. Declare the arbitrary max length
 
@@ -153,7 +155,7 @@ Extremely small proposal like `64` wasn't received well by vendors,
 while larger limits was unacceptable/undesirable for cloud vendors as
 COGS of implementing it are quite high.
 
-So far we didn't find a number everybody liked.
+We failed to find a number everybody liked.
 
 #### 2. Limit based on number of entries
 
@@ -185,6 +187,10 @@ One of the side effects of this proposal is that it encourages tracing
 vendors to minimize the use of `tracestate` for non-essential scenarios
 to ensure propagation of an essential fields. Which is aligned with the
 spirit of `tracestate`.
+
+One addition to this scenario was made to discourage people using
+`tracestate` values of size larger than `128` long. Specification
+suggests to cut those entries first.
 
 ### Maximum number of elements
 
