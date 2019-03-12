@@ -206,19 +206,18 @@ interoperability.
 
 ##### Recommendations
 
-1. If a component made a definitive recording decision - this decision SHOULD be
-2. reflected in the `recorded` flag.
-3. If a component needs to make a recording decision - it SHOULD respect the
+1. If a component made a definitive recording decision - this decision SHOULD be reflected in the `recorded` flag.
+1. If a component needs to make a recording decision - it SHOULD respect the
    `recorded` flag value. Security considerations should be applied to protect
    from abusive or malicious use of this flag - see security section.
-4. If a component deferred or delayed the decision and only a subset of telemetry
+2. If a component deferred or delayed the decision and only a subset of telemetry
    will be recorded - the flag `recorded` should be propagated unchanged. And set
    to `0` as a default option when a trace is initiated by this component. There
    are two additional scenarios:
     1. A component that makes a deferred or delayed recording decision MAY
        communicate the priority of recording by setting the `recorded` flag to
        `1` for a subset of requests.
-    1. A component may also fall back to probability sampling to set the `recorded`
+    2. A component may also fall back to probability sampling to set the `recorded`
        flag to `1` for the subset of requests.
 
 #### Other Flags
