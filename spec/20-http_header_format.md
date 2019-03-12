@@ -454,9 +454,12 @@ Here is the list of allowed mutations:
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
    surface. Implementation SHOULD clean up `tracestate` collection on
-   `traceparent` restart. In rare cases when original `tracestate` entries must
-   be preserved after restart - it SHOULD be an explicit decision, not a default
-   behavior.
+   `traceparent` restart. There are rare cases when the original
+   `tracestate` entries must be preserved after restart. Typically, when
+   `trace-id` will be reverted back at some point of the trace flow -
+   for instance, when it leaves the secure network. However, it SHOULD
+   be an explicit decision, not a default behavior. As trace vendors may
+   rely on `trace-id` matching `tracestate` values.
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent`
 header.
