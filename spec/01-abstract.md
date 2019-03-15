@@ -6,7 +6,7 @@ and debug a transaction across multiple software components. Typically, a
 be uniquely identifiable across all participating systems.
 Passing along this unique identification is provided by *trace context propagation*.
 
-Today, trace context propagation is implemented individually by each vendor.
+Today, trace context propagation is implemented individually by each tracing vendor.
 In multi-vendor environments, this causes interoperability problems, like:
 
 - Traces that are collected by different tracing vendors cannot be linked together
