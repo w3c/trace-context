@@ -100,7 +100,7 @@ all participating systems.
 ##### Rules
 
 * A `trace-id` with all bytes set to `0` is not allowed.
-* Implementations SHOULD generate globally unique values.
+* Implementations MUST generate globally unique values.
 * Implementations HAVE TO ignore the `traceparent` if the `trace-id` does not
   comply with this specification.
 * If a system operates with a shorter `trace-id` - it SHOULD fill-in the extra
