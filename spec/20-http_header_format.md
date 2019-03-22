@@ -242,7 +242,7 @@ base16(trace-flags) = 00  // not recorded
 
 ## Versioning of `traceparent`
 
-Implementations is opinionated about future version of the specification. Current
+This specification is opinionated about future version of the trace context. Current
 version of this specification assumes that the future versions of `traceparent`
 header will be additive to the current one.
 
