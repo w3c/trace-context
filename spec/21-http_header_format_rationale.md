@@ -154,27 +154,25 @@ One variation is whether original or new header that you cannot recognize is pre
 
 ## Restarting trace
 
-There are two main reasons distributed trace context needs to be restarted -
-logical restart and privacy & security motivated restarts. Privacy & security
-should never be taken lightly. However, trace context is designed to have low
-impact on these aspects and tracing vendors should provide a ways to eliminate
-risks of trusting incoming identifiers without compromising on interoperability
-various systems.
+Developers sometimes feel a need to restart a trace due to security concerns,
+however trace context should not contain information that can compromise your
+application,  and tracing vendors should work through the risks of trusting
+incoming identifiers without compromising on interoperability.
 
-The field `tracestate` carries information that in most cases have strong
-association with the `traceparent`. Specifically, with the `trace-id` field.
-Tracing vendors will assume that association to optimize the size of the
-`tracestate` entry. This is why restarting of a trace context SHOULD clear up
-the `tracestate` list.
+If restarting a trace is unavoidable, you SHOULD clear the `tracestate` list as well.
+The data carried in `tracestate` carries information that often has a strong
+association with the `traceparent`, particularly `trace-id`. Tracing vendors will
+often assume that these values are associated, which is why `tracestate`
+SHOULD be cleared when `traceparent` is changed.
 
-There are scenarios, however, which may require a different behavior.
-For example, if trace was restarted when entered some secure boundaries and
-than restored back when it is leaving those boundaries - keeping original
-`tracestate` entries will increase tracing vendors interoperability.
-Vendor-specific context will be propagated thru the these secure boundaries.
+There are scenarios, however, which may require different behavior.
+For example, if a trace was restarted when entered some secure boundaries and
+than restored back when it is leaving those boundaries - keeping the original
+`tracestate` entries will fully restore the trace back to normal. In this example,
+vendor-specific context will be propagated through these secure boundaries.
 
-Scenarios like one above require careful coding and understanding of what they
-are trying to achieve. It should be considered an exception. Implementations
+Scenarios like the one above require careful coding and understanding of what they
+are trying to achieve, and should be considered an exception. Implementations
 should discourage this type of restarts. For example, implementations may allow
 this scenario only by means of restarting the trace WITH `tracestate` clean up
 and than re-population of `tracestate` can only be implemented as an explicit
