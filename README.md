@@ -28,10 +28,10 @@ together.
 
 ## Reference Implementations
 
-There are few open source implementation of a trace context specification
+There are few open source implementations of this trace context specification
 available.
 
-Simplistic regex-based implementation can be found in `test` folder. This
+A simplistic regex-based implementation can be found in the `test` folder. This
 implementation has 100% compliance to the test suite.
 
 [Open Census](https://opencensus.io) has implementations for the following
