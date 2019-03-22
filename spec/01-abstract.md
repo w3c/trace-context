@@ -1,4 +1,4 @@
-# Problem Statement
+## Problem Statement
 
 Distributed tracing is a methodology implemented by tracing tools to follow, analyze
 and debug a transaction across multiple software components. Typically, a
