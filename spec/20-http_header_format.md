@@ -404,7 +404,7 @@ propagating `tracestate` SHOULD be weighted against the value of
 monitoring scenarios enabled for the end users.
 
 In situation when `tracestate` needs to be truncated due to size
-limitations platform of tracing vendor MUST truncate whole entries.
+limitations, platform of tracing vendor MUST truncate whole entries.
 Entries larger than `128` characters long SHOULD be removed first. Then
 entries SHOULD be removed starting from the end of `tracestate`. Note,
 other truncation strategies like safe list entries, blocked list entries or
