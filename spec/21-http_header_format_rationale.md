@@ -153,7 +153,7 @@ entries. `512` is a nice median length.
 
 Extremely small proposal like `64` wasn't received well by vendors,
 while larger limits was unacceptable/undesirable for cloud vendors as
-COGS of implementing it are quite high.
+costs of implementing it are quite high.
 
 We failed to find a number everybody liked.
 
