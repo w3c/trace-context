@@ -22,7 +22,7 @@ Platforms and tracing systems extremely sensitive to personal information exposu
 
 ## Other risks
 
-In implementations where headers traceparent and tracestate are included in
+In implementations where `traceparent` and `tracestate` headers are included in
 responses, these values may inadvertently be passed to cross-origin callers.
 Implementations should ensure that they only include these response headers when
 responding to systems that participated in the trace.
