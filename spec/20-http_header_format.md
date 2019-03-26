@@ -407,7 +407,7 @@ In situation when `tracestate` needs to be truncated due to size
 limitations platform of tracing vendor MUST truncate whole entries.
 Entries larger than `128` characters long SHOULD be removed first. Then
 entries SHOULD be removed starting from the end of `tracestate`. Note,
-other truncation strategies like whitelist entries, blacklist entries or
+other truncation strategies like safe list entries, blocked list entries or
 size-based truncation MAY be used, but highly discouraged. Those
 strategies will decrease interoperability of various tracing vendors.
 
