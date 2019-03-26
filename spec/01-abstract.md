@@ -9,12 +9,13 @@ Trace context propagation passes along this unique identification.
 Today, trace context propagation is implemented individually by each tracing vendor.
 In multi-vendor environments, this causes interoperability problems, like:
 
-- Traces that are collected by different tracing vendors cannot be linked together
+- Traces that are collected by different tracing vendors cannot be correlated
   as there is no shared unique identifier.
-- Traces that cross boundaries between different tracing vendors break as there
-  is no uniformly agreed set of identification that is forwarded.
-- Cloud platform vendors, intermediaries and service providers, cannot guarantee to support
-  trace context propagation as there is no standard to follow.
+- Traces that cross boundaries between different tracing vendors can not be
+  propagated as there is no uniformly agreed set of identification that is forwarded.
+- Vendor specific metadata might be dropped by intermediaries.
+- Cloud platform vendors, intermediaries and service providers, cannot guarantee
+  to support trace context propagation as there is no standard to follow.
 
 In the past, these problems did not have a significant impact as most applications
 were monitored by a single tracing tool and stayed within the boundaries of a single
