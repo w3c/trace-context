@@ -13,7 +13,7 @@ In multi-vendor environments, this causes interoperability problems, like:
   as there is no shared unique identifier.
 - Traces that cross boundaries between different tracing vendors break as there
   is no uniformly agreed set of identification that is forwarded.
-- Cloud platform vendors, as well as hardware vendors, cannot guarantee to support
+- Cloud platform vendors, intermediaries and service providers, cannot guarantee to support
   trace context propagation as there is no standard to follow.
 
 In the past, these problems did not have a significant impact as most applications
