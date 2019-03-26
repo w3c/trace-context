@@ -134,7 +134,7 @@ specification is making regarding the size of `tracestate` field will
 only be a recommendation that would improve vendors interoperability and
 cannot be "enforced" in practice.
 
-There solutions to address this problem were discussed:
+Three solutions to address this problem were discussed:
 
 1. Declare the arbitrary max length that HAVE TO be propagated.
 2. Limit based on number of entries, not the size. Declare arbitrary
