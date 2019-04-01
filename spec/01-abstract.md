@@ -18,7 +18,7 @@ In multi-vendor environments, this causes interoperability problems, like:
   to support trace context propagation as there is no standard to follow.
 
 In the past, these problems did not have a significant impact as most applications
-were monitored by a single tracing tool and stayed within the boundaries of a single
+were monitored by a single tracing vendor and stayed within the boundaries of a single
 platform provider. Today, an increasing number of applications are highly
 distributed and leverage multiple middleware services and cloud platforms.
 
