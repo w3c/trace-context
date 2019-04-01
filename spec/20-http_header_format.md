@@ -383,23 +383,33 @@ Rather, the entry would be rewritten to only include the most recent position:
 
 **Limits:**
 
+The `tracestate` field contains essential information for request
+correlation. Platforms and tracing systems MUST propagate this field.
 There might be multiple `tracestate` headers in a single request
 according to [RFC7230 section
-3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Maximum length of a
-combined header MUST be less than 512 characters. This length includes commas
-required to separate list items. But SHOULD NOT include optional white space
-(OWA) characters.
+3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Platform or
+tracing system may propagate them as they came, combine into a single
+header or split into multiple headers differently following the RFC
+specification.
 
-`tracestate` field contains essential information for request correlation.
-Platforms and tracing systems MUST propagate this header. Compliance with the
-specification will require storing of `tracestate` as part of the request
-payload or associated metadata. Allowing the long field values can make
-compliance to the specification impossible. Thus, the aggressive limit of 512
-characters was chosen.
+Platforms and tracing vendors SHOULD propagate at least 512 characters
+of a combined header. This length includes commas required to separate
+list items. But does not include optional white space (`OWA`)
+characters.
 
-If the `tracestate` value has more than 512 characters, the tracer CAN decide to
-forward the `tracestate`. When propagating `tracestate` with the excessive
-length - the assumption SHOULD be that the receiver will drop this header.
+There are systems where propagating of 512 characters of `tracestate`
+may be expensive. In this case the maximum size of propagated
+`tracestate` header SHOULD be documented and explained. Cost of
+propagating `tracestate` SHOULD be weighted against the value of
+monitoring scenarios enabled for the end users.
+
+In situation when `tracestate` needs to be truncated due to size
+limitations, platform of tracing vendor MUST truncate whole entries.
+Entries larger than `128` characters long SHOULD be removed first. Then
+entries SHOULD be removed starting from the end of `tracestate`. Note,
+other truncation strategies like safe list entries, blocked list entries or
+size-based truncation MAY be used, but highly discouraged. Those
+strategies will decrease interoperability of various tracing vendors.
 
 ## Examples of HTTP headers
 

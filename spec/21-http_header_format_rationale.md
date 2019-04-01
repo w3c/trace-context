@@ -38,14 +38,6 @@ message, and semantically not the same as traceparent. Message id can be used to
 dedup messages on the server when traceparent only defines the source this
 message came from.
 
-## `tracestate`
-
-- The names should be human readable, but values shoulb be opaque. Cryptic names can
-interfere with identification of the tracing system responsible for an entry.
-- Multiple entries are permitted, but not across multiple headers. Order identifies which entry is associated with the `traceparent`. Arbitrary non-tracing system entries is a non use case.
-- The typical name will be a single word in latin and the value will be a
-copy of the `traceparent` format or an opaque string.
-
 ## Ordering of keys in `tracestate`
 
 The specification calls for ordering of values in tracestate. This requirement allows better interoperability between tracing vendors.
@@ -98,17 +90,109 @@ configuration - certain header mutations may still be required. An example may b
 smart sampling mechanisms that rely on additional data propagation in
 `tracestate`.
 
-### Size limits
+## Size limits of `tracestate`
 
-#### Total size limit
+### Total size limit
 
-Header should be small so providers can satisfy the requirement to pass the value all the time.
+The field `tracestate` opens up rich interoperability and extensibility
+scenarios for vendors. There are defined use cases for the `tracestate`
+like positioning request in multiple distributed tracing graphs and
+providing backward compatibility with older protocols. But `tracestate`
+is not limited to this use and will drive innovations and new scenarios
+going forward.
 
-512 bytes looks like a reasonable compromise.
+The opaque nature of `tracestate` introduces some tension between
+guarantees to vendors around propagating vendor-specific data with
+traces vs. storage and propagation constraints.
 
-TODO: put more thoughts into it
+On the one hand, field value should be small so implementors can satisfy
+the requirement to pass the value all the time. It is especially
+critical for various messaging systems where metadata like `tracestate`
+is not paid for by the customer and provided for free.
 
-#### Maximum number of elements
+On the other hand, in order for the field to be useful there should be some
+guarantees that it will in fact be propagated in most of the cases.
+
+Without changing definition of `tracestate` to make it less opaque, any
+declared limit will be arbitrary. It may be based on discussions with
+vendors on their needs. But it's still arbitrary as - first, it may not
+account for the needs of everybody and second - whatever guarantee will
+be provided - it will be abused as guaranteed propagation is a very
+tempting and hard to implement feature.
+
+Talking about abuse - one thing this working group is doing is working
+on user-defined context propagation as part of [Correlation
+Context](https://w3c.github.io/correlation-context/) spec. Correlation
+context will provide a relieve valve for people who want to have freedom
+propagating relatively big payload across the components of a
+distributed trace.
+
+This specification allows removing and adding as many `tracestate`
+entries as an implementation needs. This freedom is required to satisfy
+privacy and interoperability concerns. Thus all suggestions
+specification is making regarding the size of `tracestate` field will
+only be a recommendation that would improve vendors interoperability and
+cannot be "enforced" in practice.
+
+Three solutions to address this problem were discussed:
+
+1. Declare the arbitrary max length that HAVE TO be propagated.
+2. Limit based on number of entries, not the size. Declare arbitrary
+   minimum number of entries required for propagation.
+3. Make max length the decision of the implementor. Suggest arbitrary
+   max length in specification that implementors SHOULD propagate.
+
+These solutions has the following pros and cons.
+
+#### 1. Declare the arbitrary max length
+
+This is simplest and easy to understand solution. Proposals for the
+limit varied from `20` (size of a single `parent-id` with small
+identifier) to `1024` to fit up to 5 vendors with large tracestate
+entries. `512` is a nice median length.
+
+Extremely small proposal like `64` wasn't received well by vendors,
+while larger limits was unacceptable/undesirable for cloud vendors as
+costs of implementing it are quite high.
+
+We failed to find a number everybody liked.
+
+#### 2. Limit based on number of entries
+
+This proposal was made to eliminate the problem of a "greedy" vendor
+utilizes the full length of a `tracestate` and ultimately blocking the
+interoperability.
+
+Problem with this proposal is that limits proposed for the individual
+entry (e.g. `128`) were still quite high for cloud providers.
+
+Also even though seemingly this proposal makes interoperability better,
+abuse of using multiple entries by a single vendor is still unavoidable.
+
+Good way to discourage vendors to use long `tracestate` values is to
+suggest to remove those first when limit was reached.
+
+#### 3. Make max length the decision of the implementor
+
+Options above "protected" vendors from implementors who will take
+optional nature of `tracestate` and will not propagate `tracestate`.
+However the reality is that for many platforms even larger `tracestate`
+fields propagation is not a concern.
+
+So there was a proposal that the spec will suggest the length limits,
+and define the algorithm of trimming `tracestate`. However the final
+decision of an actual implementation to the platform.
+
+One of the side effects of this proposal is that it encourages tracing
+vendors to minimize the use of `tracestate` for non-essential scenarios
+to ensure propagation of an essential fields. Which is aligned with the
+spirit of `tracestate`.
+
+One addition to this scenario was made to discourage people using
+`tracestate` values of size larger than `128` long. Specification
+suggests to cut those entries first.
+
+### Maximum number of elements
 
 Here are some rationals and assumptions:
 
@@ -119,14 +203,14 @@ Here are some rationals and assumptions:
 
 Based on these assumptions and rationals a maximum number of elements of 32 looks like a reasonable compromise.
 
-### Forcing lower case tracestate names
+## Forcing lower case tracestate names
 
 Lowercase names have a few benefits:
 - consistent with structured headers specification http://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html
 - make naming consistent and avoid potential interoperability issues between systems
 - encourages minimizing the name size to a single word
 
-### String encoding of names
+## String encoding of names
 
 Url encoding is low-overhead way to encode unicode characters for non-latin characters in the 
 values. Url encoding keeps a single words in latin unchanged and easily readable.
@@ -177,7 +261,7 @@ individual vendors to start to collaborate over response headers and later decid
 - `traceparent` can be used for use cases 1 and 3 (identity and deferred sampling).
 - `tracestate`-like header can be used for all use cases.
 
-### Problems*
+### Problems
 
 - Might not work in all scenarios (e.g queues).
 - Not sure what processing etc. would look like.
