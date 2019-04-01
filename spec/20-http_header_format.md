@@ -124,7 +124,7 @@ a few telemetry systems call the execution of a client call a span. It is
 represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes zero
 (`0000000000000000`) is considered an invalid value.
 
-Implementation HAVE TO ignore the `traceparent` when the `parent-id` is invalid.
+Implementations HAVE TO ignore the `traceparent` when the `parent-id` is invalid.
 For instance, if it contains non lower case hex characters.
 
 ## Trace-flags
@@ -216,7 +216,7 @@ interoperability.
 ### Other Flags
 
 The behavior of other flags, such as (`00000100`) is not defined and reserved
-for future use. Implementation MUST set those to zero.
+for future use. Implementations MUST set those to zero.
 
 ## Examples of HTTP headers
 
@@ -242,11 +242,11 @@ base16(trace-flags) = 00  // not recorded
 
 ## Versioning of `traceparent`
 
-Implementation is opinionated about future version of the specification. Current
+This specification is opinionated about future version of the trace context. Current
 version of this specification assumes that the future versions of `traceparent`
 header will be additive to the current one.
 
-Implementation should follow the following rules when parsing headers with an
+Implementations should follow the following rules when parsing headers with an
 unexpected format:
 
 1. Pass thru services should not analyze version. Pass thru service needs to
@@ -258,16 +258,16 @@ unexpected format:
     1. If the size of header is shorter than 55 characters -implementation
        should not parse header and should restart the trace.
     2. Try parse `trace-id`: from the first dash - next 32 characters.
-       Implementation MUST check 32 characters to be hex. Make sure they are
+       Implementations MUST check 32 characters to be hex. Make sure they are
        followed by dash.
     3. Try parse `parent-id`: from the second dash at 35th position - 16
-       characters. Implementation MUST check 16 characters to be hex. Make sure
+       characters. Implementations MUST check 16 characters to be hex. Make sure
        this is followed by a dash.
     4. Try parse sampling bit of `flags`:  2 characters from third dash.
        Following with either end of string or a dash. If all three values were
-       parsed successfully - implementation should use them. Implementation MUST
+       parsed successfully - implementation should use them. Implementations MUST
        NOT parse or assume anything about any fields unknown for this version.
-       Implementation MUST use these fields to construct the new `traceparent`
+       Implementations MUST use these fields to construct the new `traceparent`
        field according to the highest version of the specification known to the
        implementation (in this specification it is `00`).
 
@@ -428,7 +428,7 @@ tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=l
 ## Versioning of `tracestate`
 
 Version of `tracestate` is defined by the version prefix of `traceparent`
-header. Implementation needs to attempt parsing of `tracestate` if a higher
+header. Implementations needs to attempt parsing of `tracestate` if a higher
 version is detected to the best of its ability. It is the implementor's decision
 whether to use partially-parsed `tracestate` key-value pairs or not.
 
@@ -463,7 +463,13 @@ Here is the list of allowed mutations:
 4. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
-   surface.
+   surface. Implementations SHOULD clean up `tracestate` collection on
+   `traceparent` restart. There are rare cases when the original
+   `tracestate` entries must be preserved after restart. Typically, when
+   `trace-id` will be reverted back at some point of the trace flow -
+   for instance, when it leaves the secure network. However, it SHOULD
+   be an explicit decision, not a default behavior. As trace vendors may
+   rely on `trace-id` matching `tracestate` values.
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent`
 header.

@@ -236,6 +236,32 @@ One variation is whether original or new header that you cannot recognize is pre
   Storing original value also has negative effects. Valid `traceparent` is 55 characters (out of 512 allowed for `tracestate`). And "bad" headers could be much longer pushing valuable `tracestate` pairs out. Also this requirement increases the chance of abuse. When a bad actor will start sending a header with the version `99` that is only understood by that actor. And the fact that every system passes thru the original value allows this actor to build a complete solution based on this header.
 - Option 3 with the fallback to option 2 seems to allow the easiest transition between versions by forcing a lot of restrictions on the future. Initial proposal was to try to parse individual parts like `trace-id` than `parent-id`. Assuming `parent-id` size or format may change without changing `trace-id`. However the majority sees potential for abuse here. So we suggest to force future versions to be additive to the current format. And if parsing fails at any stage - simply restart the trace.
 
+## Restarting trace
+
+Developers sometimes feel a need to restart a trace due to security concerns,
+however trace context should not contain information that can compromise your
+application,  and tracing vendors should work through the risks of trusting
+incoming identifiers without compromising on interoperability.
+
+If restarting a trace is unavoidable, you SHOULD clear the `tracestate` list as well.
+The data carried in `tracestate` carries information that often has a strong
+association with the `traceparent`, particularly `trace-id`. Tracing vendors will
+often assume that these values are associated, which is why `tracestate`
+SHOULD be cleared when `traceparent` is changed.
+
+There are scenarios, however, which may require different behavior.
+For example, if a trace was restarted when entered some secure boundaries and
+than restored back when it is leaving those boundaries - keeping the original
+`tracestate` entries will fully restore the trace back to normal. In this example,
+vendor-specific context will be propagated through these secure boundaries.
+
+Scenarios like the one above require careful coding and understanding of what they
+are trying to achieve, and should be considered an exception. Implementations
+should discourage this type of restarts. For example, implementations may allow
+this scenario only by means of restarting the trace WITH `tracestate` clean up
+and than re-population of `tracestate` can only be implemented as an explicit
+copy/pasting of `tracestate` entries one by one.
+
 ## Response headers
 
 **TL;DR;** There are many scenarios where collaboration between distributed tracing vendors require writing and reading response headers.
