@@ -22,7 +22,8 @@ were monitored by a single tracing vendor and stayed within the boundaries of a 
 platform provider. Today, an increasing number of applications are highly
 distributed and leverage multiple middleware services and cloud platforms.
 
-This transformation of modern applications calls for distributed tracing context propagation standard.
+This transformation of modern applications calls for a distributed tracing
+context propagation standard.
 
 ## Solution
 
