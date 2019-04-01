@@ -22,6 +22,8 @@ were monitored by a single tracing tool and stayed within the boundaries of a si
 platform provider. Today, an increasing number of applications are highly
 distributed and leverage multiple middleware services and cloud platforms.
 
+This transformation of modern applications calls for distributed tracing context propagation standard.
+
 ## Solution
 
 The trace context specification defines a universally agreed-upon format for the
