@@ -35,7 +35,8 @@ context solves the problems described above by
   trace data of multiple providers to be linked together.
 - providing an agreed-upon mechanism to forward vendor-specific trace data and
   avoid broken traces when multiple trace tools participate in a single transaction.
-- providing an industry standard that platform and hardware-providers can support.
+- providing an industry standard that intermiediaries, platforms, and hardware
+  providers can support.
 
 A unified approach for propagating trace data improves visibility into the behavior
 of distributed applications, facilitating problem and performance analysis.
