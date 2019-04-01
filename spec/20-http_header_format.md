@@ -65,7 +65,7 @@ header name in lower case.
 ## Field value
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
-[RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule from
+[[!RFC5234]], including the DIGIT rule from
 that document. `DIGIT` rule defines a single number character `0`-`9`.
 
 ``` abnf
@@ -79,7 +79,7 @@ The value is US-ASCII encoded (which is UTF-8 compliant). Character `-` is used
 as a delimiter between fields.
 
 Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version
-255 is invalid. Current specification assumes the `version` is set to `00`.
+`255` is invalid. Current specification assumes the `version` is set to `00`.
 
 The following `version-format` definition is used for version `00`.
 
@@ -94,8 +94,8 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently only one bit is used. Se
 ### Trace-id
 
 Is the ID of the whole trace forest. It is represented as a 16-bytes array, for
-example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` are considered
-invalid.
+example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes zero
+(`00000000000000000000000000000000`) is considered an invalid value.
 
 `Trace-id` is used to uniquely identify a <a>distributed trace</a>. So implementation
 should generate globally unique values. Many algorithms of unique identification
@@ -121,15 +121,15 @@ For instance, if it contains non-allowed characters.
 
 Is the ID of this call as known by the caller. It is also known as `span-id` as
 a few telemetry systems call the execution of a client call a span. It is
-represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes `0`
-is considered invalid.
+represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes zero
+(`0000000000000000`) is considered an invalid value.
 
 Implementations HAVE TO ignore the `traceparent` when the `parent-id` is invalid.
-For instance, if it contains non-allowed characters.
+For instance, if it contains non lower case hex characters.
 
 ## Trace-flags
 
-An [8-bit field](https://en.wikipedia.org/wiki/Bit_field) that controls tracing
+An <a data-cite='!BIT-FIELD'>8-bit field</a> that controls tracing
 flags such as sampling, trace level etc. These flags are recommendations given
 by the caller rather than strict rules to follow for three reasons:
 
@@ -294,15 +294,15 @@ header name in lower case.
 ## Header value
 
 Multiple `tracestate` headers are allowed. Values from multiple headers in
-incoming requests SHOULD be combined in a single header according to the
-[RFC7230](https://tools.ietf.org/html/rfc7230#page-24) and send as a single
+incoming requests SHOULD be combined in a single header according to
+<a data-cite='!RFC7230#page-24'>Field Order</a> [[!RFC7230]] and send as a single
 header in outgoing request.
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
-[RFC5234](https://tools.ietf.org/html/rfc5234), including the DIGIT rule in
-[appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It
-also includes the `OWS` rule from [RFC7230 section
-3.2.3](https://tools.ietf.org/html/rfc7230#section-3.2.3).
+[[!RFC5234]], including the DIGIT rule in
+<a data-cite='!RFC5234#appendix-B.1'>appendix B.1 for RFC5234</a>. It
+also includes the `OWS` rule from <a data-cite='!RFC7230#section-3.2.3'>RFC7230 section
+3.2.3</a>.
 
 `DIGIT` rule defines number `0`-`9`.
 
@@ -352,7 +352,7 @@ in the beginning of key like `fw529a3039@dt` - `fw529a3039` is a tenant id and
 (searching for all vendor's keys).
 
 Value is opaque string up to 256 characters printable ASCII
-[RFC0020](https://www.rfc-editor.org/info/rfc20) characters (i.e., the range
+[[!RFC0020]] characters (i.e., the range
 0x20 to 0x7E) except comma `,` and `=`. Note that this also excludes tabs,
 newlines, carriage returns, etc.
 
@@ -383,23 +383,33 @@ Rather, the entry would be rewritten to only include the most recent position:
 
 **Limits:**
 
+The `tracestate` field contains essential information for request
+correlation. Platforms and tracing systems MUST propagate this field.
 There might be multiple `tracestate` headers in a single request
 according to [RFC7230 section
-3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Maximum length of a
-combined header MUST be less than 512 characters. This length includes commas
-required to separate list items. But SHOULD NOT include optional white space
-(OWA) characters.
+3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Platform or
+tracing system may propagate them as they came, combine into a single
+header or split into multiple headers differently following the RFC
+specification.
 
-`tracestate` field contains essential information for request correlation.
-Platforms and tracing systems MUST propagate this header. Compliance with the
-specification will require storing of `tracestate` as part of the request
-payload or associated metadata. Allowing the long field values can make
-compliance to the specification impossible. Thus, the aggressive limit of 512
-characters was chosen.
+Platforms and tracing vendors SHOULD propagate at least 512 characters
+of a combined header. This length includes commas required to separate
+list items. But does not include optional white space (`OWA`)
+characters.
 
-If the `tracestate` value has more than 512 characters, the tracer CAN decide to
-forward the `tracestate`. When propagating `tracestate` with the excessive
-length - the assumption SHOULD be that the receiver will drop this header.
+There are systems where propagating of 512 characters of `tracestate`
+may be expensive. In this case the maximum size of propagated
+`tracestate` header SHOULD be documented and explained. Cost of
+propagating `tracestate` SHOULD be weighted against the value of
+monitoring scenarios enabled for the end users.
+
+In situation when `tracestate` needs to be truncated due to size
+limitations, platform of tracing vendor MUST truncate whole entries.
+Entries larger than `128` characters long SHOULD be removed first. Then
+entries SHOULD be removed starting from the end of `tracestate`. Note,
+other truncation strategies like safe list entries, blocked list entries or
+size-based truncation MAY be used, but highly discouraged. Those
+strategies will decrease interoperability of various tracing vendors.
 
 ## Examples of HTTP headers
 

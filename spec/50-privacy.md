@@ -14,8 +14,15 @@ Note, both privacy concerns of `traceparent` field are theoretical rather than p
 
 ## Privacy of tracestate field
 
-The  `tracestate` field may contain any opaque value in any of the keys. The main purpose of this header is to provide additional vendor-specific trace-identification information across different distributed tracing systems. 
+The `tracestate` field may contain any opaque value in any of the keys. The main purpose of this header is to provide additional vendor-specific trace-identification information across different distributed tracing systems.
 
 Tracing systems MUST NOT include any personally identifiable information in the `tracestate` header.
 
 Platforms and tracing systems extremely sensitive to personal information exposure MAY implement selective removal of values corresponding to the unknown keys. This mutation of the `tracestate` field is not forbidden, but highly discouraged. As it defeats the purpose of this field for allowing multiple tracing systems to collaborate.
+
+## Other risks
+
+In implementations where `traceparent` and `tracestate` headers are included in
+responses, these values may inadvertently be passed to cross-origin callers.
+Implementations should ensure that they only include these response headers when
+responding to systems that participated in the trace.
