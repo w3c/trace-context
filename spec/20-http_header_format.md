@@ -79,7 +79,7 @@ The value is US-ASCII encoded (which is UTF-8 compliant). Character `-` is used
 as a delimiter between fields.
 
 Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version
-255 is invalid. Current specification assumes the `version` is set to `00`.
+`255` is invalid. Current specification assumes the `version` is set to `00`.
 
 The following `version-format` definition is used for version `00`.
 
@@ -94,8 +94,8 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently only one bit is used. Se
 ### Trace-id
 
 Is the ID of the whole trace forest. It is represented as a 16-bytes array, for
-example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes `0` are considered
-invalid.
+example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes zero
+(`00000000000000000000000000000000`) is considered an invalid value.
 
 `Trace-id` is used to uniquely identify a <a>distributed trace</a>. So implementation
 should generate globally unique values. Many algorithms of unique identification
@@ -121,11 +121,11 @@ For instance, if it contains non-allowed characters.
 
 Is the ID of this call as known by the caller. It is also known as `span-id` as
 a few telemetry systems call the execution of a client call a span. It is
-represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes `0`
-is considered invalid.
+represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes zero
+(`0000000000000000`) is considered an invalid value.
 
 Implementation HAVE TO ignore the `traceparent` when the `parent-id` is invalid.
-For instance, if it contains non-allowed characters.
+For instance, if it contains non lower case hex characters.
 
 ## Trace-flags
 
