@@ -1,48 +1,40 @@
 # Processing Model
 
-This section provides a step-by-step description of the behavior of a tracing system when a request is received. This description can be used as a reference when implementing a tracecontext compliant tracing system, middleware or cloud service.
+This section provides a step-by-step description of the behavior of a tracing implementation - also called tracer -  when a request is received. This description can be used as a reference when implementing a tracecontext compliant tracing system, middleware or cloud service.
 
 ## Processing Model for Working with Trace Context
 
-The processing model describes the behaviour of a tracing implementation which forwards **and** modifies
+The processing model describes the behaviour of a tracer which forwards **and** modifies
 tracecontext headers.
 
-1. The tracing system receives a `traceparent` header and may receive `tracestate`.
-2. The tracing system tries to parse the version of the `traceparent` header.
-   - If the version prefix cannot be parsed, the tracing system creates a new `traceparent`
+1. The tracer receives a `traceparent` header and may receive a `tracestate`. header.
+2. The tracer tries to parse the version of the `traceparent` header.
+   - If the version prefix cannot be parsed, the tracer creates a new `traceparent`
      header and removes all entries from `tracestate`.
-   - If the version number is higher than supported by the tracing implementation,
+   - If the version number is higher than supported by the tracer,
   the implementation uses the format defined in this specification to parse
-  `trace-id` and `parent-id`. The tracing system will only parse `flags` values
+  `trace-id` and `parent-id`. The tracer will only parse `flags` values
   supported by the current version of this specification and ignore all other
   values. If parsing fails, the tracing system creates a new `traceparent` header
   and removes all entries from `tracestate`.
 
-3. When the tracing system supports the version number it validates `trace-id`
+3. If the tracer supports the version number it validates `trace-id`
 and `parent-id`.
-   - If either `trace-id`, `parent-id` or `flags`  are invalid,  the tracing
-  system creates a new empty `traceparent` header and removes all entries from `tracestate`.
+   - If either `trace-id`, `parent-id` or `flags`  are invalid,  the tracer
+   creates a new `traceparent` header and removes all entries from `tracestate`.
 
-4. The tracing system validates the `tracestate` header. If the `tracestate` header cannot be parsed the system creates a new empty `tracestate` header.
+4. The tracer validates the `tracestate` header. If the `tracestate` header cannot be parsed the system creates a new empty `tracestate` header.
 
-5. For each outgoing request the tracing implementation performs the following steps:
+5. For each outgoing request the tracer performs the following steps:
 
    - The tracing system MUST modify the `traceparent` header.
-        - **Update `parent-id`**. The value of property `parent-id` MUST be set to        the new value representing the ID of the current operation.
-        -  **Indicate recorded state**. The value of the `recorded` flag of `trace-flags`
-            MAY be set to `1` if it had the value `0` before or vice versa. `parent-id`
-            MUST be set to the new value with the `recorded` flag updated.
-            See details of `recorded` flag for more information on how this flag is
-            recommended to be used.
+        - **Update `parent-id`**. The value of property `parent-id` MUST be set to        the a value representing the ID of the current operation.
         -  **Update `recorded`**. The value of `recorded` reflects the callers
-            recording behavior: either the trace data was dropped or may have been
-            recorded out-of-band. This mutation gives the downstream tracer information
-            about the likelihood of the parent recording tracing information.
-
-    - Tracing System modifies the `tracestate` header
+            recording behavior. The value of the `recorded` flag of `trace-flags`
+            MAY be set to `1` if the trace data is likely to be recorded or to `0` otherwise. Setting the flag is no guarantee that the trace will be recorded but increases the likeliness of end-to-end recorded traces.
+    - The tracer modifies the `tracestate` header
         - **Update key value**. The value of any key can be updated. Modified keys
-        MUST be moved to the beginning of the list. This is the most common mutation
-        resuming the trace.
+        MUST be moved to the beginning of the list. 
         - **Add new key-value pair**. The new key-value pair should be added into
         the beginning of the list.
         - **Delete the key-value pair**. Any key-value pair MAY be deleted. It is
@@ -52,6 +44,7 @@ and `parent-id`.
             - Proxies can block specific `tracestate` keys for privacy and security
             concerns.
             - Truncation of long `tracestate` entries.
+    - The tracer set the `traceparent` and `tracestate` header for the outgoing request
 
 
 ## Alternative Processing
