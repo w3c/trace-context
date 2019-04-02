@@ -76,21 +76,3 @@ and `parent-id`.
     concerns.
       - Truncation of long `tracestate` entries.
 
-## Processing Model for starting or restarting a trace
-
-The process for starting a new trace and restarting an existing trace are similar.
-Restarting a trace is highly discouraged as it breaks end-to-end visibility.
-
-Possible reasons for _restarting_ a trace are:
-
-- Crossing of a trust boundary
-- Receiving an invalid traceparent header
-
-1. **Generating the traceparent header:**
-
-   All properties - `trace-id`, `parent-id`, `trace-flags`
-   are generated.
-
-2. **Generating the tracestate header:**
-
-   A new key-value pair can be added to the empty list.
