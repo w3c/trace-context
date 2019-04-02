@@ -38,11 +38,12 @@ implementation has 100% compliance to the test suite.
 languages:
 
 1. [C#](https://github.com/census-instrumentation/opencensus-csharp/blob/4a8ddf6727eafda97a06c7c30d8a4fc2ec8b8e2f/src/OpenCensus/Trace/Propagation/TraceContextFormat.cs)
-2. [Go](https://github.com/census-instrumentation/opencensus-go/blob/ae11cd04b7789fa938bb4f0e696fd6bd76463fa4/plugin/ochttp/propagation/tracecontext/propagation.go)
-3. [Java](https://github.com/census-instrumentation/opencensus-java/blob/e5e9d9224a1c9c5ee981981cf29e86662aef08c6/impl_core/src/main/java/io/opencensus/implcore/trace/propagation/TraceContextFormat.java)
-4. [Node.js](https://github.com/census-instrumentation/opencensus-node/blob/fa97a9b6f19b97e1038ffa9e1be4b407f3844df2/packages/opencensus-propagation-tracecontext/src/tracecontext-format.ts)
-5. [Python](https://github.com/census-instrumentation/opencensus-python/blob/2aef803e4a786fe0ffb14b168a8458283ccd72a0/opencensus/trace/propagation/trace_context_http_header_format.py)
-6. [Ruby](https://github.com/census-instrumentation/opencensus-ruby/blob/8cb9771b218e440e825c99981ea405d40f735926/lib/opencensus/trace/formatters/trace_context.rb)
+2. [Erlang](https://github.com/census-instrumentation/opencensus-erlang/blob/b3ab781b060b15a3cacbf43717c3aeb0c90c4a08/src/oc_propagation_http_tracecontext.erl)
+3. [Go](https://github.com/census-instrumentation/opencensus-go/blob/ae11cd04b7789fa938bb4f0e696fd6bd76463fa4/plugin/ochttp/propagation/tracecontext/propagation.go)
+4. [Java](https://github.com/census-instrumentation/opencensus-java/blob/e5e9d9224a1c9c5ee981981cf29e86662aef08c6/impl_core/src/main/java/io/opencensus/implcore/trace/propagation/TraceContextFormat.java)
+5. [Node.js](https://github.com/census-instrumentation/opencensus-node/blob/fa97a9b6f19b97e1038ffa9e1be4b407f3844df2/packages/opencensus-propagation-tracecontext/src/tracecontext-format.ts)
+6. [Python](https://github.com/census-instrumentation/opencensus-python/blob/2aef803e4a786fe0ffb14b168a8458283ccd72a0/opencensus/trace/propagation/trace_context_http_header_format.py)
+7. [Ruby](https://github.com/census-instrumentation/opencensus-ruby/blob/8cb9771b218e440e825c99981ea405d40f735926/lib/opencensus/trace/formatters/trace_context.rb)
 
 .NET Framework will ship trace context specification support in the upcoming
 version. See
