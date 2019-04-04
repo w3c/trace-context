@@ -5,7 +5,7 @@ This section provides a step-by-step description of the behavior of a tracing im
 ## Processing Model for Working with Trace Context
 
 The processing model describes the behaviour of a tracer which forwards **and** modifies
-tracecontext headers.
+Trace Context headers.
 
 1. The tracer receives a `traceparent` header and may receive a `tracestate` header.
 2. The tracer tries to parse the version of the `traceparent` header.
