@@ -7,7 +7,7 @@ This section provides a step-by-step description of the behavior of a tracing im
 The processing model describes the behaviour of a tracer which forwards **and** modifies
 tracecontext headers.
 
-1. The tracer receives a `traceparent` header and may receive a `tracestate`. header.
+1. The tracer receives a `traceparent` header and may receive a `tracestate` header.
 2. The tracer tries to parse the version of the `traceparent` header.
    - If the version prefix cannot be parsed, the tracer creates a new `traceparent`
      header and removes all entries from `tracestate`.
