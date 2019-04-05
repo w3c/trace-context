@@ -28,7 +28,7 @@ Trace Context headers.
 5. For each outgoing request the tracer performs the following steps:
 
    - The tracing system MUST modify the `traceparent` header.
-        - **Update `parent-id`**. The value of property `parent-id` MUST be set to        the a value representing the ID of the current operation.
+        - **Update `parent-id`**. The value of property `parent-id` MUST be set to a value representing the ID of the current operation.
         -  **Update `recorded`**. The value of `recorded` reflects the callers
             recording behavior. The value of the `recorded` flag of `trace-flags`
             MAY be set to `1` if the trace data is likely to be recorded or to `0` otherwise. Setting the flag is no guarantee that the trace will be recorded but increases the likeliness of end-to-end recorded traces.
