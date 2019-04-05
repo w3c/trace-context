@@ -10,26 +10,27 @@ service.
 
 The processing model describes the behaviour of a tracer which forwards and modifies tracecontext headers.
 
-1. The tracer receives a `traceparent` header and may receive a `tracestate`
+1. The tracer checks an incoming request for a `traceparent` and a `tracestate`
    header.
-2. The tracer tries to parse the version of the `traceparent` header.
-   - If the version prefix cannot be parsed, the tracer creates a new
-     `traceparent` header and removes all entries from `tracestate`.
+2. If no `traceparent` header is received, the trace creates a new `trace-id`
+   and `parent-id` representing the current opeartion.
+
+1. If `traceparent` header is present, the tracer tries to parse the version of the `traceparent` header.
+   - If the version prefix cannot be parsed, the tracer creates   a new `traceparent` header and deletes `tracestate`.
    - If the version number is higher than supported by the tracer, the
      implementation uses the format defined in this specification to parse
      `trace-id` and `parent-id`. The tracer will only parse `trace-flags` values
      supported by the current version of this specification and ignore all other
      values. If parsing fails, the tracing system creates a new `traceparent`
-     header and removes all entries from `tracestate`.
+     header and deletes the `tracestate`.
 
 3. If the tracer supports the version number, it validates `trace-id` and
    `parent-id`.
    - If either `trace-id`, `parent-id` or `trace-flags`  are invalid,  the tracer
-     creates a new `traceparent` header and removes all entries from
-     `tracestate`.
+     creates a new `traceparent` header and deletes `tracestate`.
 
 4. The tracer validates the `tracestate` header. If the `tracestate` header
-   cannot be parsed the system creates a new empty `tracestate` header.
+   cannot be parsed the tracer deletes it.
 
 5. For each outgoing request the tracer performs the following steps:
 
