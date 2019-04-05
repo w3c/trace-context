@@ -3,7 +3,7 @@
 This section provides a step-by-step description of the behavior of a tracing
 implementation - also called tracer -  when a request is received. This
 description can be used as a reference when implementing a Trace Context
-compliant tracing system, middleware or cloud service.
+compliant tracing system, middleware- like a proxy or messaging bus -  or cloud service.
 
 ## Processing Model for Working with Trace Context
 
