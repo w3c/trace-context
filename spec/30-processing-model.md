@@ -8,8 +8,7 @@ service.
 
 ## Processing Model for Working with Trace Context
 
-The processing model describes the behaviour of a tracer which forwards and
-modifies tracecontext headers.
+The processing model describes the behaviour of a tracer which forwards and modifies tracecontext headers.
 
 1. The tracer receives a `traceparent` header and may receive a `tracestate`
    header.
@@ -43,7 +42,7 @@ modifies tracecontext headers.
             recorded or to `0` otherwise. Setting the flag is no guarantee that
             the trace will be recorded but increases the likeliness of
             end-to-end recorded traces.
-    - The tracer modifies the `tracestate` header
+    - The tracer MAY modify the `tracestate` header
         - **Update key value**. The value of any key can be updated. Modified
           keys MUST be moved to the beginning of the list. 
         - **Add new key-value pair**. The new key-value pair should be added
