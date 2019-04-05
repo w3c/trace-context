@@ -49,4 +49,4 @@ Trace Context headers.
 
 ## Alternative Processing
 
-The processing model above described the complete set of steps for processing tracecontext headers. There are, however, situation when an implementation only supports a subset of the steps described above. Proxies or messaging middleware MAY not modify the `traceparent` headers but may remove invalid headers or add additional information to `tracestate`. 
+The processing model above describes the complete set of steps for processing Trace Context headers. There are, however, situations when an implementation might only support a subset of the steps described above. Proxies or messaging middleware MAY not modify the `traceparent` headers but may remove invalid headers or add additional information to `tracestate`. 
