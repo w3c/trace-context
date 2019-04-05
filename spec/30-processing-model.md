@@ -13,7 +13,7 @@ Trace Context headers.
      header and removes all entries from `tracestate`.
    - If the version number is higher than supported by the tracer,
   the implementation uses the format defined in this specification to parse
-  `trace-id` and `parent-id`. The tracer will only parse `flags` values
+  `trace-id` and `parent-id`. The tracer will only parse `trace-flags` values
   supported by the current version of this specification and ignore all other
   values. If parsing fails, the tracing system creates a new `traceparent` header
   and removes all entries from `tracestate`.
