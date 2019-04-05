@@ -18,7 +18,7 @@ Trace Context headers.
   values. If parsing fails, the tracing system creates a new `traceparent` header
   and removes all entries from `tracestate`.
 
-3. If the tracer supports the version number it validates `trace-id`
+3. If the tracer supports the version number, it validates `trace-id`
 and `parent-id`.
    - If either `trace-id`, `parent-id` or `flags`  are invalid,  the tracer
    creates a new `traceparent` header and removes all entries from `tracestate`.
