@@ -11,7 +11,7 @@ The `traceparent` field has a predefined set of values. These values are randoml
 Another privacy risk of the `traceparent` field is an ability to correlate calls made as part of a single transaction. A downstream service may track and correlate two or more calls made in a single transaction and make assumptions about the identity of the caller of one call base on information in another call.
 
 Note, both privacy concerns of `traceparent` field are theoretical rather than
-practical. Some service initiating or receiving a call MAY choose to restart a
+practical. Some services initiating or receiving a call MAY choose to restart a
 `traceparent` field to eliminate those risks completely. It is recommended to
 find a way to minimize the number of <a>distributed trace</a> restarts to promote
 interoperability of tracing vendors. Different techniques may be used. Services
