@@ -13,7 +13,7 @@ The processing model describes the behaviour of a tracer which forwards and modi
 1. The tracer checks an incoming request for a `traceparent` and a `tracestate`
    header.
 2. If no `traceparent` header is received, the trace creates a new `trace-id`
-   and `parent-id` representing the current opeartion.
+   and `parent-id` representing the current operation.
 
 1. If `traceparent` header is present, the tracer tries to parse the version of the `traceparent` header.
    - If the version prefix cannot be parsed, the tracer creates   a new `traceparent` header and deletes `tracestate`.
@@ -45,7 +45,7 @@ The processing model describes the behaviour of a tracer which forwards and modi
             end-to-end recorded traces.
     - The tracer MAY modify the `tracestate` header
         - **Update key value**. The value of any key can be updated. Modified
-          keys MUST be moved to the beginning of the list. 
+          keys MUST be moved to the beginning of the list.
         - **Add new key-value pair**. The new key-value pair should be added
           into the beginning of the list.
         - **Delete the key-value pair**. Any key-value pair MAY be deleted. It
@@ -66,4 +66,4 @@ The processing model above describes the complete set of steps for processing
 Trace Context headers. There are, however, situations when an implementation
 might only support a subset of the steps described above. Proxies or messaging
 middleware MAY decide to not modify the `traceparent` headers but may remove invalid
-headers or add additional information to `tracestate`. 
+headers or add additional information to `tracestate`.
