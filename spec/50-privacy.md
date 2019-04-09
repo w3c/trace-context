@@ -13,7 +13,7 @@ Another privacy risk of the `traceparent` field is an ability to correlate calls
 Note, both privacy concerns of `traceparent` field are theoretical rather than
 practical. Some service initiating or receiving a call MAY choose to restart a
 `traceparent` field to eliminate those risks completely. It is recommended to
-find a way to minimize number of <a>distributed trace</a> restarts to promote
+find a way to minimize the number of <a>distributed trace</a> restarts to promote
 interoperability of tracing vendors. Different techniques may be used. Services
 may define trust boundaries of upstream and downstream connections and level of
 exposure any calls may bring. For instance, only restart `traceparent` for
