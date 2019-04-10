@@ -23,7 +23,7 @@ Services may also define an algorithm and audit mechanism to validate randomness
 of incoming or outgoing random numbers in the `traceparent` field. Note, this
 algorithm will be services-specific and not a part of this specification. One
 example can be a temporal algorithms where a reversible hash function is applied
-to the current clock time. So receiver can validate that the time is in agreed
+to the current clock time. So the receiver can validate that the time is within agreed upon
 boundaries, meaning the random number was generated with the required algorithm
 and in fact doesn't contain any personal identifiable information.
 
