@@ -6,7 +6,7 @@ Trace vendors MUST assess the risk of header abuse. This section provides some c
 
 ## Privacy of traceparent field
 
-The `traceparent` field has a predefined set of values. These values are randomly-generated numbers. If a random number generator has any logic of using user-identifiable information like IP address - this information may be exposed. Random number generators MUST NOT rely on any information that can potentially be user-identifiable.
+The `traceparent` field has a predefined set of values. These values are randomly-generated numbers. If a random number generator has any logic of using user identifiable information like IP address - this information may be exposed. Random number generators MUST NOT rely on any information that can potentially be user identifiable.
 
 Another privacy risk of the `traceparent` field is an ability to correlate calls made as part of a single transaction. A downstream service may track and correlate two or more calls made in a single transaction and make assumptions about the identity of the caller of one call base on information in another call.
 
@@ -22,8 +22,8 @@ authentication calls from or to external services.
 Services may also define an algorithm and audit mechanism to validate randomness
 of incoming or outgoing random numbers in the `traceparent` field. Note, this
 algorithm will be services-specific and not a part of this specification. One
-example can be a temporal algorithms where a reversible hash function is applied
-to the current clock time. So the receiver can validate that the time is within agreed upon
+example can be a temporal algorithm where a reversible hash function is applied
+to the current clock time. The receiver can validate that the time is within agreed upon
 boundaries, meaning the random number was generated with the required algorithm
 and in fact doesn't contain any personal identifiable information.
 
