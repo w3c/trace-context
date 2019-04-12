@@ -10,7 +10,7 @@ The `traceparent` field is comprised of randomly-generated numbers. If a random 
 
 Another privacy risk of the `traceparent` field is an ability to correlate calls made as part of a single transaction. A downstream service may track and correlate two or more calls made in a single transaction and make assumptions about the identity of the caller of one call based on information from another call.
 
-Note, both privacy concerns of `traceparent` field are theoretical rather than
+Note, both of the mentioned privacy concerns of the `traceparent` field are theoretical rather than
 practical. Some services initiating or receiving a call MAY choose to restart a
 `traceparent` field to eliminate those risks completely. It is recommended to
 find a way to minimize the number of <a>distributed trace</a> restarts to promote
