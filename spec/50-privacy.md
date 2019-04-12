@@ -15,7 +15,7 @@ practical. Some services initiating or receiving a call MAY choose to restart a
 `traceparent` field to eliminate those risks completely. It is recommended to
 find a way to minimize the number of <a>distributed trace</a> restarts to promote
 interoperability of tracing vendors. Instead, different techniques may be used. For example, services
-may define trust boundaries of upstream and downstream connections and level of
+may define trust boundaries of upstream and downstream connections and the level of
 exposure any calls may bring. For instance, only restart `traceparent` for
 authentication calls from or to external services.
 
