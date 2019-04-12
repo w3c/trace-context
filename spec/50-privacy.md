@@ -8,7 +8,7 @@ Trace vendors MUST assess the risk of header abuse. This section provides some c
 
 The `traceparent` field is comprised of randomly-generated numbers. If a random number generator leverages any user identifiable information like IP address as seed state - this information may be exposed. Random number generators MUST NOT rely on any information that can potentially be user identifiable.
 
-Another privacy risk of the `traceparent` field is an ability to correlate calls made as part of a single transaction. A downstream service may track and correlate two or more calls made in a single transaction and make assumptions about the identity of the caller of one call base on information in another call.
+Another privacy risk of the `traceparent` field is an ability to correlate calls made as part of a single transaction. A downstream service may track and correlate two or more calls made in a single transaction and make assumptions about the identity of the caller of one call based on information from another call.
 
 Note, both privacy concerns of `traceparent` field are theoretical rather than
 practical. Some services initiating or receiving a call MAY choose to restart a
