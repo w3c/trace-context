@@ -1,4 +1,4 @@
-# Security
+# Security Considerations
 
 There are two types of potential security risks associated with this specification: information exposure
 and denial of service attacks against the tracing system.
