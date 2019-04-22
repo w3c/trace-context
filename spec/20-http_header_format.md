@@ -46,11 +46,11 @@ except pushed to the right. The left-most position lets the next server know
 which tracing system corresponds with `traceparent`. In this case, since `congo`
 wrote `traceparent`, its `tracestate` entry should be left-most.
 
-# Traceparent field
+## Traceparent field
 
 Field `traceparent` identifies the request in a tracing system.
 
-## Header name
+### Header name
 
 In order to increase interoperability across multiple protocols and encourage
 successful integration by default it is recommended to keep the header name
@@ -62,7 +62,7 @@ Header name: `traceparent`
 Platforms and libraries MUST expect header name in any casing and SHOULD send
 header name in lower case.
 
-## Field value
+### Field value
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of
 [[!RFC5234]], including the DIGIT rule from
@@ -91,7 +91,7 @@ parent-id        = 16HEXDIGLC  ; 8 bytes array identifier. All zeroes forbidden
 trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently only one bit is used. See below for details
 ```
 
-### Trace-id
+#### Trace-id
 
 Is the ID of the whole trace forest. It is represented as a 16-bytes array, for
 example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes zero
@@ -117,7 +117,7 @@ specification.
 Implementations HAVE TO ignore the `traceparent` when the `trace-id` is invalid.
 For instance, if it contains non-allowed characters.
 
-### Parent-id
+#### Parent-id
 
 Is the ID of this call as known by the caller. It is also known as `span-id` as
 a few telemetry systems call the execution of a client call a span. It is
@@ -127,7 +127,7 @@ represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes zero
 Implementations HAVE TO ignore the `traceparent` when the `parent-id` is invalid.
 For instance, if it contains non lower case hex characters.
 
-## Trace-flags
+### Trace-flags
 
 An <a data-cite='!BIT-FIELD'>8-bit field</a> that controls tracing
 flags such as sampling, trace level etc. These flags are recommendations given
@@ -158,7 +158,7 @@ boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED
 
 Current version of specification only supports a single flag called `recorded`.
 
-### Recorded Flag (00000001)
+#### Recorded Flag (00000001)
 
 When set, the least significant bit documents that the caller may have recorded
 trace data. A caller who does not record trace data out-of-band leaves this flag
@@ -213,12 +213,12 @@ interoperability.
     2. Component may also fall back to probability sampling to set flag
        `recorded` to `1` for the subset of requests.
 
-### Other Flags
+#### Other Flags
 
 The behavior of other flags, such as (`00000100`) is not defined and reserved
 for future use. Implementations MUST set those to zero.
 
-## Examples of HTTP headers
+### Examples of HTTP headers
 
 *Valid traceparent when caller recorded this request:*
 
@@ -240,7 +240,7 @@ base16(parent-id) = 00f067aa0ba902b7
 base16(trace-flags) = 00  // not recorded
 ```
 
-## Versioning of `traceparent`
+### Versioning of `traceparent`
 
 This specification is opinionated about future version of the trace context. Current
 version of this specification assumes that the future versions of `traceparent`
@@ -271,7 +271,7 @@ unexpected format:
        field according to the highest version of the specification known to the
        implementation (in this specification it is `00`).
 
-# Tracestate field
+## Tracestate field
 
 The `tracestate` HTTP header field conveys information about request position in
 multiple distributed tracing graphs. This header is a companion header for the
@@ -279,7 +279,7 @@ multiple distributed tracing graphs. This header is a companion header for the
 NOT attempt to parse the `tracestate`. Note, that opposite it not true - failure
 to parse `tracestate` MUST NOT affect the parsing of `traceparent`.
 
-## Header name
+### Header name
 
 In order to increase interoperability across multiple protocols and encourage
 successful integration by default it is recommended to keep the header name
@@ -291,7 +291,7 @@ Header name: `tracestate`
 Platforms and libraries MUST expect header name in any casing and SHOULD send
 header name in lower case.
 
-## Header value
+### Header value
 
 Multiple `tracestate` headers are allowed. Values from multiple headers in
 incoming requests SHOULD be combined in a single header according to
@@ -411,7 +411,7 @@ other truncation strategies like safe list entries, blocked list entries or
 size-based truncation MAY be used, but highly discouraged. Those
 strategies will decrease interoperability of various tracing vendors.
 
-## Examples of HTTP headers
+### Examples of HTTP headers
 
 Single tracing system (generic format):
 
@@ -425,16 +425,14 @@ Multiple tracing systems (with different formatting):
 tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4
 ```
 
-## Versioning of `tracestate`
+### Versioning of `tracestate`
 
 Version of `tracestate` is defined by the version prefix of `traceparent`
 header. Implementations needs to attempt parsing of `tracestate` if a higher
 version is detected to the best of its ability. It is the implementor's decision
 whether to use partially-parsed `tracestate` key-value pairs or not.
 
-# Mutating the traceparent field
-
-## Base mutations
+## Mutating the traceparent field
 
 Library or platform receiving `traceparent` request header MUST send it to
 outgoing requests. It MAY mutate the value of this header before passing to
@@ -474,7 +472,7 @@ Here is the list of allowed mutations:
 Libraries and platforms MUST NOT make any other mutations to the `traceparent`
 header.
 
-# Mutating the tracestate field
+## Mutating the tracestate field
 
 Library or platform receiving `tracestate` request header MUST send it to
 outgoing requests. It MAY mutate the value of this header before passing to
