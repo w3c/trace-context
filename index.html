@@ -6,7 +6,7 @@
   <script src='https://www.w3.org/Tools/respec/respec-w3c-common' class='remove' defer></script>
   <script class='remove'>
     var respecConfig = {
-      specStatus: "ED",
+      specStatus: "FPWD",
       editors: [{
         name: "Sergey Kanzhelev",
         company: "Microsoft",
@@ -44,6 +44,18 @@
           href: 'https://gitter.im/TraceContext/Lobby'
         }]
       }],
+      localBiblio: {
+            "BIT-FIELD": {
+              title: "8-bit field",	
+              href: "https://en.wikipedia.org/wiki/Bit_field",	
+              publisher: "Wikipedia"	
+            },	
+            "REGISTRY" : {	
+              title: "Trace Context Protocols Registry",	
+              href: "https://w3c.github.io/trace-context-protocols-registry/",	
+              publisher: "W3C"	
+            }	
+      },
       wgPatentURI: "https://www.w3.org/2004/01/pp-impl/108594/status"
     };
   </script>
@@ -52,9 +64,10 @@
 <body>
   <section id='abstract' data-include="spec/01-abstract.md" data-include-format='markdown'></section>
   <section id='sotd' data-include="spec/02-sotd.md" data-include-format='markdown'></section>
+  
+  <section id='conformance'></section>
 
   <section data-include="spec/10-overview.md" data-include-format='markdown'></section>
-  <section data-include="spec/11-fields-semantics.md" data-include-format='markdown'></section>
 
   <section data-include="spec/20-http_header_format.md" data-include-format='markdown'></section>
 

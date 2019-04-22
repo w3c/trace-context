@@ -1,4 +1,4 @@
-# Privacy
+# Privacy Considerations
 
 Requirements to propagate headers to downstream services as well as storing values of these headers opens up potential privacy concerns. Trace vendors MUST NOT use `traceparent` and `tracestate` fields for any personally identifiable or otherwise sensitive information. The only purpose of these fields is to enable trace correlation.
 
