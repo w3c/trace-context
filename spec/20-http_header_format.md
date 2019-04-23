@@ -420,13 +420,13 @@ strategies will decrease interoperability of various tracing vendors.
 Single tracing system (generic format):
 
 ``` http
-tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+tracestate: rojo=00f067aa0ba902b7
 ```
 
 Multiple tracing systems (with different formatting):
 
 ``` http
-tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4
+tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
 ```
 
 ### Versioning of `tracestate`
