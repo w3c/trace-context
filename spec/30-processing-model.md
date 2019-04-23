@@ -65,5 +65,5 @@ The processing model describes the behaviour of a tracer which forwards and modi
 The processing model above describes the complete set of steps for processing
 Trace Context headers. There are, however, situations when an implementation
 might only support a subset of the steps described above. Proxies or messaging
-middleware MAY decide to not modify the `traceparent` headers but may remove invalid
+middleware MAY decide to not modify the `traceparent` headers but remove invalid
 headers or add additional information to `tracestate`.
