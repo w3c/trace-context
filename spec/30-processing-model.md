@@ -1,39 +1,37 @@
 # Processing Model
 
 This section provides a step-by-step description of the behavior of a tracing
-implementation - also called tracer -  when a request is received. This
+implementation - also called tracer - when a request is received. This
 description can be used as a reference when implementing a Trace Context
-compliant tracing system, middleware - like a proxy or messaging bus -  or cloud
+compliant tracing system, middleware - like a proxy or messaging bus - or cloud
 service.
 
 ## Processing Model for Working with Trace Context
 
-The processing model describes the behaviour of a tracer which forwards and modifies Trace Context headers.
+The processing model describes the behavior of a tracer which forwards and
+modifies Trace Context headers.
 
 1. The tracer checks an incoming request for a `traceparent` and a `tracestate`
    header.
 2. If no `traceparent` header is received, the tracer creates a new `trace-id`
    and `parent-id` representing the current operation.
-
-1. If `traceparent` header is present, the tracer tries to parse the version of the `traceparent` header.
-   - If the version prefix cannot be parsed, the tracer creates   a new `traceparent` header and deletes `tracestate`.
+3. If `traceparent` header is present, the tracer tries to parse the version of
+   the `traceparent` header.
+   - If the version prefix cannot be parsed, the tracer creates a new
+     `traceparent` header and deletes `tracestate`.
    - If the version number is higher than supported by the tracer, the
      implementation uses the format defined in this specification to parse
      `trace-id` and `parent-id`. The tracer will only parse `trace-flags` values
      supported by the current version of this specification and ignore all other
      values. If parsing fails, the tracing system creates a new `traceparent`
      header and deletes the `tracestate`.
-
-3. If the tracer supports the version number, it validates `trace-id` and
+4. If the tracer supports the version number, it validates `trace-id` and
    `parent-id`.
-   - If either `trace-id`, `parent-id` or `trace-flags`  are invalid,  the tracer
+   - If either `trace-id`, `parent-id` or `trace-flags` are invalid, the tracer
      creates a new `traceparent` header and deletes `tracestate`.
-
-4. The tracer validates the `tracestate` header. If the `tracestate` header
+5. The tracer validates the `tracestate` header. If the `tracestate` header
    cannot be parsed the tracer deletes it.
-
-5. For each outgoing request the tracer performs the following steps:
-
+6. For each outgoing request the tracer performs the following steps:
    - The tracing system MUST modify the `traceparent` header.
         - **Update `parent-id`**. The value of property `parent-id` MUST be set
           to a value representing the ID of the current operation.
@@ -58,7 +56,6 @@ The processing model describes the behaviour of a tracer which forwards and modi
             - Truncation of long `tracestate` entries.
     - The tracer set the `traceparent` and `tracestate` header for the outgoing
       request
-
 
 ## Alternative Processing
 
