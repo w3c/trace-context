@@ -6,7 +6,7 @@
   <script src='https://www.w3.org/Tools/respec/respec-w3c-common' class='remove' defer></script>
   <script class='remove'>
     var respecConfig = {
-      specStatus: "ED",
+      specStatus: "FPWD",
       editors: [{
         name: "Sergey Kanzhelev",
         company: "Microsoft",
@@ -24,6 +24,23 @@
         company: "Dynatrace",
         companyURL: "https://dynatrace.com",
         w3cid: "48276"
+      },
+      {
+        name: "Bogdan Drutu",
+        company: "Google",
+        companyURL: "https://google.com",
+        w3cid: "104091"
+      },
+      {
+        name: "Nik Molnar",
+        company: "Microsoft",
+        companyURL: "https://microsoft.com",
+        w3cid: "104238"
+      },
+      {
+        name: "Yuri Shkuro",
+        company: "Invited Expert",
+        w3cid: "104074"
       }],
       github: {
         repoURL: "https://github.com/w3c/trace-context/",
@@ -44,6 +61,18 @@
           href: 'https://gitter.im/TraceContext/Lobby'
         }]
       }],
+      localBiblio: {
+            "BIT-FIELD": {
+              title: "8-bit field",	
+              href: "https://en.wikipedia.org/wiki/Bit_field",	
+              publisher: "Wikipedia"	
+            },	
+            "REGISTRY" : {	
+              title: "Trace Context Protocols Registry",	
+              href: "https://w3c.github.io/trace-context-protocols-registry/",	
+              publisher: "W3C"	
+            }	
+      },
       wgPatentURI: "https://www.w3.org/2004/01/pp-impl/108594/status"
     };
   </script>
@@ -52,10 +81,10 @@
 <body>
   <section id='abstract' data-include="spec/01-abstract.md" data-include-format='markdown'></section>
   <section id='sotd' data-include="spec/02-sotd.md" data-include-format='markdown'></section>
-
+  
+  <section id='conformance'></section>
 
   <section data-include="spec/10-overview.md" data-include-format='markdown'></section>
-  <section data-include="spec/11-fields-semantics.md" data-include-format='markdown'></section>
 
   <section data-include="spec/20-http_header_format.md" data-include-format='markdown'></section>
 
@@ -65,6 +94,8 @@
 
   <section data-include="spec/50-privacy.md" data-include-format='markdown'></section>
   <section data-include="spec/51-security.md" data-include-format='markdown'></section>
+
+  <section class="appendix" data-include="spec/60-acknowledgments.md" data-include-format='markdown'></section>
 
   <section class="informative">
     <h1>Glossary</h1>
