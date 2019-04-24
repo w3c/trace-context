@@ -12,7 +12,7 @@ The processing model describes the behaviour of a tracer which forwards and modi
 
 1. The tracer checks an incoming request for a `traceparent` and a `tracestate`
    header.
-2. If no `traceparent` header is received, the trace creates a new `trace-id`
+2. If no `traceparent` header is received, the tracer creates a new `trace-id`
    and `parent-id` representing the current operation.
 
 1. If `traceparent` header is present, the tracer tries to parse the version of the `traceparent` header.
