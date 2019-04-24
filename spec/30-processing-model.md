@@ -8,7 +8,7 @@ service.
 
 ## Processing Model for Working with Trace Context
 
-The processing model describes the behaviour of a tracer which forwards and modifies tracecontext headers.
+The processing model describes the behaviour of a tracer which forwards and modifies Trace Context headers.
 
 1. The tracer checks an incoming request for a `traceparent` and a `tracestate`
    header.
