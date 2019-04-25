@@ -532,6 +532,7 @@ class TraceContextTest(TestBase):
 		self.assertTrue(str(tracestate).index('rojo=1') < str(tracestate).index('congo=2'))
 		self.assertTrue(str(tracestate).index('congo=2') < str(tracestate).index('baz=3'))
 
+	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_duplicated_keys(self):
 		'''
 		harness sends a request with an invalid tracestate header with duplicated keys
@@ -655,6 +656,7 @@ class TraceContextTest(TestBase):
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
 		self.assertEqual(tracestate['foo'], '1')
 
+	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_key_illegal_characters(self):
 		'''
 		harness sends a request with an invalid tracestate header with illegal key
@@ -678,6 +680,7 @@ class TraceContextTest(TestBase):
 		])
 		self.assertRaises(KeyError, lambda: tracestate['foo.bar'])
 
+	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_key_illegal_vendor_format(self):
 		'''
 		harness sends a request with an invalid tracestate header with illegal vendor format
@@ -735,6 +738,7 @@ class TraceContextTest(TestBase):
 		])
 		self.assertRaises(KeyError, lambda: tracestate['bar01'])
 
+	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_key_length_limit(self):
 		'''
 		harness sends tracestate header with a key of 256 and 257 characters

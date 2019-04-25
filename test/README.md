@@ -250,3 +250,9 @@ Content-Type: application/json
 
 	OK
 	```
+## Strictness levels
+
+The test harness supports different levels of strictness. It can be configured via env variable `STRICT_LEVEL`:
+
+* `STRICT_LEVEL=2`: All tests included
+* `STRICT_LEVEL=1`: Validation of `tracestate` size constraint validations are excluded, while tracestate propagation is still tested.
