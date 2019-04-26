@@ -17,7 +17,7 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 tracestate: congo=t61rcWkgMzE
 ```
 
-Note, `t61rcWkgMzE` is base64 encoded parent ID `b7ad6b7169203331`.
+Note: In this case, the value `t61rcWkgMzE`, is the result of Base64 encoding the Trace-ID (`b7ad6b7169203331`), though such manipulations are not required in `tracestate`.
 
 If the receiving server is traced in the `rojo` tracing system, it carries over
 the state it received and adds a new entry with the position in its trace.
