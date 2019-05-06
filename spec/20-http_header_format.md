@@ -14,15 +14,19 @@ an outbound http request.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
-tracestate: congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4
+tracestate: congo=t61rcWkgMzE
 ```
+
+Note: In this case, the value `t61rcWkgMzE`, is the result of Base64 encoding
+the Trace-ID (`b7ad6b7169203331`), though such manipulations are not required in
+`tracestate`.
 
 If the receiving server is traced in the `rojo` tracing system, it carries over
 the state it received and adds a new entry with the position in its trace.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
-tracestate: rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01,congo=BleGNlZWRzIHRohbCBwbGVhc3VyZS4
+tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
 ```
 
 You'll notice that the `rojo` system reuses the value of `traceparent` in its
@@ -34,10 +38,12 @@ last position, overwriting its entry with one representing the new parent.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
-tracestate: congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4,rojo=00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
+tracestate: congo=ucfJifl5GOE,rojo=00f067aa0ba902b7
 ```
 
-Notice when `congo` wrote its `traceparent` entry, it reuses the last trace ID
+Note, `ucfJifl5GOE` is base64 encoded parent ID `b9c7c989f97918e1`.
+
+Notice when `congo` wrote its `traceparent` entry, it reuses the last parent ID
 which helps in consistency for those doing correlation. However, the value of
 its entry `tracestate` is opaque and different. This is ok.
 
@@ -411,13 +417,13 @@ various tracing vendors.
 Single tracing system (generic format):
 
 ``` http
-tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+tracestate: rojo=00f067aa0ba902b7
 ```
 
 Multiple tracing systems (with different formatting):
 
 ``` http
-tracestate: rojo=00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01,congo=lZWRzIHRoNhcm5hbCBwbGVhc3VyZS4
+tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
 ```
 
 ### Versioning of `tracestate`
