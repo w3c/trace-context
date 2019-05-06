@@ -1,15 +1,15 @@
 # Processing Model
 
-This section provides a step-by-step description of the behavior of a tracing
-implementation - also called tracer - when a request is received. This
-description can be used as a reference when implementing a Trace Context
-compliant tracing system, middleware - like a proxy or messaging bus - or cloud
-service.
+This section provides a step-by-step exemplary description of the behavior of a tracing
+implementation - also called tracer - when a request is received, processed and 
+potentially forwarded. This description can be used as a reference when
+implementing a Trace Context compliant tracing system, middleware - like a proxy
+or messaging bus - or cloud service.
 
 ## Processing Model for Working with Trace Context
 
-The processing model describes the behavior of a tracer which forwards and
-modifies Trace Context headers.
+The processing model describes the behavior of a tracer which modifies and
+forwards Trace Context headers.
 
 1. The tracer checks an incoming request for a `traceparent` and a `tracestate`
    header.
@@ -17,7 +17,7 @@ modifies Trace Context headers.
    and `parent-id` representing the current operation.
 3. If `traceparent` header is present, the tracer tries to parse the version of
    the `traceparent` header.
-   - If the version prefix cannot be parsed, the tracer creates a new
+   - If the version cannot be parsed, the tracer creates a new
      `traceparent` header and deletes `tracestate`.
    - If the version number is higher than supported by the tracer, the
      implementation uses the format defined in this specification to parse
@@ -51,7 +51,7 @@ modifies Trace Context headers.
        break correlation in other systems. This mutation enables two scenarios:
        - Proxies can block specific `tracestate` keys for privacy and security
          concerns. - Truncation of long `tracestate` entries.
-  - The tracer set the `traceparent` and `tracestate` header for the outgoing
+  - The tracer sets the `traceparent` and `tracestate` header for the outgoing
     request
 
 ## Alternative Processing
