@@ -14,7 +14,7 @@ modifies Trace Context headers.
 1. The tracer checks an incoming request for a `traceparent` and a `tracestate`
    header.
 2. If no `traceparent` header is received, the tracer creates a new `trace-id`
-   and `parent-id` representing the current operation.
+   and `parent-id` representing the current request.
 3. If `traceparent` header is present, the tracer tries to parse the version of
    the `traceparent` header.
    - If the version prefix cannot be parsed, the tracer creates a new
