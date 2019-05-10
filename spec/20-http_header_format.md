@@ -18,7 +18,7 @@ tracestate: congo=t61rcWkgMzE
 ```
 
 Note: In this case, the value `t61rcWkgMzE`, is the result of Base64 encoding
-the Trace-ID (`b7ad6b7169203331`), though such manipulations are not required in
+the parent ID (`b7ad6b7169203331`), though such manipulations are not required in
 `tracestate`.
 
 If the receiving server is traced in the `rojo` tracing system, it carries over
@@ -41,7 +41,7 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
 tracestate: congo=ucfJifl5GOE,rojo=00f067aa0ba902b7
 ```
 
-Note, `ucfJifl5GOE` is base64 encoded parent ID `b9c7c989f97918e1`.
+Note, `ucfJifl5GOE` is the Base64 encoded parent ID `b9c7c989f97918e1`.
 
 Notice when `congo` wrote its `traceparent` entry, it reuses the last parent ID
 which helps in consistency for those doing correlation. However, the value of
@@ -99,11 +99,11 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently only one bit is used. Se
 
 #### Trace-id
 
-Is the ID of the whole trace forest. It is represented as a 16-bytes array, for
+This is the ID of the whole trace forest. It is represented as a 16-bytes array, for
 example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes zero
 (`00000000000000000000000000000000`) is considered an invalid value.
 
-`Trace-id` is used to uniquely identify a <a>distributed trace</a>. So
+`Trace-id` is used to uniquely identify a <a>distributed trace</a>. An
 implementation should generate globally unique values. Many algorithms of unique
 identification generation are based on some constant part - time or host based
 and a random value. There are systems that make random sampling decisions based
@@ -125,7 +125,7 @@ For instance, if it contains non-allowed characters.
 
 #### Parent-id
 
-Is the ID of this call as known by the caller. It is also known as `span-id` as
+This is the ID of this call as known by the caller. It is also known as `span-id` as
 a few telemetry systems call the execution of a client call a span. It is
 represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes zero
 (`0000000000000000`) is considered an invalid value.
@@ -142,9 +142,9 @@ rather than strict rules to follow for three reasons:
 1. Trust and abuse
 2. Bug in caller
 3. Different load between caller service and callee service might force callee
-   to down sample.
+   to downsample.
 
-You can find more in security section of this specification.
+You can find more in the section *Security considerations* of this specification.
 
 Like other fields, `trace-flags` is hex-encoded. For example, all `8` flags set
 would be `ff` and no flags set would be `00`.
