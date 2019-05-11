@@ -76,7 +76,6 @@ a single number character `0`-`9`.
 
 ``` abnf
 HEXDIGLC = DIGIT / "a" / "b" / "c" / "d" / "e" / "f" ; lower case hex character
-
 value           = version "-" version-format
 version         = 2HEXDIGLC   ; this document assumes version 00. Version 255 is forbidden
 ```
@@ -91,7 +90,6 @@ The following `version-format` definition is used for version `00`.
 
 ``` abnf
 version-format   = trace-id "-" parent-id "-" trace-flags
-
 trace-id         = 32HEXDIGLC  ; 16 bytes array identifier. All zeroes forbidden
 parent-id        = 16HEXDIGLC  ; 8 bytes array identifier. All zeroes forbidden
 trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently only one bit is used. See below for details
