@@ -144,7 +144,7 @@ rather than strict rules to follow for three reasons:
 3. Different load between caller service and callee service might force callee
    to downsample.
 
-You can find more in the section *Security considerations* of this specification.
+You can find more in the section [Security considerations](#security-considerations) of this specification.
 
 Like other fields, `trace-flags` is hex-encoded. For example, all `8` flags set
 would be `ff` and no flags set would be `00`.
