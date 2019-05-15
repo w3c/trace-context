@@ -448,16 +448,14 @@ Here is the list of allowed mutations:
 1. **Update `parent-id`**. The value of property `parent-id` can be set to the
    new value representing the ID of the current operation. This is the most
    typical mutation and should be considered a default.
-2. **Indicate recorded state**. The value of `recorded` flag of `trace-flags`
-   may be set to `1` if it had value `0` before or vice versa. `parent-id` MUST
-   be set to the new value with the `recorded` flag update. See details of
-   `recorded` flag for more information on how this flag is recommended to be
-   used.
-3. **Update `recorded`**. The value of `recorded` reflects the caller's
-   recording behavior: either the trace data were dropped or may have been
-   recorded out-of-band. This mutation gives the downstream tracer information
-   about the likelihood its parent's information was recorded.
-4. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
+2. **Update `recorded`**. The value of `recorded` reflects the caller's recording
+   behavior: either trace data was dropped or may have been recorded out-of-band -
+   this can be indicated by toggling the flag in both directions. This mutation
+   gives the downstream tracer information about the likelihood its parent's
+   information was recorded. `parent-id` MUST be set to a new value with the 
+   `recorded` flag update. See details of the [`recorded` flag](#recorded-flag-00000001)
+   for more information on how it is recommended to be used.
+3. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
    surface. Implementations SHOULD clean up `tracestate` collection on
