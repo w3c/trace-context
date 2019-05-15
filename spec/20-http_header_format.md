@@ -261,13 +261,13 @@ unexpected format:
 3. If higher version is detected - implementation SHOULD try to parse it.
     1. If the size of header is shorter than 55 characters -implementation
        should not parse header and should restart the trace.
-    2. Try parse `trace-id`: from the first dash - next 32 characters.
+    2. Try parsing `trace-id`: from the first dash - next 32 characters.
        Implementations MUST check 32 characters to be hex. Make sure they are
        followed by dash.
-    3. Try parse `parent-id`: from the second dash at 35th position - 16
+    3. Try parsing `parent-id`: from the second dash at 35th position - 16
        characters. Implementations MUST check 16 characters to be hex. Make sure
        this is followed by a dash.
-    4. Try parse sampling bit of `flags`:  2 characters from third dash.
+    4. Try parsing the `recorded` bit of `flags`:  2 characters from third dash.
        Following with either end of string or a dash. If all three values were
        parsed successfully - implementation should use them. Implementations
        MUST NOT parse or assume anything about any fields unknown for this
