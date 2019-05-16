@@ -457,7 +457,7 @@ Here is the list of allowed mutations:
    recording behavior: either the trace data were dropped or may have been
    recorded out-of-band. This mutation gives the downstream tracer information
    about the likelihood its parent's information was recorded.
-4. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
+4. **Restart trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
    surface. Implementations SHOULD clean up `tracestate` collection on
@@ -467,6 +467,11 @@ Here is the list of allowed mutations:
    the secure network. However, it SHOULD be an explicit decision, not a default
    behavior. As trace vendors may rely on `trace-id` matching `tracestate`
    values.
+5. **Downgrade the version**. Current version of specification defines the
+   behavior for implementation that receives a `traceparent` header of a higher
+   version. See [versioning of `traceparent`](#versioning-of-traceparent)
+   section. In this case the first mutation will be to downgrade the version of
+   the header. Other mutations are allowed in combination with this one.
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent`
 header.
