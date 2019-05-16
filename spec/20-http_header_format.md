@@ -269,11 +269,12 @@ unexpected format:
        this is followed by a dash.
     4. Try parse sampling bit of `flags`:  2 characters from third dash.
        Following with either end of string or a dash. If all three values were
-       parsed successfully - implementation should use them. Implementations
-       MUST NOT parse or assume anything about any fields unknown for this
-       version. Implementations MUST use these fields to construct the new
-       `traceparent` field according to the highest version of the specification
-       known to the implementation (in this specification it is `00`).
+       parsed successfully - implementation should use them.
+
+Implementations MUST NOT parse or assume anything about any fields unknown for
+this version. Implementations MUST use these fields to construct the new
+`traceparent` field according to the highest version of the specification known
+to the implementation (in this specification it is `00`).
 
 ## Tracestate field
 
