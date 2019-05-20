@@ -160,7 +160,7 @@ static final byte FLAG_RECORDED = 1; // 00000001
 boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED;
 ```
 
-Current version of specification only supports a single flag called `recorded`.
+Current version of specification only supports a single flag called `sampled`.
 
 #### Recorded Flag (00000001)
 
@@ -186,36 +186,36 @@ specific or application defined.
 
 Field `tracestate` is designed to handle the variety of techniques for making
 recording decision specific (along any other specific information) for a given
-tracing system or a platform. Flag `recorded` is introduced for better
+tracing system or a platform. Flag `sampled` is introduced for better
 interoperability between vendors. It allows to communicate recording decision
 and enable better experience for the customer.
 
 For example, when SaaS services participate in <a>distributed trace</a> - this
 service has no knowledge of tracing system used by its caller. But this service
 may produce records of incoming requests for monitoring or troubleshooting
-purposes. Flag `recorded` can be used to ensure that information about requests
+purposes. Flag `sampled` can be used to ensure that information about requests
 that were marked for recording by caller will also be recorded by SaaS service.
 So caller can troubleshoot the behavior of every recorded request.
 
-Flag `recorded` has no restriction on its mutations except that it can only be
+Flag `sampled` has no restriction on its mutations except that it can only be
 mutated when `parent-id` was updated. See section "Mutating the traceparent
 field". However there are set of suggestions that will increase vendors
 interoperability.
 
 1. If component made definitive recording decision - this decision SHOULD be
-   reflected in `recorded` flag.
+   reflected in `sampled` flag.
 2. If component needs to make a recording decision - it SHOULD respect
-   `recorded` flag value. Security considerations should be applied to protect
+   `sampled` flag value. Security considerations should be applied to protect
    from abusive or malicious use of this flag - see security section.
 3. If component deferred or delayed decision and only a subset of telemetry will
-   be recorded - flag `recorded` should be propagated unchanged. And set to `0`
+   be recorded - flag `sampled` should be propagated unchanged. And set to `0`
    as a default option when trace is initiated by this component. There are two
    additional options:
     1. Component that makes deferred or delayed recording decision may
-       communicate priority of recording by setting `recorded` flag to `1` for a
+       communicate priority of recording by setting `sampled` flag to `1` for a
        subset of requests.
     2. Component may also fall back to probability sampling to set flag
-       `recorded` to `1` for the subset of requests.
+       `sampled` to `1` for the subset of requests.
 
 #### Other Flags
 
@@ -449,12 +449,12 @@ Here is the list of allowed mutations:
 1. **Update `parent-id`**. The value of property `parent-id` can be set to the
    new value representing the ID of the current operation. This is the most
    typical mutation and should be considered a default.
-2. **Indicate recorded state**. The value of `recorded` flag of `trace-flags`
+2. **Indicate recorded state**. The value of `sampled` flag of `trace-flags`
    may be set to `1` if it had value `0` before or vice versa. `parent-id` MUST
-   be set to the new value with the `recorded` flag update. See details of
-   `recorded` flag for more information on how this flag is recommended to be
+   be set to the new value with the `sampled` flag update. See details of
+   `sampled` flag for more information on how this flag is recommended to be
    used.
-3. **Update `recorded`**. The value of `recorded` reflects the caller's
+3. **Update `sampled`**. The value of `sampled` reflects the caller's
    recording behavior: either the trace data were dropped or may have been
    recorded out-of-band. This mutation gives the downstream tracer information
    about the likelihood its parent's information was recorded.
