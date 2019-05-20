@@ -157,7 +157,7 @@ Here is an example of properly handing trace flags:
 ```java
 static final byte FLAG_RECORDED = 1; // 00000001
 ...
-boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED
+boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED;
 ```
 
 Current version of specification only supports a single flag called `recorded`.
