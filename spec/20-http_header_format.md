@@ -155,14 +155,14 @@ mistake in bit fields is forgetting to mask when interpreting flags.
 Here is an example of properly handing trace flags:
 
 ```java
-static final byte FLAG_RECORDED = 1; // 00000001
+static final byte FLAG_SAMPLED = 1; // 00000001
 ...
-boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED;
+boolean sampled = (traceFlags & FLAG_SAMPLED) == FLAG_SAMPLED;
 ```
 
 Current version of specification only supports a single flag called `sampled`.
 
-#### Recorded Flag (00000001)
+#### Sampled Flag (00000001)
 
 When set, the least significant bit documents that the caller may have recorded
 trace data. A caller who does not record trace data out-of-band leaves this flag
