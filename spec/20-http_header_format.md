@@ -261,13 +261,13 @@ unexpected format:
 3. If higher version is detected - implementation SHOULD try to parse it.
     1. If the size of header is shorter than 55 characters -implementation
        should not parse header and should restart the trace.
-    2. Try parse `trace-id`: from the first dash - next 32 characters.
+    2. Try parsing `trace-id`: from the first dash - next 32 characters.
        Implementations MUST check 32 characters to be hex. Make sure they are
        followed by dash.
-    3. Try parse `parent-id`: from the second dash at 35th position - 16
+    3. Try parsing `parent-id`: from the second dash at 35th position - 16
        characters. Implementations MUST check 16 characters to be hex. Make sure
        this is followed by a dash.
-    4. Try parse sampling bit of `flags`:  2 characters from third dash.
+    4. Try parsing the `recorded` bit of `flags`:  2 characters from third dash.
        Following with either end of string or a dash. If all three values were
        parsed successfully - implementation should use them.
 
@@ -449,16 +449,14 @@ Here is the list of allowed mutations:
 1. **Update `parent-id`**. The value of property `parent-id` can be set to the
    new value representing the ID of the current operation. This is the most
    typical mutation and should be considered a default.
-2. **Indicate recorded state**. The value of `recorded` flag of `trace-flags`
-   may be set to `1` if it had value `0` before or vice versa. `parent-id` MUST
-   be set to the new value with the `recorded` flag update. See details of
-   `recorded` flag for more information on how this flag is recommended to be
-   used.
-3. **Update `recorded`**. The value of `recorded` reflects the caller's
-   recording behavior: either the trace data were dropped or may have been
-   recorded out-of-band. This mutation gives the downstream tracer information
-   about the likelihood its parent's information was recorded.
-4. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
+2. **Update `recorded`**. The value of `recorded` reflects the caller's recording
+   behavior: either trace data was dropped or may have been recorded out-of-band -
+   this can be indicated by toggling the flag in both directions. This mutation
+   gives the downstream tracer information about the likelihood its parent's
+   information was recorded. `parent-id` MUST be set to a new value with the 
+   `recorded` flag update. See details of the [`recorded` flag](#recorded-flag-00000001)
+   for more information on how it is recommended to be used.
+3. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
    surface. Implementations SHOULD clean up `tracestate` collection on
