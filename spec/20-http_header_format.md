@@ -454,7 +454,7 @@ Here is the list of allowed mutations:
    this can be indicated by toggling the flag in both directions. This mutation
    gives the downstream tracer information about the likelihood its parent's
    information was recorded. `parent-id` MUST be set to a new value with the
-   `sampled` flag update. See details of the [`sampled` flag](#recorded-flag-00000001)
+   `sampled` flag update. See details of the [`sampled` flag](#sampled-flag-00000001)
    for more information on how it is recommended to be used.
 3. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
