@@ -224,24 +224,24 @@ for future use. Implementations MUST set those to zero.
 
 ### Examples of HTTP headers
 
-*Valid traceparent when caller recorded this request:*
+*Valid traceparent when caller sampled this request:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 base16(version) = 00
 base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(parent-id) = 00f067aa0ba902b7
-base16(trace-flags) = 01  // recorded
+base16(trace-flags) = 01  // sampled
 ```
 
-*Valid traceparent when caller haven't recorded this request:*
+*Valid traceparent when caller haven't sampled this request:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
 base16(version) = 00
 base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(parent-id) = 00f067aa0ba902b7
-base16(trace-flags) = 00  // not recorded
+base16(trace-flags) = 00  // not sampled
 ```
 
 ### Versioning of `traceparent`
