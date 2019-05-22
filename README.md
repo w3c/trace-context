@@ -8,9 +8,9 @@ Context](https://w3c.github.io/trace-context/) specification.
 
 Specification for distributed tracing context propagation format:
 
-- Trace Context [Report](https://w3c.github.io/trace-context/). Status: [Working
-  Draft](https://www.w3.org/Consortium/Process#working-draft).
-  - Rationale [document](spec/21-HTTP_HEADER_FORMAT_RATIONALE.md)
+- Trace Context [Report](https://w3c.github.io/trace-context/).
+Status: [Candidate Recommendation](https://www.w3.org/Consortium/Process#candidate-rec).
+  - Rationale [document](spec/21-http_header_format_rationale.md)
   - Changes are tracked on GitHub, communicated in meetings and e-mails
     distribution list.
 

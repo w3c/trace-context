@@ -1,4 +1,4 @@
-This specification defines standard headers and value format to propagate
+This specification defines standard HTTP headers and a value format to propagate
 context information that enables distributed tracing scenarios. The
 specification standardizes how context information is sent and modified between
 services. Context information uniquely identifies individual requests in a
