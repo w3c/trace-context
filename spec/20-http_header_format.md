@@ -457,13 +457,16 @@ Here is the list of allowed mutations:
    `sampled` flag update. See details of the [`sampled` flag](#sampled-flag-00000001)
    for more information on how it is recommended to be used.
 3. **Restart trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
-   are regenerated. This mutation is used in the services defined as a front
-   gate into secure networks and eliminates a potential denial of service attack
-   surface. Implementations SHOULD clean up `tracestate` collection on
-   `traceparent` restart. There are rare cases when the original `tracestate`
-   entries must be preserved after restart. Typically, when `trace-id` will be
-   reverted back at some point of the trace flow - for instance, when it leaves
-   the secure network. However, it SHOULD be an explicit decision, not a default
+   are regenerated. The typical use of this mutation is addressing
+   [privacy](#privacy-considerations) or [security](#security-considerations)
+   considerations. For example, this mutation is used in the services defined as
+   a front gate into trust boundaries of an application and eliminates a
+   potential denial of service attack surface. Implementations SHOULD clean up
+   `tracestate` collection on `traceparent` restart. There are rare cases when
+   the original `tracestate` entries must be preserved after restart. Typically,
+   when `trace-id` will be reverted back at some point of the trace flow - for
+   instance, when it leaves the trust boundaries of an application in the
+   example above. However, it SHOULD be an explicit decision, not a default
    behavior. As trace vendors may rely on `trace-id` matching `tracestate`
    values.
 4. **Downgrade the version**. Current version of specification defines the
