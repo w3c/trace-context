@@ -115,7 +115,7 @@ works with a 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting
 generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where
 `4bf92f3577b34da6a` is a random value or a function of time & host value. Note,
 even though a system may operate with a shorter `trace-id` for <a>distributed
-trace</a> reporting - full `trace-id` should be propagated to conform to the
+trace</a> reporting - full `trace-id` MUST be propagated to conform to the
 specification.
 
 Implementations HAVE TO ignore the `traceparent` when the `trace-id` is invalid.
@@ -155,14 +155,14 @@ mistake in bit fields is forgetting to mask when interpreting flags.
 Here is an example of properly handing trace flags:
 
 ```java
-static final byte FLAG_RECORDED = 1; // 00000001
+static final byte FLAG_SAMPLED = 1; // 00000001
 ...
-boolean recorded = (traceFlags & FLAG_RECORDED) == FLAG_RECORDED;
+boolean sampled = (traceFlags & FLAG_SAMPLED) == FLAG_SAMPLED;
 ```
 
-Current version of specification only supports a single flag called `recorded`.
+Current version of specification only supports a single flag called `sampled`.
 
-#### Recorded Flag (00000001)
+#### Sampled Flag (00000001)
 
 When set, the least significant bit documents that the caller may have recorded
 trace data. A caller who does not record trace data out-of-band leaves this flag
@@ -186,36 +186,36 @@ specific or application defined.
 
 Field `tracestate` is designed to handle the variety of techniques for making
 recording decision specific (along any other specific information) for a given
-tracing system or a platform. Flag `recorded` is introduced for better
+tracing system or a platform. Flag `sampled` is introduced for better
 interoperability between vendors. It allows to communicate recording decision
 and enable better experience for the customer.
 
 For example, when SaaS services participate in <a>distributed trace</a> - this
 service has no knowledge of tracing system used by its caller. But this service
 may produce records of incoming requests for monitoring or troubleshooting
-purposes. Flag `recorded` can be used to ensure that information about requests
+purposes. Flag `sampled` can be used to ensure that information about requests
 that were marked for recording by caller will also be recorded by SaaS service.
 So caller can troubleshoot the behavior of every recorded request.
 
-Flag `recorded` has no restriction on its mutations except that it can only be
+Flag `sampled` has no restriction on its mutations except that it can only be
 mutated when `parent-id` was updated. See section "Mutating the traceparent
 field". However there are set of suggestions that will increase vendors
 interoperability.
 
 1. If component made definitive recording decision - this decision SHOULD be
-   reflected in `recorded` flag.
+   reflected in `sampled` flag.
 2. If component needs to make a recording decision - it SHOULD respect
-   `recorded` flag value. Security considerations should be applied to protect
+   `sampled` flag value. Security considerations should be applied to protect
    from abusive or malicious use of this flag - see security section.
 3. If component deferred or delayed decision and only a subset of telemetry will
-   be recorded - flag `recorded` should be propagated unchanged. And set to `0`
+   be recorded - flag `sampled` should be propagated unchanged. And set to `0`
    as a default option when trace is initiated by this component. There are two
    additional options:
     1. Component that makes deferred or delayed recording decision may
-       communicate priority of recording by setting `recorded` flag to `1` for a
+       communicate priority of recording by setting `sampled` flag to `1` for a
        subset of requests.
     2. Component may also fall back to probability sampling to set flag
-       `recorded` to `1` for the subset of requests.
+       `sampled` to `1` for the subset of requests.
 
 #### Other Flags
 
@@ -224,24 +224,24 @@ for future use. Implementations MUST set those to zero.
 
 ### Examples of HTTP headers
 
-*Valid traceparent when caller recorded this request:*
+*Valid traceparent when caller sampled this request:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 base16(version) = 00
 base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(parent-id) = 00f067aa0ba902b7
-base16(trace-flags) = 01  // recorded
+base16(trace-flags) = 01  // sampled
 ```
 
-*Valid traceparent when caller haven't recorded this request:*
+*Valid traceparent when caller haven't sampled this request:*
 
 ```
 Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
 base16(version) = 00
 base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(parent-id) = 00f067aa0ba902b7
-base16(trace-flags) = 00  // not recorded
+base16(trace-flags) = 00  // not sampled
 ```
 
 ### Versioning of `traceparent`
@@ -267,7 +267,7 @@ unexpected format:
     3. Try parsing `parent-id`: from the second dash at 35th position - 16
        characters. Implementations MUST check 16 characters to be hex. Make sure
        this is followed by a dash.
-    4. Try parsing the `recorded` bit of `trace-flags`:  2 characters from third dash.
+    4. Try parsing the `sampled` bit of `trace-flags`:  2 characters from third dash.
        Following with either end of string or a dash. If all three values were
        parsed successfully - implementation should use them.
 
@@ -449,14 +449,14 @@ Here is the list of allowed mutations:
 1. **Update `parent-id`**. The value of property `parent-id` can be set to the
    new value representing the ID of the current operation. This is the most
    typical mutation and should be considered a default.
-2. **Update `recorded`**. The value of `recorded` reflects the caller's recording
+2. **Update `sampled`**. The value of `sampled` reflects the caller's recording
    behavior: either trace data was dropped or may have been recorded out-of-band -
    this can be indicated by toggling the flag in both directions. This mutation
    gives the downstream tracer information about the likelihood its parent's
-   information was recorded. `parent-id` MUST be set to a new value with the 
-   `recorded` flag update. See details of the [`recorded` flag](#recorded-flag-00000001)
+   information was recorded. `parent-id` MUST be set to a new value with the
+   `sampled` flag update. See details of the [`sampled` flag](#sampled-flag-00000001)
    for more information on how it is recommended to be used.
-3. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
+3. **Restart trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
    surface. Implementations SHOULD clean up `tracestate` collection on
@@ -466,6 +466,11 @@ Here is the list of allowed mutations:
    the secure network. However, it SHOULD be an explicit decision, not a default
    behavior. As trace vendors may rely on `trace-id` matching `tracestate`
    values.
+4. **Downgrade the version**. Current version of specification defines the
+   behavior for implementation that receives a `traceparent` header of a higher
+   version. See [versioning of `traceparent`](#versioning-of-traceparent)
+   section. In this case the first mutation will be to downgrade the version of
+   the header. Other mutations are allowed in combination with this one.
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent`
 header.

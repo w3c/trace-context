@@ -25,7 +25,7 @@ information is stored in the `tracestate`, or they should ensure that
 ## Denial of service
 
 When distributed tracing is enabled on a service with a public API and naively
-continues any trace with the `recorded` flag set, a malicious attacker could
+continues any trace with the `sampled` flag set, a malicious attacker could
 overwhelm an application with tracing overhead, forge `trace-id` collisions that
 make monitoring data unusable, or run up your tracing bill with your SaaS
 tracing vendor.
