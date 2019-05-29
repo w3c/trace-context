@@ -115,7 +115,7 @@ works with a 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting
 generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where
 `4bf92f3577b34da6a` is a random value or a function of time & host value. Note,
 even though a system may operate with a shorter `trace-id` for <a>distributed
-trace</a> reporting - full `trace-id` should be propagated to conform to the
+trace</a> reporting - full `trace-id` MUST be propagated to conform to the
 specification.
 
 Implementations HAVE TO ignore the `traceparent` when the `trace-id` is invalid.
