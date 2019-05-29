@@ -456,7 +456,7 @@ Here is the list of allowed mutations:
    information was recorded. `parent-id` MUST be set to a new value with the
    `sampled` flag update. See details of the [`sampled` flag](#sampled-flag-00000001)
    for more information on how it is recommended to be used.
-3. **Restarting trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
+3. **Restart trace**. All properties - `trace-id`, `parent-id`, `trace-flags`
    are regenerated. This mutation is used in the services defined as a front
    gate into secure networks and eliminates a potential denial of service attack
    surface. Implementations SHOULD clean up `tracestate` collection on
@@ -466,6 +466,11 @@ Here is the list of allowed mutations:
    the secure network. However, it SHOULD be an explicit decision, not a default
    behavior. As trace vendors may rely on `trace-id` matching `tracestate`
    values.
+4. **Downgrade the version**. Current version of specification defines the
+   behavior for implementation that receives a `traceparent` header of a higher
+   version. See [versioning of `traceparent`](#versioning-of-traceparent)
+   section. In this case the first mutation will be to downgrade the version of
+   the header. Other mutations are allowed in combination with this one.
 
 Libraries and platforms MUST NOT make any other mutations to the `traceparent`
 header.
