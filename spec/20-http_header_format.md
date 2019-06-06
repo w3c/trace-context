@@ -267,7 +267,7 @@ unexpected format:
     3. Try parsing `parent-id`: from the second dash at 35th position - 16
        characters. Implementations MUST check 16 characters to be hex. Make sure
        this is followed by a dash.
-    4. Try parsing the `sampled` bit of `flags`:  2 characters from third dash.
+    4. Try parsing the `sampled` bit of `trace-flags`:  2 characters from third dash.
        Following with either end of string or a dash. If all three values were
        parsed successfully - implementation should use them.
 
