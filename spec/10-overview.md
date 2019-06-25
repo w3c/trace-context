@@ -23,7 +23,7 @@ The trace context specification defines a universally agreed-upon format for the
 
 A unified approach for propagating trace data improves visibility into the behavior of distributed applications, facilitating problem and performance analysis. The interoperability provided by trace-context is a prerequisite to manage modern micro-service based applications.
 
-## Design overview
+## Design Overview
 
 Trace context is split into two individual propagation fields supporting interoperability and vendor-specific extensibility:
 
