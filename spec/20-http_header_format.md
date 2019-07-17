@@ -62,9 +62,9 @@ The `traceparent` HTTP header field identifies the incoming request in a tracing
 
 Header name: `traceparent`
 
-In order to increase interoperability across multiple protocols and encourage successful integration, by default vendors _SHOULD_ keep the header name lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
+In order to increase interoperability across multiple protocols and encourage successful integration, by default vendors SHOULD keep the header name lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
 
-Vendors _MUST_ expect the header name in any case (upper, lower, mixed), and _SHOULD_ send the header name in lowercase.
+Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
 
 ### traceparent Header Field Values
 
@@ -103,21 +103,21 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. S
 This is the ID of the whole trace forest and is used to uniquely identify a [distributed trace](https://w3c.github.io/trace-context/#dfn-distributed-traces) through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
 
 
-A vendor _SHOULD_ generate globally unique values for `trace-id`. Many unique identification generation algorithms create IDs where one part of the value is constant (often time- or host-based), and the other part is a randomly generated value. Because tracing systems may make sampling decisions based on the value of `trace-id`, for increased interoperability vendors _MUST_  keep the random part of `trace-id` ID on the left side.
+A vendor SHOULD generate globally unique values for `trace-id`. Many unique identification generation algorithms create IDs where one part of the value is constant (often time- or host-based), and the other part is a randomly generated value. Because tracing systems may make sampling decisions based on the value of `trace-id`, for increased interoperability vendors MUST  keep the random part of `trace-id` ID on the left side.
 
 
-When a system operates with a `trace-id` that is shorter than 16 bytes, it _SHOULD_ fill-in the extra bytes with random values rather than zeroes. Let's say the system works with an 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting `trace-id` value to `0000000000000003ce929d0e0e4736` it _SHOULD_ generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where`4bf92f3577b34da6a` is a random value or a function of time and host value.
+When a system operates with a `trace-id` that is shorter than 16 bytes, it SHOULD fill-in the extra bytes with random values rather than zeroes. Let's say the system works with an 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting `trace-id` value to `0000000000000003ce929d0e0e4736` it SHOULD generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where`4bf92f3577b34da6a` is a random value or a function of time and host value.
 
 
-**Note**: Even though a system may operate with a shorter `trace-id` for [distributed trace](https://w3c.github.io/trace-context/#dfn-distributed-traces) reporting, the full `trace-id` _MUST_ be propagated to conform to the specification.
+**Note**: Even though a system may operate with a shorter `trace-id` for [distributed trace](https://w3c.github.io/trace-context/#dfn-distributed-traces) reporting, the full `trace-id` MUST be propagated to conform to the specification.
 
-If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors _MUST_ ignore the `traceparent`.
+If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
 
 ##### parent-id
 
 This is the ID of this request as known by the caller (in some tracing systems, this is known as the `span-id`, where a `span` is the execution of a client request). It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes as zero (`0000000000000000`) is considered an invalid value.
 
-Vendors _MUST_ ignore the `traceparent` when the `parent-id` is invalid (for example, if it contains non-lowercase hex characters).
+Vendors MUST ignore the `traceparent` when the `parent-id` is invalid (for example, if it contains non-lowercase hex characters).
 
 ##### trace-flags
 
@@ -167,21 +167,21 @@ For example, when a SaaS service participates in a <a>distributed trace</a>, thi
 
 The `sampled` flag has no restriction on its mutations except that it can only be mutated when [parent-id is updated](#parent-id).
 
-The following are a set of suggestions that vendors _SHOULD_ use to increase vendor interoperability.
+The following are a set of suggestions that vendors SHOULD use to increase vendor interoperability.
 
-- If a component made definitive recording decision - this decision _SHOULD_ be reflected in the `sampled` flag.
-- If a component needs to make a recording decision - it _SHOULD_ respect the `sampled` flag value.
-  [Security considerations](#security-considerations) _SHOULD_ be applied to protect from abusive or malicious use of this flag.
+- If a component made definitive recording decision - this decision SHOULD be reflected in the `sampled` flag.
+- If a component needs to make a recording decision - it SHOULD respect the `sampled` flag value.
+  [Security considerations](#security-considerations) SHOULD be applied to protect from abusive or malicious use of this flag.
 - If a component deferred or delayed the decision and only a subset of telemetry will be recorded, the `sampled` flag should be propagated unchanged. It should be set to `0` as the default option when the trace is initiated by this component.
 
-There are two additional options that vendors _MAY_ follow:
+There are two additional options that vendors MAY follow:
 
 - A component that makes a deferred or delayed recording decision may communicate the priority of a recording by setting `sampled` flag to `1` for a subset of requests.
 - A component may also fall back to probability sampling and set the `sampled` flag to `1` for the subset of requests.
 
 ##### Other Flags
 
-The behavior of other flags, such as (`00000100`) is not defined and is reserved for future use. Vendors _MUST_ set those to zero.
+The behavior of other flags, such as (`00000100`) is not defined and is reserved for future use. Vendors MUST set those to zero.
 
 ### Examples of HTTP traceparent Headers
 
@@ -209,38 +209,38 @@ base16(trace-flags) = 00  // not sampled
 
 This specification is opinionated about future version of the trace context. The current version of this specification assumes that future versions of `traceparent` header will be additive to the current one.
 
-Vendors _MUST_ follow these rules when parsing headers with an unexpected format:
+Vendors MUST follow these rules when parsing headers with an unexpected format:
 
 - Pass-through services should not analyze the version. They should expect that headers may have larger size limits in the future and only disallow prohibitively large headers.
 - When the version prefix cannot be parsed (it's not 2 hex characters followed by a dash (`-`), the implementation should restart the trace.
-- If a higher version is detected, the implementation _SHOULD_ try to parse it by trying the following:
+- If a higher version is detected, the implementation SHOULD try to parse it by trying the following:
     - If the size of the header is shorter than 55 characters, the vendor should not parse the header and should restart the trace.
-    - Parse `trace-id` (from the first dash through the next 32 characters). Vendors _MUST_ check that the 32 characters are hex, and that they are followed by a dash (`-`).
-    - Parse `parent-id` (from the second dash at the 35th position through the next 16 characters). Vendors _MUST_ check that the 16 characters are hex and followed by a dash.
-    - Parse the `sampled` bit of `flags` (2 characters from the third dash). Vendors _MUST_ check that the 2 characters are either the end of the string or a dash.
+    - Parse `trace-id` (from the first dash through the next 32 characters). Vendors MUST check that the 32 characters are hex, and that they are followed by a dash (`-`).
+    - Parse `parent-id` (from the second dash at the 35th position through the next 16 characters). Vendors MUST check that the 16 characters are hex and followed by a dash.
+    - Parse the `sampled` bit of `flags` (2 characters from the third dash). Vendors MUST check that the 2 characters are either the end of the string or a dash.
 
     If all three values were parsed successfully, the vendor should use them.
 
 
-Vendors _MUST NOT_ parse or assume anything about unknown fields for this version. Vendors _MUST_ use these fields to construct the new `traceparent` field according to the highest version of the specification known to the implementation (in this specification it is `00`).
+Vendors MUST NOT parse or assume anything about unknown fields for this version. Vendors MUST use these fields to construct the new `traceparent` field according to the highest version of the specification known to the implementation (in this specification it is `00`).
 
 ## Tracestate Header
 
 The main purpose of the `tracestate` HTTP header is to provide additional vendor-specific trace identification information across different distributed tracing systems and is a companion header for the `traceparent` field. It also conveys information about the request’s position in multiple distributed tracing graphs.
 
-If the vendor failed to parse `traceparent`, it _MUST NOT_ attempt to parse `tracestate`. Note that the opposite is not true: failure to parse `tracestate` _MUST NOT_ affect the parsing of `traceparent`.
+If the vendor failed to parse `traceparent`, it MUST NOT attempt to parse `tracestate`. Note that the opposite is not true: failure to parse `tracestate` MUST NOT affect the parsing of `traceparent`.
 
 ### Header Name
 
 Header name: `tracestate`
 
-In order to increase interoperability across multiple protocols and encourage successful integration, by default you _SHOULD_ keep the header name lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
+In order to increase interoperability across multiple protocols and encourage successful integration, by default you SHOULD keep the header name lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
 
-Vendors _MUST_ expect the header name in any case (upper, lower, mixed), and _SHOULD_ send the header name in lowercase.
+Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
 
 ##### tracestate Header Field Values
 
-The `tracestate` field may contain any opaque value in any of the keys. Multiple `tracestate` headers are allowed. Values from multiple headers in incoming requests _SHOULD_ be combined in a single header according to [Field Order](https://httpwg.org/specs/rfc7230.html#page-24) [[RFC7230](https://w3c.github.io/trace-context/#bib-rfc7230)], and sent as a single header in an outgoing request.
+The `tracestate` field may contain any opaque value in any of the keys. Multiple `tracestate` headers are allowed. Values from multiple headers in incoming requests SHOULD be combined in a single header according to [Field Order](https://httpwg.org/specs/rfc7230.html#page-24) [[RFC7230](https://w3c.github.io/trace-context/#bib-rfc7230)], and sent as a single header in an outgoing request.
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](https://w3c.github.io/trace-context/#bib-rfc5234)], including the DIGIT rule in [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes the `OWS` rule from [RFC7230 section 3.2.3](https://httpwg.org/specs/rfc7230.html#section-3.2.3).
 
@@ -248,11 +248,11 @@ This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](h
 
 The `OWS` rule defines an optional whitespace character. To improve readability, it is used where zero or more whitespace characters might appear.
 
-The caller _SHOULD_ generate the optional whitespace as a single space; otherwise, a caller _SHOULD NOT_ generate optional whitespace. See details in the [corresponding RFC](https://httpwg.org/specs/rfc7230.html#section-3.2.3).
+The caller SHOULD generate the optional whitespace as a single space; otherwise, a caller SHOULD NOT generate optional whitespace. See details in the [corresponding RFC](https://httpwg.org/specs/rfc7230.html#section-3.2.3).
 
 The `tracestate` field value is a `list` of `list-members` separated by commas (`,`). A `list-member` is a key/value pair separated by an equals sign (`=`). Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`.
 
-Empty and whitespace-only list members are allowed. Vendors _MUST_ accept empty `tracestate `headers but _SHOULD_ avoid sending them. Empty list members are allowed in `tracestate` because it is difficult for a vendor to recognize the empty value when multiple `tracestate` headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.
+Empty and whitespace-only list members are allowed. Vendors MUST accept empty `tracestate `headers but SHOULD avoid sending them. Empty list members are allowed in `tracestate` because it is difficult for a vendor to recognize the empty value when multiple `tracestate` headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.
 
 #### list
 
@@ -281,9 +281,9 @@ key = lcalpha 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" ) "@" lcalpha 0*13( 
 lcalpha    = %x61-7A ; a-z
 ```
 
-**Note**: Identifiers _MUST_ begin with a lowercase letter, and can only contain lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), and forward slashes (`/`).
+**Note**: Identifiers MUST begin with a lowercase letter, and can only contain lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), and forward slashes (`/`).
 
-For multi-tenant vendors scenarios, an at sign (`@`) sign can be used to prefix the vendor name. Vendors _SHOULD_ set the tenant ID at the beginning of the key. For example, \
+For multi-tenant vendors scenarios, an at sign (`@`) sign can be used to prefix the vendor name. Vendors SHOULD set the tenant ID at the beginning of the key. For example, \
 `fw529a3039@dt` - `fw529a3039` is a tenant ID and `@dt` is a vendor name. Searching for `@dt=` is more robust for parsing (for example, searching for all a vendor's keys).
 
 ##### Value
@@ -313,13 +313,13 @@ Instead, the entry would be rewritten to only include the most recent position:
 
 #### tracestate Limits:
 
-The `tracestate` field contains essential information for request correlation. Vendors _MUST_ propagate this field. There might be multiple `tracestate` headers in a single request according to [RFC7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Vendors may propagate them as they came, combine them into a single header, or split them into multiple headers differently, following the RFC specification.
+The `tracestate` field contains essential information for request correlation. Vendors MUST propagate this field. There might be multiple `tracestate` headers in a single request according to [RFC7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Vendors may propagate them as they came, combine them into a single header, or split them into multiple headers differently, following the RFC specification.
 
-Vendors _SHOULD_ propagate at least 512 characters of a combined header. This length includes commas required to separate list items and optional white space (`OWS`) characters.
+Vendors SHOULD propagate at least 512 characters of a combined header. This length includes commas required to separate list items and optional white space (`OWS`) characters.
 
-There are systems where propagating of 512 characters of `tracestate` may be expensive. In this case, the maximum size of the propagated `tracestate` header _SHOULD_ be documented and explained. The cost of propagating `tracestate` _SHOULD_ be weighted against the value of monitoring scenarios enabled for the end users.
+There are systems where propagating of 512 characters of `tracestate` may be expensive. In this case, the maximum size of the propagated `tracestate` header SHOULD be documented and explained. The cost of propagating `tracestate` SHOULD be weighted against the value of monitoring scenarios enabled for the end users.
 
-In a situation where `tracestate` needs to be truncated due to size limitations, the vendor _MUST_ truncate whole entries. Entries larger than `128` characters long _SHOULD_ be removed first. Then entries _SHOULD_ be removed starting from the end of `tracestate`. Note that other truncation strategies like safe list entries, blocked list entries, or size-based truncation _MAY_ be used, but are highly discouraged. Those strategies decrease the interoperability of various tracing vendors.
+In a situation where `tracestate` needs to be truncated due to size limitations, the vendor MUST truncate whole entries. Entries larger than `128` characters long SHOULD be removed first. Then entries SHOULD be removed starting from the end of `tracestate`. Note that other truncation strategies like safe list entries, blocked list entries, or size-based truncation MAY be used, but are highly discouraged. Those strategies decrease the interoperability of various tracing vendors.
 
 ### Examples of tracestate HTTP Headers
 
@@ -342,9 +342,9 @@ The version of `tracestate` is defined by the version prefix of `traceparent` he
 
 ## Mutating the traceparent Field
 
-A vendor receiving a `traceparent` request header _MUST_ send it to outgoing requests. It _MAY_ mutate the value of this header before passing it to outgoing requests.
+A vendor receiving a `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing it to outgoing requests.
 
-If the value of the `traceparent` field wasn't changed before propagation, `tracestate` _MUST NOT_ be modified as well. Unmodified headers propagation is typically implemented in pass-through services like proxies. This behavior may also be implemented in a service which currently does not collect distributed tracing information.
+If the value of the `traceparent` field wasn't changed before propagation, `tracestate` MUST NOT be modified as well. Unmodified headers propagation is typically implemented in pass-through services like proxies. This behavior may also be implemented in a service which currently does not collect distributed tracing information.
 
 Following is the list of allowed mutations:
 
@@ -357,10 +357,10 @@ Vendors MUST NOT make any other mutations to the `traceparent` header.
 
 ## Mutating the tracestate Field
 
-Vendors receiving a `tracestate` request header _MUST_ send it to outgoing requests. It _MAY_ mutate the value of this header before passing to outgoing requests. When mutating `tracestate`, the order of unmodified key/value pairs _MUST_ be preserved. Modified keys _MUST_ be moved to the beginning (left) of the list.
+Vendors receiving a `tracestate` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests. When mutating `tracestate`, the order of unmodified key/value pairs MUST be preserved. Modified keys MUST be moved to the beginning (left) of the list.
 
 Following are allowed mutations:
 
-- **Update key value**. The value of any key can be updated. Modified keys _MUST_ be moved to the beginning (left) of the list. This is the most common mutation resuming the trace.
-- **Add a new key/value pair**. The new key-value pair _SHOULD_ be added to the beginning of the list.
-- **Delete a key/value pair**. Any key/value pair _MAY_ be deleted. Vendors SHOULD NOT delete keys that were not generated by them. The deletion of an unknown key/value pair will break correlation in other systems. This mutation enables two scenarios. The first is that proxies can block certain `tracestate` keys for privacy and security concerns. The second scenario is a truncation of long `tracestate`'s.
+- **Update key value**. The value of any key can be updated. Modified keys MUST be moved to the beginning (left) of the list. This is the most common mutation resuming the trace.
+- **Add a new key/value pair**. The new key-value pair SHOULD be added to the beginning of the list.
+- **Delete a key/value pair**. Any key/value pair MAY be deleted. Vendors SHOULD NOT delete keys that were not generated by them. The deletion of an unknown key/value pair will break correlation in other systems. This mutation enables two scenarios. The first is that proxies can block certain `tracestate` keys for privacy and security concerns. The second scenario is a truncation of long `tracestate`'s.
