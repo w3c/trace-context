@@ -27,7 +27,7 @@ If a `traceparent` header is received:
     * If the _version number is higher_ than supported by the tracer, the vendor uses the format defined in this specification (`00`) to parse `trace-id` and `parent-id`.
 The vendor will only parse the `trace-flags` values supported by this version of this specification and ignore all other values. If parsing fails, the vendor creates a new `traceparent` header and deletes the `tracestate`.
     * If the vendor _supports the version number_, it validates `trace-id` and `parent-id`. If either `trace-id`, `parent-id` or `trace-flags` are invalid, the vendor creates a new `traceparent `header and deletes `tracestate`.
-3. The vendor validates the `tracestate` header. If the `tracestate` header cannot be parsed the vendor deletes it.
+3. The vendor _MAY_ validate the `tracestate` header. If the `tracestate` header cannot be parsed the vendor _MAY_ discard the entire header. Invalid `tracestate` entries _MAY_ also be discarded.
 4. For each outgoing request the vendor performs the following steps:
     - The vendor _MUST_ modify the `traceparent` header:
 		1. **Update `parent-id`**. The value of property `parent-id` MUST be set to a value representing the ID of the current operation.
