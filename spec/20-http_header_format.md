@@ -72,8 +72,9 @@ This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](h
 
 ``` abnf
 HEXDIGLC = DIGIT / "a" / "b" / "c" / "d" / "e" / "f" ; lowercase hex character
-
 value           = version "-" version-format
+```
+
 The dash (`-`) character is used as a delimiter between fields.
 
 #### version
