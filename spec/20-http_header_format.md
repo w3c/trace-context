@@ -299,8 +299,6 @@ chr      = %x20 / nblk-chr
 
 The `tracestate` value is the concatenation of trace graph key/value pairs
 
-The length of a combined header (`list` + `list-member`) _MUST_ be less than or equal to 512 bytes. If the length of a combined header is more than 512 bytes it _SHOULD_ be ignored.
-
 Example: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`
 
 Only one entry per key is allowed because the entry represents that last position in the trace. Hence vendors must overwrite their entry upon reentry to their tracing system.
@@ -316,7 +314,7 @@ Instead, the entry would be rewritten to only include the most recent position:
 
 The `tracestate` field contains essential information for request correlation. Vendors _MUST_ propagate this field. There might be multiple `tracestate` headers in a single request according to [RFC7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Vendors may propagate them as they came, combine them into a single header, or split them into multiple headers differently, following the RFC specification.
 
-Vendors _SHOULD_ propagate at least 512 characters of a combined header. This length includes commas required to separate list items but does not include optional white space (`OWA`) characters.
+Vendors _SHOULD_ propagate at least 512 characters of a combined header. This length includes commas required to separate list items and optional white space (`OWS`) characters.
 
 There are systems where propagating of 512 characters of `tracestate` may be expensive. In this case, the maximum size of the propagated `tracestate` header _SHOULD_ be documented and explained. The cost of propagating `tracestate` _SHOULD_ be weighted against the value of monitoring scenarios enabled for the end users.
 
