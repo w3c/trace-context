@@ -14,7 +14,7 @@ If no traceparent header is received:
 
 1. The vendor checks an incoming request for a `traceparent` and a `tracestate` header.
 2. If _no_ `traceparent` header is received, the vendor creates a new `trace-id` and `parent-id` that represents the current request.
-3. The vendor _SHOULD_ modify the `tracestate` header by adding a new key/value pair.
+3. The vendor SHOULD modify the `tracestate` header by adding a new key/value pair.
 4. The vendor sets the `traceparent` and `tracestate` header for the outgoing request.
 
 ## A traceparent is Received
@@ -27,9 +27,9 @@ If a `traceparent` header is received:
     * If the _version number is higher_ than supported by the tracer, the vendor uses the format defined in this specification (`00`) to parse `trace-id` and `parent-id`.
 The vendor will only parse the `trace-flags` values supported by this version of this specification and ignore all other values. If parsing fails, the vendor creates a new `traceparent` header and deletes the `tracestate`.
     * If the vendor _supports the version number_, it validates `trace-id` and `parent-id`. If either `trace-id`, `parent-id` or `trace-flags` are invalid, the vendor creates a new `traceparent `header and deletes `tracestate`.
-3. The vendor _MAY_ validate the `tracestate` header. If the `tracestate` header cannot be parsed the vendor _MAY_ discard the entire header. Invalid `tracestate` entries _MAY_ also be discarded.
+3. The vendor MAY validate the `tracestate` header. If the `tracestate` header cannot be parsed the vendor MAY discard the entire header. Invalid `tracestate` entries MAY also be discarded.
 4. For each outgoing request the vendor performs the following steps:
-    - The vendor _MUST_ modify the `traceparent` header:
+    - The vendor MUST modify the `traceparent` header:
 		1. **Update `parent-id`**. The value of property `parent-id` MUST be set to a value representing the ID of the current operation.
 		2. **Update `sampled`**. The value of `sampled` reflects the caller's recording behavior. The value of the `sampled` flag of `trace-flags` MAY be set to `1` if the trace data is likely to be recorded or to `0` otherwise. Setting the flag is no guarantee that the trace will be recorded but increases the likeliness of end-to-end recorded traces.
 
@@ -42,4 +42,4 @@ The vendor will only parse the `trace-flags` values supported by this version of
 
 ## Alternative Processing
 
-The processing model above describes the complete set of steps for processing trace context headers. There are, however, situations when a vendor might only support a subset of the steps described above. Proxies or messaging middleware _MAY_ decide to not modify the `traceparent` headers but remove invalid headers or add additional information to `tracestate`.
+The processing model above describes the complete set of steps for processing trace context headers. There are, however, situations when a vendor might only support a subset of the steps described above. Proxies or messaging middleware MAY decide to not modify the `traceparent` headers but remove invalid headers or add additional information to `tracestate`.
