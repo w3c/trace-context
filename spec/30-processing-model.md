@@ -1,7 +1,5 @@
 # Processing Model
 
-_This section is non-normative._
-
 This section provides a step-by-step example of a tracing vendor receiving a request with trace context headers, processing the request and then potentially forwarding it. This description can be used as a reference when implementing a trace context-compliant tracing system, middleware (like a proxy or messaging bus), or a cloud service.
 
 ## Processing Model for Working with Trace Context
