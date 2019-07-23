@@ -18,10 +18,10 @@ This transformation of modern applications calls for a distributed tracing conte
 The trace context specification defines a universally agreed-upon format for the exchange of trace context propagation data - referred to as *trace context*. Trace context solves the problems described above by
 
 - providing an unique identifier for individual traces and requests, allowing trace data of multiple providers to be linked together.
-- providing an agreed-upon mechanism to forward vendor-specific trace data and avoid broken traces when multiple trace tools participate in a single transaction.
+- providing an agreed-upon mechanism to forward vendor-specific trace data and avoid broken traces when multiple tracing tools participate in a single transaction.
 - providing an industry standard that intermediaries, platforms, and hardware providers can support.
 
-A unified approach for propagating trace data improves visibility into the behavior of distributed applications, facilitating problem and performance analysis. The interoperability provided by trace-context is a prerequisite to manage modern micro-service based applications.
+A unified approach for propagating trace data improves visibility into the behavior of distributed applications, facilitating problem and performance analysis. The interoperability provided by trace context is a prerequisite to manage modern micro-service based applications.
 
 ## Design Overview
 
@@ -32,7 +32,7 @@ Trace context is split into two individual propagation fields supporting interop
 
 Tracing tools can provide two levels of compliant behavior interacting with trace context:
 
-- At a minimum they MUST propagate the `traceparent` and `tracestate` headers and guarantee traces are not broken. this behavior is also referred to as forwarding a trace.
+- At a minimum they MUST propagate the `traceparent` and `tracestate` headers and guarantee traces are not broken. This behavior is also referred to as forwarding a trace.
 - In addition they CAN also choose to participate in a trace by modifying the `traceparent` header and relevant parts of the `tracestate` header containing their proprietary information. This is also referred to as participating in a trace.
 
 A tracing tool can choose to change this behavior for each individual request to a component it is monitoring.
