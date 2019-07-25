@@ -4,13 +4,13 @@ This section describes the binding of the distributed trace context to `tracepar
 
 ## Relationship Between the Headers
 
-The `traceparent` header represents the incoming request in a tracing system in a common format, understood by all vendors. Here’s an example of a `traceparent `header.
+The `traceparent` header represents the incoming request in a tracing system in a common format, understood by all vendors. Here’s an example of a `traceparent` header.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 ```
 
-The `tracestate` header includes the parent in a potentially vendor-specific format:
+The` ``tracestate` header includes the parent in a potentially vendor-specific format:
 
 ``` http
 tracestate: congo=t61rcWkgMzE
@@ -23,7 +23,7 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 tracestate: congo=t61rcWkgMzE
 ```
 
-**Note**: In this case, the `tracestate `value `t61rcWkgMzE` is the result of Base64 encoding the parent ID (`b7ad6b7169203331`), though such manipulations are not required.
+**Note**: In this case, the `tracestate` value `t61rcWkgMzE` is the result of Base64 encoding the parent ID (`b7ad6b7169203331`), though such manipulations are not required.
 
 The receiving server, traced in the Rojo tracing system, carries over the `tracestate` it received and adds a new entry to the left.
 
@@ -252,7 +252,7 @@ The caller SHOULD generate the optional whitespace as a single space; otherwise,
 
 The `tracestate` field value is a `list` of `list-members` separated by commas (`,`). A `list-member` is a key/value pair separated by an equals sign (`=`). Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`.
 
-Empty and whitespace-only list members are allowed. Vendors MUST accept empty `tracestate `headers but SHOULD avoid sending them. Empty list members are allowed in `tracestate` because it is difficult for a vendor to recognize the empty value when multiple `tracestate` headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.
+Empty and whitespace-only list members are allowed. Vendors MUST accept empty `tracestate` headers but SHOULD avoid sending them. Empty list members are allowed in `tracestate` because it is difficult for a vendor to recognize the empty value when multiple `tracestate` headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.
 
 #### list
 
