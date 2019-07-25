@@ -240,7 +240,7 @@ Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOUL
 
 ##### tracestate Header Field Values
 
-The `tracestate` field may contain any opaque value in any of the keys. Multiple `tracestate` headers are allowed. Values from multiple headers in incoming requests SHOULD be combined in a single header according to [Field Order](https://httpwg.org/specs/rfc7230.html#page-24) [[RFC7230](https://w3c.github.io/trace-context/#bib-rfc7230)], and sent as a single header in an outgoing request.
+The `tracestate` field may contain any opaque value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by [RFC7230 Section 3.2.2 Field Order](https://tools.ietf.org/html/rfc7230#section-3.2.2). The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to [RFC7230](https://tools.ietf.org/html/rfc7230#section-3.2.2). When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to [RFC7230](https://tools.ietf.org/html/rfc7230#section-3.2.2).
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](https://w3c.github.io/trace-context/#bib-rfc5234)], including the DIGIT rule in [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes the `OWS` rule from [RFC7230 section 3.2.3](https://httpwg.org/specs/rfc7230.html#section-3.2.3).
 
@@ -312,8 +312,6 @@ Instead, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
 
 #### tracestate Limits:
-
-The `tracestate` field contains essential information for request correlation. Vendors MUST propagate this field. There might be multiple `tracestate` headers in a single request according to [RFC7230 section 3.2.2](https://tools.ietf.org/html/rfc7230#section-3.2.2). Vendors may propagate them as they came, combine them into a single header, or split them into multiple headers differently, following the RFC specification.
 
 Vendors SHOULD propagate at least 512 characters of a combined header. This length includes commas required to separate list items and optional white space (`OWS`) characters.
 
