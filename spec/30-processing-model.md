@@ -12,8 +12,9 @@ If no traceparent header is received:
 
 1. The vendor checks an incoming request for a `traceparent` and a `tracestate` header.
 2. If _no_ `traceparent` header is received, the vendor creates a new `trace-id` and `parent-id` that represents the current request.
-3. The vendor SHOULD modify the `tracestate` header by adding a new key/value pair.
-4. The vendor sets the `traceparent` and `tracestate` header for the outgoing request.
+3. If a `tracestate` header is received without an accompanying `traceparent` header, it is invalid and MUST be discarded.
+4. The vendor SHOULD create a new `tracestate` header and add a new key/value pair.
+5. The vendor sets the `traceparent` and `tracestate` header for the outgoing request.
 
 ## A traceparent is Received
 
