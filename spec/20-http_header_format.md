@@ -32,7 +32,7 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
 ```
 
-You'll notice that the Rojo system reuses the value of it’s `traceparent` for its entry in `tracestate`. This means it is a generic tracing system (no proprietary information is being passed). Otherwise, `tracestate` entries are opaque and can be vendor-specific.
+You'll notice that the Rojo system reuses the value of its `traceparent` for its entry in `tracestate`. This means it is a generic tracing system (no proprietary information is being passed). Otherwise, `tracestate` entries are opaque and can be vendor-specific.
 
 If the next receiving server uses Congo, it carries over the `tracestate` from Rojo and adds a new entry for the parent to the left of the previous entry.
 
@@ -68,7 +68,7 @@ Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOUL
 
 ### traceparent Header Field Values
 
-This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](https://w3c.github.io/trace-context/#bib-rfc5234)], including the DIGIT rule from that document. `DIGIT` rule defines a single number character `0`-`9`.
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](https://w3c.github.io/trace-context/#bib-rfc5234)], including the DIGIT rule from that document. The `DIGIT` rule defines a single number character `0`-`9`.
 
 ``` abnf
 HEXDIGLC = DIGIT / "a" / "b" / "c" / "d" / "e" / "f" ; lowercase hex character
@@ -85,7 +85,7 @@ version         = 2HEXDIGLC   ; this document assumes version 00. Version 255 is
 
 The value is US-ASCII encoded (which is UTF-8 compliant).
 
-Version (`version`) is a 1 byte representing an 8-bit unsigned integer. Version `255` is invalid. The current specification assumes the `version` is set to `00`.
+Version (`version`) is 1 byte representing an 8-bit unsigned integer. Version `255` is invalid. The current specification assumes the `version` is set to `00`.
 
 #### version-format
 
@@ -103,10 +103,10 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. S
 This is the ID of the whole trace forest and is used to uniquely identify a [distributed trace](https://w3c.github.io/trace-context/#dfn-distributed-traces) through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
 
 
-A vendor SHOULD generate globally unique values for `trace-id`. Many unique identification generation algorithms create IDs where one part of the value is constant (often time- or host-based), and the other part is a randomly generated value. Because tracing systems may make sampling decisions based on the value of `trace-id`, for increased interoperability vendors MUST  keep the random part of `trace-id` ID on the left side.
+A vendor SHOULD generate globally unique values for `trace-id`. Many unique identification generation algorithms create IDs where one part of the value is constant (often time- or host-based), and the other part is a randomly generated value. Because tracing systems may make sampling decisions based on the value of `trace-id`, for increased interoperability vendors MUST keep the random part of `trace-id` ID on the left side.
 
 
-When a system operates with a `trace-id` that is shorter than 16 bytes, it SHOULD fill-in the extra bytes with random values rather than zeroes. Let's say the system works with an 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting `trace-id` value to `0000000000000003ce929d0e0e4736` it SHOULD generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where`4bf92f3577b34da6a` is a random value or a function of time and host value.
+When a system operates with a `trace-id` that is shorter than 16 bytes, it SHOULD fill-in the extra bytes with random values rather than zeroes. Let's say the system works with an 8-byte `trace-id` like `3ce929d0e0e4736`. Instead of setting `trace-id` value to `0000000000000003ce929d0e0e4736` it SHOULD generate a value like `4bf92f3577b34da6a3ce929d0e0e4736` where `4bf92f3577b34da6a` is a random value or a function of time and host value.
 
 
 **Note**: Even though a system may operate with a shorter `trace-id` for [distributed trace](https://w3c.github.io/trace-context/#dfn-distributed-traces) reporting, the full `trace-id` MUST be propagated to conform to the specification.
@@ -157,7 +157,7 @@ Various techniques include:
 
 - Probability sampling (sample 1 out of 100 <a>distributed traces</a> by flipping a coin)
 - Delayed decision (make collection decision based on duration or a result of a request)
-- Deferred sampling (let callee decide whether information about this request need to be collected)
+- Deferred sampling (let the callee decide whether information about this request needs to be collected)
 
 How these techniques are implemented can be tracing vendor-specific or application-defined.
 
@@ -207,12 +207,12 @@ base16(trace-flags) = 00  // not sampled
 
 ### Versioning of traceparent
 
-This specification is opinionated about future version of the trace context. The current version of this specification assumes that future versions of `traceparent` header will be additive to the current one.
+This specification is opinionated about future versions of trace context. The current version of this specification assumes that future versions of the `traceparent` header will be additive to the current one.
 
 Vendors MUST follow these rules when parsing headers with an unexpected format:
 
 - Pass-through services should not analyze the version. They should expect that headers may have larger size limits in the future and only disallow prohibitively large headers.
-- When the version prefix cannot be parsed (it's not 2 hex characters followed by a dash (`-`), the implementation should restart the trace.
+- When the version prefix cannot be parsed (it's not 2 hex characters followed by a dash (`-`)), the implementation should restart the trace.
 - If a higher version is detected, the implementation SHOULD try to parse it by trying the following:
     - If the size of the header is shorter than 55 characters, the vendor should not parse the header and should restart the trace.
     - Parse `trace-id` (from the first dash through the next 32 characters). Vendors MUST check that the 32 characters are hex, and that they are followed by a dash (`-`).
@@ -244,7 +244,7 @@ The `tracestate` field may contain any opaque value in any of the keys. Multiple
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](https://w3c.github.io/trace-context/#bib-rfc5234)], including the DIGIT rule in [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes the `OWS` rule from [RFC7230 section 3.2.3](https://httpwg.org/specs/rfc7230.html#section-3.2.3).
 
-`DIGIT` rule defines number `0`-`9`.
+The `DIGIT` rule defines numbers `0`-`9`.
 
 The `OWS` rule defines an optional whitespace character. To improve readability, it is used where zero or more whitespace characters might appear.
 
@@ -252,7 +252,7 @@ The caller SHOULD generate the optional whitespace as a single space; otherwise,
 
 The `tracestate` field value is a `list` of `list-members` separated by commas (`,`). A `list-member` is a key/value pair separated by an equals sign (`=`). Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`.
 
-Empty and whitespace-only list members are allowed. Vendors MUST accept empty `tracestate `headers but SHOULD avoid sending them. Empty list members are allowed in `tracestate` because it is difficult for a vendor to recognize the empty value when multiple `tracestate` headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.
+Empty and whitespace-only list members are allowed. Vendors MUST accept empty `tracestate` headers but SHOULD avoid sending them. Empty list members are allowed in `tracestate` because it is difficult for a vendor to recognize the empty value when multiple `tracestate` headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.
 
 #### list
 
@@ -269,7 +269,7 @@ Identifiers for a `list` are short (up to 256 characters) textual identifiers.
 
 #### list-members
 
-A` list-member` contains a key/value pair.
+A `list-member` contains a key/value pair.
 
 ##### Key
 
@@ -288,7 +288,7 @@ For multi-tenant vendors scenarios, an at sign (`@`) sign can be used to prefix 
 
 ##### Value
 
-The value is opaque string up to 256 characters printable ASCII [[RFC0020](https://w3c.github.io/trace-context/#bib-rfc0020)] characters (i.e., the range 0x20 to 0x7E) except comma (`,`) and (`=`). Note that this also excludes tabs, newlines, carriage returns, etc.
+The value is an opaque string up to 256 characters printable ASCII [[RFC0020](https://w3c.github.io/trace-context/#bib-rfc0020)] characters (i.e., the range 0x20 to 0x7E) except comma (`,`) and (`=`). Note that this also excludes tabs, newlines, carriage returns, etc.
 
 ``` abnf
 value    = 0*255(chr) nblk-chr
@@ -344,7 +344,7 @@ The version of `tracestate` is defined by the version prefix of `traceparent` he
 
 A vendor receiving a `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing it to outgoing requests.
 
-If the value of the `traceparent` field wasn't changed before propagation, `tracestate` MUST NOT be modified as well. Unmodified headers propagation is typically implemented in pass-through services like proxies. This behavior may also be implemented in a service which currently does not collect distributed tracing information.
+If the value of the `traceparent` field wasn't changed before propagation, `tracestate` MUST NOT be modified as well. Unmodified header propagation is typically implemented in pass-through services like proxies. This behavior may also be implemented in a service which currently does not collect distributed tracing information.
 
 Following is the list of allowed mutations:
 
@@ -363,4 +363,4 @@ Following are allowed mutations:
 
 - **Update key value**. The value of any key can be updated. Modified keys MUST be moved to the beginning (left) of the list. This is the most common mutation resuming the trace.
 - **Add a new key/value pair**. The new key-value pair SHOULD be added to the beginning of the list.
-- **Delete a key/value pair**. Any key/value pair MAY be deleted. Vendors SHOULD NOT delete keys that were not generated by them. The deletion of an unknown key/value pair will break correlation in other systems. This mutation enables two scenarios. The first is that proxies can block certain `tracestate` keys for privacy and security concerns. The second scenario is a truncation of long `tracestate`'s.
+- **Delete a key/value pair**. Any key/value pair MAY be deleted. Vendors SHOULD NOT delete keys that were not generated by them. The deletion of an unknown key/value pair will break correlation in other systems. This mutation enables two scenarios. The first is that proxies can block certain `tracestate` keys for privacy and security concerns. The second scenario is a truncation of long `tracestate`s.
