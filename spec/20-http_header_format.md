@@ -4,13 +4,13 @@ This section describes the binding of the distributed trace context to `tracepar
 
 ## Relationship Between the Headers
 
-The `traceparent` header represents the incoming request in a tracing system in a common format, understood by all vendors. Here’s an example of a `traceparent `header.
+The `traceparent` header represents the incoming request in a tracing system in a common format, understood by all vendors. Here’s an example of a `traceparent` header.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 ```
 
-The `tracestate` header includes the parent in a potentially vendor-specific format:
+The` ``tracestate` header includes the parent in a potentially vendor-specific format:
 
 ``` http
 tracestate: congo=t61rcWkgMzE
@@ -23,7 +23,7 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 tracestate: congo=t61rcWkgMzE
 ```
 
-**Note**: In this case, the `tracestate `value `t61rcWkgMzE` is the result of Base64 encoding the parent ID (`b7ad6b7169203331`), though such manipulations are not required.
+**Note**: In this case, the `tracestate` value `t61rcWkgMzE` is the result of Base64 encoding the parent ID (`b7ad6b7169203331`), though such manipulations are not required.
 
 The receiving server, traced in the Rojo tracing system, carries over the `tracestate` it received and adds a new entry to the left.
 
