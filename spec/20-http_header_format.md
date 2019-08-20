@@ -10,7 +10,7 @@ The `traceparent` header represents the incoming request in a tracing system in 
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 ```
 
-The` ``tracestate` header includes the parent in a potentially vendor-specific format:
+The `tracestate` header includes the parent in a potentially vendor-specific format:
 
 ``` http
 tracestate: congo=t61rcWkgMzE
@@ -52,10 +52,10 @@ Finally, you'll see `tracestate` retains an entry for Rojo exactly as it was, ex
 
 The `traceparent` HTTP header field identifies the incoming request in a tracing system. It has four fields:
 
-* version
-* trace-id
-* parent-id
-* trace-flags
+* `version`
+* `trace-id`
+* `parent-id`
+* `trace-flags`
 
 
 ### Header Name
