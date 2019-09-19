@@ -2,8 +2,8 @@ from collections import OrderedDict
 import re
 
 class Tracestate(object):
-	_KEY_WITHOUT_VENDOR_FORMAT = r'[a-z][_0-9a-z\-\*\/]{0,255}'
-	_KEY_WITH_VENDOR_FORMAT = r'[a-z][_0-9a-z\-\*\/]{0,240}@[a-z][_0-9a-z\-\*\/]{0,13}'
+	_KEY_WITHOUT_VENDOR_FORMAT = r'[0-9a-z][_0-9a-z\-\*\/]{0,255}'
+	_KEY_WITH_VENDOR_FORMAT = r'[0-9a-z][_0-9a-z\-\*\/]{0,240}@[a-z][_0-9a-z\-\*\/]{0,13}'
 	_KEY_FORMAT = _KEY_WITHOUT_VENDOR_FORMAT + '|' + _KEY_WITH_VENDOR_FORMAT
 	_VALUE_FORMAT = r'[\x20-\x2b\x2d-\x3c\x3e-\x7e]{0,255}[\x21-\x2b\x2d-\x3c\x3e-\x7e]'
 	_DELIMITER_FORMAT_RE = re.compile('[ \t]*,[ \t]*')

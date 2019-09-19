@@ -574,8 +574,8 @@ class TraceContextTest(TestBase):
 		expects the tracestate to be inherited
 		'''
 		key_without_vendor = ''.join([
-			''.join(map(chr, range(0x61, 0x7A + 1))), # lcalpha
 			'0123456789', # DIGIT
+			''.join(map(chr, range(0x61, 0x7A + 1))), # lcalpha
 			'_',
 			'-',
 			'*',
@@ -779,6 +779,25 @@ class TraceContextTest(TestBase):
 			['tracestate', 't@' + 'v' * 15 + '=1'],
 		])
 		self.assertRaises(KeyError, lambda: tracestate['foo'])
+
+	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
+	def test_tracestate_value_illegal_characters(self):
+		'''
+		harness sends a request with an invalid tracestate header with illegal value format
+		expects the tracestate to be discarded
+		'''
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', 'foo=bar=baz'],
+		])
+		self.assertRaises(KeyError, lambda: tracestate['foo'])
+
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
+			['tracestate', 'foo=,bar=3'],
+		])
+		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertRaises(KeyError, lambda: tracestate['bar'])
 
 class AdvancedTest(TestBase):
 	def test_multiple_requests_with_valid_traceparent(self):

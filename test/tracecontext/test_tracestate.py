@@ -109,8 +109,6 @@ class TestTracestate(unittest.TestCase):
 		self.assertRaises(ValueError, lambda: state.__setitem__(123, 'abc'))
 		# value SHOULD NOT be empty string
 		self.assertRaises(ValueError, lambda: state.__setitem__('', 'abc'))
-		# key SHOULD start with a letter
-		self.assertRaises(ValueError, lambda: state.__setitem__('123', 'abc'))
 		# key SHOULD NOT have uppercase
 		self.assertRaises(ValueError, lambda: state.__setitem__('FOO', 'abc'))
 
@@ -123,6 +121,8 @@ class TestTracestate(unittest.TestCase):
 		self.assertRaises(ValueError, lambda: state.__setitem__('FOO', 123))
 		# value SHOULD NOT be empty string
 		self.assertRaises(ValueError, lambda: state.__setitem__('foo', ''))
+		# value SHOULD NOT contain invalid character
+		self.assertRaises(ValueError, lambda: state.__setitem__('foo', 'bar=baz'))
 
 		state['foo'] = 'x' * 256
 		# throw if value exceeds 256 bytes
