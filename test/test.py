@@ -574,8 +574,8 @@ class TraceContextTest(TestBase):
 		expects the tracestate to be inherited
 		'''
 		key_without_vendor = ''.join([
-			'0123456789', # DIGIT
 			''.join(map(chr, range(0x61, 0x7A + 1))), # lcalpha
+			'0123456789', # DIGIT
 			'_',
 			'-',
 			'*',
