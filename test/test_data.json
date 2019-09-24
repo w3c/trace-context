@@ -78,5 +78,7 @@
 	{"headers": [["traceparent", "00-12345678901234567890123456789012-1234567890123456-00"], ["tracestate", "foo=1"]], "is_traceparent_valid": true, "is_tracestate_valid": true},
 	{"headers": [["traceparent", "00-12345678901234567890123456789012-1234567890123456-00"], ["tracestate", "foo=1 "]], "is_traceparent_valid": true, "is_tracestate_valid": true},
 	{"headers": [["traceparent", "00-12345678901234567890123456789012-1234567890123456-00"], ["tracestate", "foo=1\t"]], "is_traceparent_valid": true, "is_tracestate_valid": true},
-	{"headers": [["traceparent", "00-12345678901234567890123456789012-1234567890123456-00"], ["tracestate", "foo=1 \t"]], "is_traceparent_valid": true, "is_tracestate_valid": true}
+	{"headers": [["traceparent", "00-12345678901234567890123456789012-1234567890123456-00"], ["tracestate", "foo=1 \t"]], "is_traceparent_valid": true, "is_tracestate_valid": true},
+	{"headers": [["traceparent", "00-12345678901234567890123456789012-1234567890123456-00"], ["tracestate", "foo=bar=baz"]], "is_traceparent_valid": true, "is_tracestate_valid": false},
+	{"headers": [["traceparent", "00-12345678901234567890123456789012-1234567890123456-00"], ["tracestate", "foo=,bar=3"]], "is_traceparent_valid": true, "is_tracestate_valid": false}
 ]
