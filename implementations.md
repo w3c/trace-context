@@ -1,6 +1,6 @@
 # Implementations of Trace Context
 
-This page contains an alphabetical list of projects and venddors that currently implement Trace Context.
+This page contains an alphabetical list of projects and vendors that currently implement Trace Context.
 
 ## Elastic
 
