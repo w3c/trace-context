@@ -113,8 +113,8 @@ side as mentioned one paragraph above) it SHOULD generate a value like
 `4bf92f3577b34da623ce929d0e0e4736` where `4bf92f3577b34da6` is a random value or
 a function of time and host value. Note, that on receiving a `trace-id` which is
 longer than what system operates with, even though `trace-id` may be recorded
-with the shorter id, the entire trace-id needs to be propagated to the
-downstream components.
+with the shorter id, the entire trace-id MUST be propagated to the downstream
+components.
 
 **Note**: Even though a system may operate with a shorter `trace-id` for [distributed trace](https://w3c.github.io/trace-context/#dfn-distributed-traces) reporting, the full `trace-id` MUST be propagated to conform to the specification.
 
