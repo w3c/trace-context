@@ -16,6 +16,103 @@ Making `trace-flags` optional doesn't save a lot, but makes specification more c
 
 We were using the term `span-id` in the `traceparent`, but not all tracing systems are built around span model, e.g. X-Trace, Canopy, SolarWinds, are built around event model, which is considered more expressive than the span model. There is nothing in the spec actually requires the model to be span-based, and passing the ID of the happened-before "thing" should work for both types of trace models. We considered names `call-id`, `request-id`. However out of all replacements `parent-id` is probably the best name. First, it matched the header name. Second it indicates a difference between caller and callee. Discussing AMQP we realized that `message-id` header defined by AMQP refers to individual message, and semantically not the same as traceparent. Message id can be used to dedup messages on the server when traceparent only defines the source this message came from.
 
+## Trace ID size
+
+In high load apps 64 bits is not enough to guarantee enough uniqueness of
+`trace-id` over a typical period of time - say 72 hours. That's said 128 bit
+`trace-id` may provide an excessive randomness for a smaller apps. However, in
+modern world many apps are using cloud services and SaaS components that may be
+shared by numerous smaller apps. So if those apps are using smaller `trace-id`,
+cloud services may not be able to correlate incoming requests from those apps to
+the proper distributed trace inside the cloud component.
+
+Thus for improved interoperability, this specification defines `trace-id` as a
+128 bit array of bytes.
+
+## Trace ID and interoperability with 64bit systems
+
+There are systems today using 64-bit `trace-id`s. These systems are not always
+easy to switch to longer `trace-id` to confirm to this specification
+requirement. The cost of this switch can be prohibitively expensive from both -
+backend capacity and indexes as well as in-process propagation limits.
+
+When addressing interoperability with these systems requirements the following
+is taken into consideration:
+
+1. The main objective of the specification is to promote interoperability of
+   various vendors and platforms.
+2. Specification needs to suggest a best practices that will improve
+   interoperability.
+3. There must be a way forward to implement Trace Context protocol by systems
+   that doesn't support long trace identifiers.
+
+### How 64bit systems may switch to Trace Context
+
+#### Absolute minimum
+
+The absolute minimum requirement from specification perspective is to receive
+and send a valid `traceparent` header. Systems operating with shorter `trace-id`
+may use only a subset of `trace-id` bytes to read and set `trace-id`. This
+behavior will break interoperability with vendors and platforms operating with
+the longer identifiers. If only a subset of `trace-id` bytes were read on
+incoming requests and sent with the outgoing call, for the systems operating
+with longer identifiers incoming and outgoing `trace-id` will not match. These
+systems will identify this situation as a restarted trace.
+
+Note, that vendors and platforms may implement a special logic to interoperate
+with the systems like this.
+
+Specification uses "SHOULD language" when asking to fill up extra bytes with
+random numbers instead of zeros. Typically, tracing systems that will not
+propagate extra bytes of incoming `trace-id` will not follow this ask and will
+fill up extra bytes with zeros.
+
+#### Linking to the longer thread-id
+
+As a minor step to improve interoperability between tracing systems, system that
+operates with shorter identifiers may record a longer incoming `trace-id` as a
+property of a telemetry item representing the incoming request.
+
+#### Propagating extra bytes of trace-id
+
+Preserving the `trace-id` unchanged is a major improvement in interoperability
+of tracing systems using different number of `trace-id` bytes. It is typical
+that tracing systems may propagate extra information from incoming request to
+outgoing calls. While recording of these extra bytes to the tracing systems
+backend is not possible.
+
+If tracing system can propagate these extra bytes, than it MUST do it.
+
+When tracing system has this capability, specification suggests that extra bytes
+are fill out with random numbers instead of zeros. This requirement helps to
+validate that tracing systems implements propagation from incoming request to
+outgoing calls correctly.
+
+#### Propagating tracestate as well
+
+Note, that even greater interoperability will be achieved with propagating a
+`tracestate` header. Dropping this header may break vendor specific distributed
+tracing scenarios. But this behavior conforms to the specification and older
+tracing systems may do it.
+
+As noted in previously, these tracing systems must do a best effort of
+propagating this header even if it will not be recorded to the tracing system
+backend.
+
+## Trace ID randomization "left padding"
+
+Specification explains the "left padding" requirement for the random `trace-id`
+generation. Tracing systems will implement various algorithms that use
+`trace-id` as a base to make a sampling decision. Typically, it will be some
+variation of hash calculation. Those algorithms may be giving different "weight"
+to different bytes of a `trace-id`. So the requirement to keep randomness to the
+left helps interoperability between tracing systems by suggesting which bytes
+carry a bigger weight in hash calculation.
+
+Practically, there will be tracing systems filling first bytes with zeros (see
+section "How 64bit systems may switch to Trace Context") or not following this
+guidance. Tracing systems must account for these violations.
+
 ## Ordering of keys in `tracestate`
 
 The specification calls for ordering of values in tracestate. This requirement allows better interoperability between tracing vendors.

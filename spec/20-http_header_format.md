@@ -105,18 +105,21 @@ This is the ID of the whole trace forest and is used to uniquely identify a [dis
 A vendor SHOULD generate globally unique values for `trace-id`. Many unique identification generation algorithms create IDs where one part of the value is constant (often time- or host-based), and the other part is a randomly generated value. Because tracing systems may make sampling decisions based on the value of `trace-id`, for increased interoperability vendors MUST keep the random part of `trace-id` ID on the left side.
 
 When a system operates with a `trace-id` that is shorter than 16 bytes, on new
-trace-id generation it SHOULD fill-in the extra bytes with random values rather
-than zeroes. Let's say the system works with an 8-byte `trace-id` like
+`trace-id` generation it SHOULD fill-in the extra bytes with random values
+rather than zeroes. Let's say the system works with an 8-byte `trace-id` like
 `23ce929d0e0e4736`. Instead of setting `trace-id` value to
 `23ce929d0e0e47360000000000000000` (note, that random part is kept on the left
 side as mentioned one paragraph above) it SHOULD generate a value like
-`4bf92f3577b34da623ce929d0e0e4736` where `4bf92f3577b34da6` is a random value or
+`23ce929d0e0e47364bf92f3577b34da6` where `4bf92f3577b34da6` is a random value or
 a function of time and host value. Note, that on receiving a `trace-id` which is
 longer than what system operates with, even though `trace-id` may be recorded
-with the shorter id, the entire trace-id MUST be propagated to the downstream
-components.
-
-**Note**: Even though a system may operate with a shorter `trace-id` for [distributed trace](https://w3c.github.io/trace-context/#dfn-distributed-traces) reporting, the full `trace-id` MUST be propagated to conform to the specification.
+with the shorter id, the entire `trace-id` MUST be propagated to the downstream
+components. In situations, when it is absolutely impossible to propagate the
+entire `trace-id` to the downstream components, but only a subset of the
+original `trace-id` will be propagated, system SHOULD fill up extra bytes with
+zeroes. This MAY be used as an indication for the downstream service that
+special logic can be applied to correlate the [distributed
+trace](https://w3c.github.io/trace-context/#dfn-distributed-traces).
 
 If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
 
