@@ -141,6 +141,8 @@ static final byte FLAG_SAMPLED = 1; // 00000001
 boolean sampled = (traceFlags & FLAG_SAMPLED) == FLAG_SAMPLED;
 ```
 
+##### Sampled flag
+
 The current version of this specification (`00`) only supports a single flag called `sampled`.
 
 When set, the least significant bit (right-most), denotes that the caller may have recorded trace data. When unset, the caller did not record trace data out-of-band.
