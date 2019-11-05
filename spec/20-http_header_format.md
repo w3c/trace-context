@@ -121,7 +121,7 @@ Vendors MUST ignore the `traceparent` when the `parent-id` is invalid (for examp
 
 ##### trace-flags
 
-An <a data-cite='!BIT-FIELD'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:
+An <a data-cite='!BIT-FIELD##firstHeading'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:
 
 1. Trust and abuse
 2. Bug in the caller
