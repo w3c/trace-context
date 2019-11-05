@@ -108,13 +108,13 @@ See [considerations for trace-id field
 generation](#considerations-for-trace-id-field-generation) for recommendations
 on how to operate with `trace-id`.
 
-##### parent-id
+#### parent-id
 
 This is the ID of this request as known by the caller (in some tracing systems, this is known as the `span-id`, where a `span` is the execution of a client request). It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes as zero (`0000000000000000`) is considered an invalid value.
 
 Vendors MUST ignore the `traceparent` when the `parent-id` is invalid (for example, if it contains non-lowercase hex characters).
 
-##### trace-flags
+#### trace-flags
 
 An <a data-cite='!BIT-FIELD'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:
 
@@ -135,6 +135,8 @@ static final byte FLAG_SAMPLED = 1; // 00000001
 ...
 boolean sampled = (traceFlags & FLAG_SAMPLED) == FLAG_SAMPLED;
 ```
+
+##### Sampled flag
 
 The current version of this specification (`00`) only supports a single flag called `sampled`.
 
