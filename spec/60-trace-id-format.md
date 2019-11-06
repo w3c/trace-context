@@ -42,7 +42,7 @@ of a `trace-id`. For better interoperability of these systems with the fully
 compliant systems, the following practices are recommended:
 
 1. Whenever a new `trace-id` needs to be generated - it SHOULD be left padded
-   with zeroes. For example, for the identifier `53ce929d0e0e4736` `trace-id`
+   with zeroes. For example, for the identifier `53ce929d0e0e4736`, `trace-id`
    must be set to `000000000000000053ce929d0e0e4736`.
 2. On incoming `traceparent`, the rightmost part of `trace-id` SHOULD be used as
    an identifier. This identifier needs to be used for outgoing calls,
