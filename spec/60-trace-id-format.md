@@ -6,12 +6,12 @@ practices will ensure better interoperability of different systems.
 
 ### Uniqueness of `trace-id`
 
-The field `trace-id` SHOULD be globally unique. This field is typically used for
-unique identification of a <a>distributed trace</a>. It is common for
+The value of `trace-id` SHOULD be globally unique. This field is typically used
+for unique identification of a <a>distributed trace</a>. It is common for
 <a>distributed traces</a> to span various components, including, for example,
 cloud services. Cloud services tend to serve variety of clients and have a very
-high throughput of requests. So global uniqueness of `trace-id` is
-important, even when local uniqueness might seem like a good solution.
+high throughput of requests. So global uniqueness of `trace-id` is important,
+even when local uniqueness might seem like a good solution.
 
 ### Randomness of `trace-id`
 
