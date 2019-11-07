@@ -15,7 +15,7 @@ even when local uniqueness might seem like a good solution.
 
 ### Randomness of `trace-id`
 
-Randomly generated value of `trace-id` SDHOULD be preferred over other
+Randomly generated value of `trace-id` SHOULD be preferred over other
 algorithms of generating a globally unique identifiers. Randomness of `trace-id`
 addresses some [security](#security-considerations) and [privacy
 concerns](#privacy-considerations) of exposing unwanted information. Randomness
