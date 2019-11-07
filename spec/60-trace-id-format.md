@@ -31,7 +31,7 @@ the right part of the `trace-id`.
 There are system that operate with a `trace-id` that is shorter than 16 bytes,
 which are still willing to adopt this specification.
 
-If such system capable of propagating an entire `trace-id`, even while operating
+If such a system is capable of propagating an entire `trace-id`, even while operating
 internally on shorter identifier, system is encouraged to utilize the
 `tracestate` header to propagate shorter identifier. However, if system wants to
 use a subset of trace-id bytes as an identifier - rightmost part of a `trace-id`
