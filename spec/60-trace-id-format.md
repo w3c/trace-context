@@ -17,7 +17,7 @@ even when local uniqueness might seem like a good solution.
 
 Randomly generated value of `trace-id` SDHOULD be preferred over other
 algorithms of generating a globally unique identifiers. Randomness of `trace-id`
-addresses some [secutiry](#security-considerations) and [privacy
+addresses some [security](#security-considerations) and [privacy
 concerns](#privacy-considerations) of exposing unwanted information. Randomness
 also allows tracing vendors to base sampling decisions on `trace-id` field value
 and avoid propagating an additional sampling context.
