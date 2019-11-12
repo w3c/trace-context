@@ -8,7 +8,7 @@ This page contains an alphabetical list of projects and vendors that currently i
 
 **Implementations:**
 [.NET](https://github.com/elastic/apm-agent-dotnet/blob/700754909b1ac522796294b99adcc98063efcf42/src/Elastic.Apm/DistributedTracing/TraceParent.cs),
-[Go](),
+[Go](https://github.com/elastic/apm-agent-go/blob/0365ba99e57221bfa884579c69cbcc0a16c2ded7/tracecontext.go),
 [Java](https://github.com/elastic/apm-agent-java/blob/e4cdde0b860ff37ea57e0ca083c62b319c0ee940/apm-agent-core/src/main/java/co/elastic/apm/agent/impl/transaction/TraceContext.java),
 [Node.js](https://github.com/elastic/node-traceparent),
 [Python](https://github.com/elastic/apm-agent-python/blob/50dce143ae15f6c592a70cb858a8c4721dd80ef5/elasticapm/utils/disttracing.py),
