@@ -13,7 +13,7 @@ This page contains an alphabetical list of projects and vendors that currently i
 [Node.js](https://github.com/elastic/node-traceparent),
 [Python](https://github.com/elastic/apm-agent-python/blob/50dce143ae15f6c592a70cb858a8c4721dd80ef5/elasticapm/utils/disttracing.py),
 [Ruby](https://github.com/elastic/apm-agent-ruby/blob/b68f1f12ae48a5c6e757241c65de97a98488ee6a/lib/elastic_apm/trace_context.rb),
-[JavaScript/RUM]()
+[JavaScript - Real User Monitoring](https://github.com/elastic/apm-agent-rum-js)
 
 ## Dynatrace
 **Website:** [dynatrace.com](https://www.dynatrace.com)
