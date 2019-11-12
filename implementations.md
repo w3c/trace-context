@@ -7,7 +7,13 @@ This page contains an alphabetical list of projects and vendors that currently i
 **Website:** [https://elastic.co/products/apm](https://elastic.co/products/apm)
 
 **Implementations:**
-[Node.js](https://github.com/elastic/node-traceparent).
+[.NET](https://github.com/elastic/apm-agent-dotnet/blob/700754909b1ac522796294b99adcc98063efcf42/src/Elastic.Apm/DistributedTracing/TraceParent.cs),
+[Go](),
+[Java](https://github.com/elastic/apm-agent-java/blob/e4cdde0b860ff37ea57e0ca083c62b319c0ee940/apm-agent-core/src/main/java/co/elastic/apm/agent/impl/transaction/TraceContext.java),
+[Node.js](https://github.com/elastic/node-traceparent),
+[Python](https://github.com/elastic/apm-agent-python/blob/50dce143ae15f6c592a70cb858a8c4721dd80ef5/elasticapm/utils/disttracing.py),
+[Ruby](https://github.com/elastic/apm-agent-ruby/blob/b68f1f12ae48a5c6e757241c65de97a98488ee6a/lib/elastic_apm/trace_context.rb),
+[JavaScript/RUM]()
 
 ## Dynatrace
 **Website:** [dynatrace.com](https://www.dynatrace.com)
