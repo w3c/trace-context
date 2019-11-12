@@ -37,7 +37,7 @@ available.
 A simplistic regex-based implementation can be found in the `test` folder. This
 implementation has 100% compliance to the test suite.
 
-[Open Telemetry](https://opentelemetry.io) has alpha implementations for the following
+[OpenTelemetry](https://opentelemetry.io) has alpha implementations for the following
 languages:
 
 1. [.NET](https://github.com/open-telemetry/opentelemetry-dotnet/blob/605760cf5ae0511b94d475a754f5ca1a5ec35f41/src/OpenTelemetry.Api/Context/Propagation/TraceContextFormat.cs)
