@@ -68,7 +68,7 @@ Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOUL
 
 ### traceparent Header Field Values
 
-This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](https://w3c.github.io/trace-context/#bib-rfc5234)], including the DIGIT rule from that document. The `DIGIT` rule defines a single number character `0`-`9`.
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule from that document. The `DIGIT` rule defines a single number character `0`-`9`.
 
 ``` abnf
 HEXDIGLC = DIGIT / "a" / "b" / "c" / "d" / "e" / "f" ; lowercase hex character
@@ -100,7 +100,7 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. S
 
 #### trace-id
 
-This is the ID of the whole trace forest and is used to uniquely identify a [distributed trace](https://w3c.github.io/trace-context/#dfn-distributed-traces) through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
+This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
 
 If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
 
@@ -116,7 +116,7 @@ Vendors MUST ignore the `traceparent` when the `parent-id` is invalid (for examp
 
 #### trace-flags
 
-An <a data-cite='!BIT-FIELD##firstHeading'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:
+An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:
 
 1. Trust and abuse
 2. Bug in the caller
@@ -237,15 +237,15 @@ Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOUL
 
 ##### tracestate Header Field Values
 
-The `tracestate` field may contain any opaque value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by [RFC7230 Section 3.2.2 Field Order](https://tools.ietf.org/html/rfc7230#section-3.2.2). The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to [RFC7230](https://tools.ietf.org/html/rfc7230#section-3.2.2). When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to [RFC7230](https://tools.ietf.org/html/rfc7230#section-3.2.2).
+The `tracestate` field may contain any opaque value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC7230#field.order'>RFC7230 Section 3.2.2 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC7230#field.order'>RFC7230</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC7230#field.order'>RFC7230</a>.
 
-This section uses the Augmented Backus-Naur Form (ABNF) notation of [[RFC5234](https://w3c.github.io/trace-context/#bib-rfc5234)], including the DIGIT rule in [appendix B.1 for RFC5234](https://tools.ietf.org/html/rfc5234#appendix-B.1). It also includes the `OWS` rule from [RFC7230 section 3.2.3](https://httpwg.org/specs/rfc7230.html#section-3.2.3).
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule in <a data-cite='!RFC5234#appendix-B.1'>appendix B.1 for RFC5234</a>. It also includes the `OWS` rule from <a data-cite='!RFC7230#whitespace'>RFC7230 section 3.2.3</a>.
 
 The `DIGIT` rule defines numbers `0`-`9`.
 
 The `OWS` rule defines an optional whitespace character. To improve readability, it is used where zero or more whitespace characters might appear.
 
-The caller SHOULD generate the optional whitespace as a single space; otherwise, a caller SHOULD NOT generate optional whitespace. See details in the [corresponding RFC](https://httpwg.org/specs/rfc7230.html#section-3.2.3).
+The caller SHOULD generate the optional whitespace as a single space; otherwise, a caller SHOULD NOT generate optional whitespace. See details in the <a data-cite='!RFC7230#whitespace'>corresponding RFC</a>.
 
 The `tracestate` field value is a `list` of `list-members` separated by commas (`,`). A `list-member` is a key/value pair separated by an equals sign (`=`). Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`.
 
@@ -285,7 +285,7 @@ For multi-tenant vendor scenarios, an at sign (`@`) can be used to prefix the ve
 
 ##### Value
 
-The value is an opaque string up to 256 characters printable ASCII [[RFC0020](https://w3c.github.io/trace-context/#bib-rfc0020)] characters (i.e., the range 0x20 to 0x7E) except comma (`,`) and (`=`). Note that this also excludes tabs, newlines, carriage returns, etc.
+The value is an opaque string up to 256 characters printable ASCII [[!RFC0020]] characters (i.e., the range 0x20 to 0x7E) except comma (`,`) and (`=`). Note that this also excludes tabs, newlines, carriage returns, etc.
 
 ``` abnf
 value    = 0*255(chr) nblk-chr
