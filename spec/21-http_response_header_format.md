@@ -74,7 +74,7 @@ An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a>  that controls tracing
 
 1. Trust and abuse
 2. Bug in the callee
-3. Different load between callee service and callee service might force caller to downsample.
+3. Different load between calling and called services might force caller to downsample.
 
 You can find more in the section [Security considerations](#security-considerations) of this specification.
 
