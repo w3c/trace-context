@@ -58,6 +58,8 @@ This is the ID of the whole trace forest and is used to uniquely identify a <a h
 
 If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceresponse`.
 
+The `trace-id` field is an optional part of the `traceresponse` response header.
+
 See [considerations for trace-id field
 generation](#considerations-for-trace-id-field-generation) for recommendations
 on how to operate with `trace-id`.
@@ -68,6 +70,8 @@ This is the ID of the calling request as known by the callee (in some tracing sy
 
 Vendors MUST ignore the `traceresponse` when the `parent-id` is invalid (for example, if it contains non-lowercase hex characters).
 
+The `parent-id` field is an optional part of the `traceresponse` response header.
+
 #### trace-flags
 
 An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the callee rather than strict rules to follow for three reasons:
@@ -77,6 +81,8 @@ An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a>  that controls tracing
 3. Different load between calling and called services might force caller to downsample.
 
 You can find more in the section [Security considerations](#security-considerations) of this specification.
+
+The `trace-flags` field is an optional part of the `traceresponse` response header.
 
 Like other fields, `trace-flags` is hex-encoded. For example, all `8` flags set would be `ff` and no flags set would be `00`.
 
