@@ -15,7 +15,7 @@ The `traceresponse` HTTP response header field identifies a completed request in
 
 Header name: `traceresponse`
 
-In order to increase interoperability across multiple protocols and encourage successful integration, by default vendors SHOULD keep the header name lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
+In order to increase interoperability across multiple protocols and encourage successful integration, the header name SHOULD be lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
 
 Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
 
