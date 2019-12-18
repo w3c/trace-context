@@ -1,10 +1,10 @@
 # Trace Context HTTP Response Headers Format
 
-This section describes the binding of the distributed trace context to the `tracemeta` HTTP header.
+This section describes the binding of the distributed trace context to the `traceresponse` HTTP header.
 
-## Tracemeta Header
+## Traceresponse Header
 
-The `tracemeta` HTTP response header field identifies a completed request in a tracing system. It has four fields:
+The `traceresponse` HTTP response header field identifies a completed request in a tracing system. It has four fields:
 
 * `version`
 * `trace-id`
@@ -13,13 +13,13 @@ The `tracemeta` HTTP response header field identifies a completed request in a t
 
 ### Header Name
 
-Header name: `tracemeta`
+Header name: `traceresponse`
 
 In order to increase interoperability across multiple protocols and encourage successful integration, by default vendors SHOULD keep the header name lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
 
 Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
 
-### tracemeta Header Field Values
+### traceresponse Header Field Values
 
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule from that document. The `DIGIT` rule defines a single number character `0`-`9`.
@@ -56,7 +56,7 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. S
 
 This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
 
-If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `tracemeta`.
+If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceresponse`.
 
 See [considerations for trace-id field
 generation](#considerations-for-trace-id-field-generation) for recommendations
@@ -66,7 +66,7 @@ on how to operate with `trace-id`.
 
 This is the ID of the calling request as known by the callee (in some tracing systems, this is known as the `span-id`, where a `span` is the execution of a client request). It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes as zero (`0000000000000000`) is considered an invalid value.
 
-Vendors MUST ignore the `tracemeta` when the `parent-id` is invalid (for example, if it contains non-lowercase hex characters).
+Vendors MUST ignore the `traceresponse` when the `parent-id` is invalid (for example, if it contains non-lowercase hex characters).
 
 #### trace-flags
 
@@ -120,13 +120,13 @@ There are two additional options that vendors MAY follow:
 The behavior of other flags, such as (`00000100`) is not defined and is reserved for future use. Vendors MUST set those to zero.
 
 
-## Returning the tracemeta Field
+## Returning the traceresponse Field
 
-Vendors MAY choose to include a `tracemeta` header on any response, regardless of whether or not a `traceparent` header was included on the request.
+Vendors MAY choose to include a `traceresponse` header on any response, regardless of whether or not a `traceparent` header was included on the request.
 
 Following are suggested use cases:
 
-- **Restarted trace**. When a request crosses a trust boundary, the called service may decide to restart the trace. In this case, the called service MAY return a `tracemeta` field indicating its internal `trace-id` and sampling decision.
+- **Restarted trace**. When a request crosses a trust boundary, the called service may decide to restart the trace. In this case, the called service MAY return a `traceresponse` field indicating its internal `trace-id` and sampling decision.
 
 Example request and response:
 
@@ -136,14 +136,14 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-d75597dee50b0cac-01
 ```
 Response
 ```http
-tracemeta: 00-1baad25c36c11c1e7fbd6d122bd85db6--01
+traceresponse: 00-1baad25c36c11c1e7fbd6d122bd85db6--01
 ```
 
 In this example, a participant in a trace with ID `4bf92f3577b34da6a3ce929d0e0e4736` calls a third party system that collects their own internal telemetry using a new trace ID `1baad25c36c11c1e7fbd6d122bd85db6`. When the third party completes its request, it returns the new trace ID and internal sampling decision to the caller. If there is an error with the request, the caller can include the third party's internal trace ID in a support request.
 
 **Note**: In this case, the `parent-id` was omitted from the response because, being a part of a different trace, it was not necessary for the caller.
 
-- **Load balancer**. When a request passes through a load balancer, the load balancer may wish to defer a sampling decision to its called service. In this instance, the called service MAY return a `tracemeta` field indicating its sampling decision.
+- **Load balancer**. When a request passes through a load balancer, the load balancer may wish to defer a sampling decision to its called service. In this instance, the called service MAY return a `traceresponse` field indicating its sampling decision.
 
 Example request and response:
 
@@ -153,19 +153,19 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-d75597dee50b0cac-00
 ```
 Response
 ```http
-tracemeta: 00---01
+traceresponse: 00---01
 ```
 
 In this example, a caller (the load balancer) in a trace with ID `4bf92f3577b34da6a3ce929d0e0e4736` wishes to defer a sampling decision to its callee. When the callee completes the request, it returns the internal sampling decision to the caller.
 
 **Note**: In this case, both the `parent-id` and `trace-id` were omitted from the response. Because the trace was not restarted and only a sampling decision was requested by the caller, the `parent-id` and `trace-id` were not changed.
 
-- **Web browser**. When a web browser that does not natively support trace context loads a web page, the initial page load will not contain any trace context headers. In this instance, the server MAY return a `tracemeta` field for use by a tracing tool that runs as a script in the browser.
+- **Web browser**. When a web browser that does not natively support trace context loads a web page, the initial page load will not contain any trace context headers. In this instance, the server MAY return a `traceresponse` field for use by a tracing tool that runs as a script in the browser.
 
 Example response:
 
 ```http
-tracemeta: 00-4bf92f3577b34da6a3ce929d0e0e4736-d75597dee50b0cac-01
+traceresponse: 00-4bf92f3577b34da6a3ce929d0e0e4736-d75597dee50b0cac-01
 ```
 
 In this example, the server is telling the browser that it should adopt trace id `4bf92f3577b34da6a3ce929d0e0e4736` and parent id `d75597dee50b0cac` for the current operation.
@@ -180,5 +180,5 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-d75597dee50b0cac-00
 ```
 Response
 ```http
-tracemeta: 00---01
+traceresponse: 00---01
 ```
