@@ -285,7 +285,7 @@ For multi-tenant vendor scenarios, an at sign (`@`) can be used to prefix the ve
 
 ##### Value
 
-The value is an opaque string up to 256 characters printable ASCII [[!RFC0020]] characters (i.e., the range 0x20 to 0x7E) except comma (`,`) and (`=`). Note that this also excludes tabs, newlines, carriage returns, etc.
+The value is an opaque string containing up to 256 printable ASCII [[!RFC0020]] characters (i.e., the range 0x20 to 0x7E) except comma (`,`) and (`=`). Note that this also excludes tabs, newlines, carriage returns, etc.
 
 ``` abnf
 value    = 0*255(chr) nblk-chr
