@@ -214,7 +214,7 @@ Vendors MUST follow these rules when parsing headers with an unexpected format:
     - If the size of the header is shorter than 55 characters, the vendor should not parse the header and should restart the trace.
     - Parse `trace-id` (from the first dash through the next 32 characters). Vendors MUST check that the 32 characters are hex, and that they are followed by a dash (`-`).
     - Parse `parent-id` (from the second dash at the 35th position through the next 16 characters). Vendors MUST check that the 16 characters are hex and followed by a dash.
-    - Parse the `sampled` bit of `flags` (2 characters from the third dash). Vendors MUST check that the 2 characters are either the end of the string or a dash.
+    - Parse the `sampled` bit of `flags` (2 characters from the third dash). Vendors MUST check that the 2 characters are either at the end of the string or followed by a dash.
 
     If all three values were parsed successfully, the vendor should use them.
 
