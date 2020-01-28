@@ -76,8 +76,8 @@ The `parent-id` field is an optional part of the `traceresponse` response header
 
 An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the callee rather than strict rules to follow for three reasons:
 
-1. Trust and abuse
-2. Bug in the callee
+1. An untrusted caller may be able to abuse a tracing system by setting these flags maliciously.
+2. A caller may have a bug which causes the tracing system to have a problem.
 3. Different load between calling and called services might force caller to downsample.
 
 You can find more in the section [Security considerations](#security-considerations) of this specification.
