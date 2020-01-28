@@ -42,7 +42,7 @@ version. See
 [Activity](https://github.com/dotnet/corefx/blob/master/src/System.Diagnostics.DiagnosticSource/src/System/Diagnostics/Activity.cs)
 for implementation details.
 
-A list of all currently implementations can be found [here](/implementations).
+A list of all currently implementations can be found [here](./implementations.md).
 
 ## Why are we doing this
 
