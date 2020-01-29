@@ -80,12 +80,12 @@ The dash (`-`) character is used as a delimiter between fields.
 #### version
 
 ``` abnf
-version         = 2HEXDIGLC   ; this document assumes version 00. Version 255 is forbidden
+version         = 2HEXDIGLC   ; this document assumes version 00. Version ff is forbidden
 ```
 
 The value is US-ASCII encoded (which is UTF-8 compliant).
 
-Version (`version`) is 1 byte representing an 8-bit unsigned integer. Version `255` is invalid. The current specification assumes the `version` is set to `00`.
+Version (`version`) is 1 byte representing an 8-bit unsigned integer. Version `ff` is invalid. The current specification assumes the `version` is set to `00`.
 
 #### version-format
 
