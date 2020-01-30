@@ -26,16 +26,16 @@ As shown in the next section, it is important for `trace-id` to carry
 "uniqueness" and "randomness" in the right part of the `trace-id`, for better
 inter-operability with some existing systems.
 
-### Handling `trace-id` for complaint platforms with shorter internal identifiers
+### Handling `trace-id` for compliant platforms with shorter internal identifiers
 
 There are tracing systems which use a `trace-id` that is shorter than 16 bytes,
 which are still willing to adopt this specification.
 
 If such a system is capable of propagating a fully compliant `trace-id`, even
-while still requiring a shorter, non-complaint identifier for internal purposes,
+while still requiring a shorter, non-compliant identifier for internal purposes,
 the system is encouraged to utilize the `tracestate` header to propagate the
 additional internal identifier. However, if a system would instead prefer to use
-the internal identifier as the basis for a fully complaint `trace-id`, it SHOULD
+the internal identifier as the basis for a fully compliant `trace-id`, it SHOULD
 be incorporated at the as rightmost part of a `trace-id`. For example, tracing
 system may receive `234a5bcd543ef3fa53ce929d0e0e4736` as a `trace-id`, hovewer
 internally it will use `53ce929d0e0e4736` as an identifier.
