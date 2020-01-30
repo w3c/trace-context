@@ -132,7 +132,9 @@ Vendors MAY choose to include a `traceresponse` header on any response, regardle
 
 Following are suggested use cases:
 
-- **Restarted trace**. When a request crosses a trust boundary, the called service may decide to restart the trace. In this case, the called service MAY return a `traceresponse` field indicating its internal `trace-id` and sampling decision.
+### Restarted Trace
+
+When a request crosses a trust boundary, the called service may decide to restart the trace. In this case, the called service MAY return a `traceresponse` field indicating its internal `trace-id` and sampling decision.
 
 Example request and response:
 
@@ -149,7 +151,9 @@ In this example, a participant in a trace with ID `4bf92f3577b34da6a3ce929d0e0e4
 
 **Note**: In this case, the `parent-id` was omitted from the response because, being a part of a different trace, it was not necessary for the caller.
 
-- **Load balancer**. When a request passes through a load balancer, the load balancer may wish to defer a sampling decision to its called service. In this instance, the called service MAY return a `traceresponse` field indicating its sampling decision.
+### Load Balancer
+
+When a request passes through a load balancer, the load balancer may wish to defer a sampling decision to its called service. In this instance, the called service MAY return a `traceresponse` field indicating its sampling decision.
 
 Example request and response:
 
@@ -166,7 +170,8 @@ In this example, a caller (the load balancer) in a trace with ID `4bf92f3577b34d
 
 **Note**: In this case, both the `parent-id` and `trace-id` were omitted from the response. Because the trace was not restarted and only a sampling decision was requested by the caller, the `parent-id` and `trace-id` were not changed.
 
-- **Web browser**. When a web browser that does not natively support trace context loads a web page, the initial page load will not contain any trace context headers. In this instance, the server MAY return a `traceresponse` field for use by a tracing tool that runs as a script in the browser.
+### Web Browser
+When a web browser that does not natively support trace context loads a web page, the initial page load will not contain any trace context headers. In this instance, the server MAY return a `traceresponse` field for use by a tracing tool that runs as a script in the browser.
 
 Example response:
 
@@ -176,7 +181,9 @@ traceresponse: 00-4bf92f3577b34da6a3ce929d0e0e4736-d75597dee50b0cac-01
 
 In this example, the server is telling the browser that it should adopt trace id `4bf92f3577b34da6a3ce929d0e0e4736` and parent id `d75597dee50b0cac` for the current operation.
 
-- **Tail sampling**. When a service that made a negative sampling decision makes a call to another service, there may be some event during the processing of that request that causes the called service to decide to sample the request. In this case, it may return its updated sampling decision to the caller, the caller may also return the updated sampling decision to its caller, and so on. In this way, as much of a trace as possible may be recovered for debugging purposes even if the original sampling decision was negative.
+### Tail Sampling
+
+When a service that made a negative sampling decision makes a call to another service, there may be some event during the processing of that request that causes the called service to decide to sample the request. In this case, it may return its updated sampling decision to the caller, the caller may also return the updated sampling decision to its caller, and so on. In this way, as much of a trace as possible may be recovered for debugging purposes even if the original sampling decision was negative.
 
 Example request and response:
 
