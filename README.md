@@ -1,5 +1,5 @@
 [![Build
-Status](https://img.shields.io/travis/w3c/trace-context/master.svg?label=validation%20service)](./test/)
+Status](https://img.shields.io/travis/w3c/trace-context/master.svg?label=validation%20service)](https://travis-ci.com/w3c/trace-context/)
 
 # Trace Context Specification
 
