@@ -270,18 +270,31 @@ A `list-member` contains a key/value pair.
 
 ##### Key
 
-The key is an identifier that describes the vendor.
+The key is an identifier that describes the vendor. There are two formats allowed, Basic and Tenant format. Both have a maximum length of 256 characters.
+
 
 ``` abnf
-key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
-key = ( lcalpha / DIGIT ) 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" ) "@" lcalpha 0*13( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+basic-key = lcalpha 0*255( keychar )
+tenant-key = ( lcalpha / DIGIT ) 0*240( keychar ) "@" lcalpha 0*13( keychar )
+keychar    = lcalpha / DIGIT / "_" / "-"/ "*" / "/"
 lcalpha    = %x61-7A ; a-z
 ```
 
-**Note**: Identifiers MUST begin with a lowercase letter or a digit, and can only contain lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), and forward slashes (`/`).
+###### Basic format
 
-For multi-tenant vendor scenarios, an at sign (`@`) can be used to prefix the vendor name. Vendors SHOULD set the tenant ID at the beginning of the key. For example, \
-`fw529a3039@dt` - `fw529a3039` is a tenant ID and `@dt` is a vendor name. Searching for `@dt=` is more robust for parsing (for example, searching for all a vendor's keys).
+Basic format MUST begin with a lowercase letter and contain lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), and forward slashes (`/`).
+
+
+###### Tenant format
+
+Tenant format MUST begin with a lowercase letter or number and contain a single at sign `@`. The maximum 240 characters before and maximum 13 characters after the at sign `@` MUST only be those defined in the Basic format.
+
+Tenant format is different than basic because it uses an at sign (`@`) to separate a tenant ID from the vendor name. 
+For example, the key `fw529a3039@dt` implies a tenant ID `fw529a3039` and vendor name `dt`.
+
+Vendors SHOULD consider characters before the at sign (`@`) the tenant ID and characters after, the vendor name. Otherwise, a valid tenant ID in one system could be mistaken for the vendor name of another, leading to misinterpretation.
+
+This format was designed to ease locating all keys from the same vendor. For example, the vendor `dt` could use the index of `@dt=` to locate multiple values corresponding to tenants in their system.
 
 ##### Value
 
