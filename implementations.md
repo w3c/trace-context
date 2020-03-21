@@ -21,6 +21,13 @@ This page contains an alphabetical list of projects and vendors that currently i
 **Implementations:**
 [All technologies supported by Dynatrace OneAgent](https://www.dynatrace.com/news/blog/distributed-tracing-with-w3c-trace-context-for-improved-end-to-end-visibility-eap/).
 
+## Instana
+**Website:** [instana.com](https://www.instana.com)
+
+**Implementations:**
+[Node.js](https://github.com/instana/nodejs-sensor)
+Java
+
 ## LightStep
 **Website:** [lightstep.com](https://lightstep.com)
 
