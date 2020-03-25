@@ -55,3 +55,9 @@ Java
 [Ruby](https://github.com/open-telemetry/opentelemetry-ruby/blob/741ca61a934b05ecbaedffa56a830dc1821ca9a1/api/lib/opentelemetry/distributed_context/propagation/trace_parent.rb),
 [JavaScript](https://github.com/open-telemetry/opentelemetry-js/blob/a49e7abdab3e313ad2b50a9445a885b3fd0d4783/packages/opentelemetry-core/src/context/propagation/HttpTraceContext.ts),
 [Java](https://github.com/open-telemetry/opentelemetry-java/blob/63109827ea3ceba7aa099d1d0a612741a887dbac/api/src/main/java/io/opentelemetry/trace/propagation/HttpTraceContext.java)
+
+## Jaeger
+**Website:** [jaegertracing.io](https://www.jaegertracing.io)
+
+**Implementations:**
+[Java](https://github.com/jaegertracing/jaeger-client-java/blob/b50aa159e3949461509d451fa1ded91887b680ad/jaeger-core/src/main/java/io/jaegertracing/internal/propagation/TraceContextCodec.java)
