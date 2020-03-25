@@ -58,7 +58,7 @@ This is the ID of the whole trace forest and is used to uniquely identify a <a h
 
 If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceresponse`.
 
-The `trace-id` field is an optional part of the `traceresponse` response header.
+The `trace-id` field is an optional part of the `traceresponse` response header. If the request header contains a valid `traceparent` with a `trace-id`, and the callee does not use a different `trace-id`, the callee SHOULD omit the `trace-id` field from the `traceresponse`.
 
 See [considerations for trace-id field
 generation](#considerations-for-trace-id-field-generation) for recommendations
@@ -70,7 +70,7 @@ This is the ID of the calling request as known by the callee (in some tracing sy
 
 Vendors MUST ignore the `traceresponse` when the `proposed-parent-id` is invalid (for example, if it contains non-lowercase hex characters).
 
-The `proposed-parent-id` field is an optional part of the `traceresponse` response header. If the request header contains a valid `traceparent`, the callee SHOULD omit the `proposed-parent-id` field from the `traceresponse`.
+The `proposed-parent-id` field is an optional part of the `traceresponse` response header. If the request header contains a valid `traceparent` with a `parent-id`, the callee SHOULD omit the `proposed-parent-id` field from the `traceresponse`.
 
 #### trace-flags
 
