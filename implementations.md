@@ -15,24 +15,34 @@ This page contains an alphabetical list of projects and vendors that currently i
 [Ruby](https://github.com/elastic/apm-agent-ruby/blob/b68f1f12ae48a5c6e757241c65de97a98488ee6a/lib/elastic_apm/trace_context.rb),
 [JavaScript - Real User Monitoring](https://github.com/elastic/apm-agent-rum-js)
 
+
 ## Dynatrace
 **Website:** [dynatrace.com](https://www.dynatrace.com)
 
 **Implementations:**
 [All technologies supported by Dynatrace OneAgent](https://www.dynatrace.com/news/blog/distributed-tracing-with-w3c-trace-context-for-improved-end-to-end-visibility-eap/).
 
+
 ## Instana
 **Website:** [instana.com](https://www.instana.com)
 
 **Implementations:**
 [Node.js](https://github.com/instana/nodejs-sensor)
-Java
+
+
+## Jaeger
+**Website:** [jaegertracing.io](https://www.jaegertracing.io)
+
+**Implementations:**
+* [Java](https://github.com/jaegertracing/jaeger-client-java/blob/b50aa159e3949461509d451fa1ded91887b680ad/jaeger-core/src/main/java/io/jaegertracing/internal/propagation/TraceContextCodec.java)
+
 
 ## LightStep
 **Website:** [lightstep.com](https://lightstep.com)
 
 **Implementations:**
 [Go](https://github.com/lightstep/tracecontext.go)
+
 
 ## OpenCensus
 **Website:** [opencensus.io](https://opencensus.io)
@@ -46,6 +56,7 @@ Java
 [Python](https://github.com/census-instrumentation/opencensus-python/blob/2aef803e4a786fe0ffb14b168a8458283ccd72a0/opencensus/trace/propagation/trace_context_http_header_format.py),
 [Ruby](https://github.com/census-instrumentation/opencensus-ruby/blob/8cb9771b218e440e825c99981ea405d40f735926/lib/opencensus/trace/formatters/trace_context.rb)
 
+
 ## OpenTelemetry
 **Website:** [opentelemetry.io](https://opentelemetry.io)
 
@@ -55,9 +66,3 @@ Java
 [Ruby](https://github.com/open-telemetry/opentelemetry-ruby/blob/741ca61a934b05ecbaedffa56a830dc1821ca9a1/api/lib/opentelemetry/distributed_context/propagation/trace_parent.rb),
 [JavaScript](https://github.com/open-telemetry/opentelemetry-js/blob/a49e7abdab3e313ad2b50a9445a885b3fd0d4783/packages/opentelemetry-core/src/context/propagation/HttpTraceContext.ts),
 [Java](https://github.com/open-telemetry/opentelemetry-java/blob/63109827ea3ceba7aa099d1d0a612741a887dbac/api/src/main/java/io/opentelemetry/trace/propagation/HttpTraceContext.java)
-
-## Jaeger
-**Website:** [jaegertracing.io](https://www.jaegertracing.io)
-
-**Implementations:**
-[Java](https://github.com/jaegertracing/jaeger-client-java/blob/b50aa159e3949461509d451fa1ded91887b680ad/jaeger-core/src/main/java/io/jaegertracing/internal/propagation/TraceContextCodec.java)
