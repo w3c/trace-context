@@ -1,16 +1,16 @@
-# Trace Context HTTP Headers Format
+# Trace Context HTTP Request Headers Format
 
 This section describes the binding of the distributed trace context to `traceparent` and `tracestate` HTTP headers.
 
 ## Relationship Between the Headers
 
-The `traceparent` header represents the incoming request in a tracing system in a common format, understood by all vendors. Here’s an example of a `traceparent` header.
+The `traceparent` request header represents the incoming request in a tracing system in a common format, understood by all vendors. Here’s an example of a `traceparent` header.
 
 ``` http
 traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 ```
 
-The `tracestate` header includes the parent in a potentially vendor-specific format:
+The `tracestate` request header includes the parent in a potentially vendor-specific format:
 
 ``` http
 tracestate: congo=t61rcWkgMzE
@@ -118,8 +118,8 @@ Vendors MUST ignore the `traceparent` when the `parent-id` is invalid (for examp
 
 An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:
 
-1. Trust and abuse
-2. Bug in the caller
+1. An untrusted caller may be able to abuse a tracing system by setting these flags maliciously.
+2. A caller may have a bug which causes the tracing system to have a problem.
 3. Different load between caller service and callee service might force callee to downsample.
 
 You can find more in the section [Security considerations](#security-considerations) of this specification.
@@ -333,7 +333,6 @@ tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
 ### Versioning of tracestate
 
 The version of `tracestate` is defined by the version prefix of `traceparent` header. Vendors need to attempt to parse `tracestate` if a higher version is detected, to the best of its ability. It is the vendor’s decision whether to use partially-parsed `tracestate` key/value pairs or not.
-
 
 ## Mutating the traceparent Field
 
