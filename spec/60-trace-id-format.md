@@ -53,7 +53,7 @@ systems with these existing systems, the following practices are recommended:
    `000000000000000053ce929d0e0e4736`.
 2. When a system receives an inbound message and needs to convert the 16 bytes
    `trace-id` to a shorter identifier, the rightmost part of `trace-id` SHOULD
-   be used as this identifier. For instance, if the the value of `trace-id` was
+   be used as this identifier. For instance, if the value of `trace-id` was
    `234a5bcd543ef3fa53ce929d0e0e4736` on an incoming request, tracing system
    SHOULD use identifier with the value of `53ce929d0e0e4736`.
 

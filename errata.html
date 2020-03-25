@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <!--
+    The data-githubrepo attribute provides the owner/repo name on github. For W3C repositories most of those are of the
+    form 'w3c/XXX', although there are groups that have their own owner for their repository.
+  -->
+  <head data-githubrepo="w3c/trace-context">
+    <meta charset="UTF-8">
+    <title>Open Errata for Trace Context</title>
+    <link rel="stylesheet" type="text/css" href="https://w3c.github.io/display_errata/assets/errata.css"/>
+    <script src="https://w3c.github.io/display_errata/assets/errata.js" type="text/javascript"></script>
+    <script src="https://w3c.github.io/display_errata/assets/toc.js" type="text/javascript"></script>
+
+    <style type="text/css">
+      .todo {
+        background-color: yellow
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <p class="banner"><a accesskey="W" href="/"><img width="72" height="48" alt="W3C" src="https://www.w3.org/Icons/w3c_home" /></a> </p>
+      <br />
+      <h1 class="title" class="done">Open Errata for Trace Context</h1>
+      <dl>
+        <dt>Latest errata update:</dt>
+        <dd><span id="date"></span></dd>
+        <dt>Number of recorded errata:</dt>
+        <dd><span id="number"></span></dd>
+        <dt>Link to all errata:</dt>
+        <dd><span id="errata_link"></span></dd>
+      </dl>
+
+      <section data-notoc>
+        <h1>How to Submit an Erratum?</h1>
+        <p>Errata are introduced and stored in the <a class="done" href="https://github.com/w3c/trace-context/issues/">issue list of the group‘s GitHub repository</a>. The workflow to add a new erratum is as follows:</p>
+        <ul>
+           <li>An issue is raised for a possible erratum. The label of the issue SHOULD be set to “<code>ErratumRaised</code>”. It SHOULD also include the label corresponding to the document on which the erratum is raised, i.e., “<code class="done">trace-context-1</code>”. (Please, consult the <a class="done" href="https://github.com/w3c/trace-context/labels">list of available labels</a>.) It is o.k. for an erratum to have several labels. In some, exceptional, cases, i.e., when the erratum is very general, it is also acceptable not to have a reference to a document.</li>
+           <li>Issues labeled as “<code>Editorial</code>” are displayed separately, to make it easier to differentiate editorial errata from substantial ones.</li>
+          <li>The community discusses the issue. If it is accepted as a genuine erratum, the label “<code>Errata</code>” is added to the entry and the “<code>ErratumRaised</code>” label should be removed. Additionally, a new comment on the issue MAY be added, beginning with the word "Summary:" (if such a summary is useful based on the discussion).</li>
+          <li>If the community rejects the issue as an erratum, the issue should be closed.</li>
+          <li>Each errata may be labelled as “<code>Editorial</code>”; editorial errata are listed separately from the substantial ones.</li>
+<!--
+          <li class="todo">ALL substantive errata are generally expected to have corresponding test(s) (such as a pull request in <a href='https://github.com/web-platforms-tests/wpt'>web-platforms-tests</a>), either in the form of new tests or modifications to existing tests, or must include the rationale for why test updates are not required for the erratum.</li>
+-->
+      </ul>
+
+        <p>This report contains a reference to all open issues with the label <code>Errata</code>, displayed in the sections below. Each section collects the issues for a specific document, with a separate section for the issues not assigned to any.</p>
+
+      </section>
+    </header>
+
+    <div class="toc" id="toc"></div>
+
+    <main>
+      <!-- The data-erratalabel should include one label that filters the errata -->
+      <section data-erratalabel="trace-context-1">
+        <h1 class="done">Open Errata on the “Trace Context - Level 1” Recommendation</h1>
+        <dl>
+            <dt>Latest Published Version:</dt>
+            <dd><a class="done" href="https://www.w3.org/TR/trace-context-1/">https://www.w3.org/TR/trace-context-1/</a></dd>
+            <dt>Editor’s draft:</dt>
+            <dd><a class="done" href="https://w3c.github.io/trace-context/">https://w3c.github.io/trace-context</a></dd>
+            <dt>Latest Publication Date:</dt>
+            <dd>6 February, 2020</dd>
+        </dl>
+        <section>
+          <h2>Substantial Issues</h2>
+        </section>
+        <section>
+          <h2>Editorial Issues</h2>
+        </section>
+  </section>
+
+    </main>
+
+    <footer>
+      The <a href='https://www.w3.org/2018/distributed-tracing/'>Distributed Tracing Working Group</a>
+    </footer>
+  </body>
+</html>
