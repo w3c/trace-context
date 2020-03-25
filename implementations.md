@@ -28,13 +28,13 @@ This page contains an alphabetical list of projects and vendors that currently i
 
 **Implementations:**
 [Node.js](https://github.com/instana/nodejs-sensor)
-
+Java
 
 ## Jaeger
 **Website:** [jaegertracing.io](https://www.jaegertracing.io)
 
 **Implementations:**
-* [Java](https://github.com/jaegertracing/jaeger-client-java/blob/b50aa159e3949461509d451fa1ded91887b680ad/jaeger-core/src/main/java/io/jaegertracing/internal/propagation/TraceContextCodec.java)
+[Java](https://github.com/jaegertracing/jaeger-client-java/blob/b50aa159e3949461509d451fa1ded91887b680ad/jaeger-core/src/main/java/io/jaegertracing/internal/propagation/TraceContextCodec.java)
 
 
 ## LightStep
