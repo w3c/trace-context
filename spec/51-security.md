@@ -6,7 +6,7 @@ Vendors relying on `traceparent` and `tracestate` headers should also follow all
 
 ## Information Exposure
 
-As mentioned in the privacy section, information in the `traceparent` and `tracestate` headers may carry information that can be considered sensitive. For example, `traceparent` may allow one request to be correlated to the data sent with another requeest, or the `tracestate` header may imply the version of monitoring software used by the caller. This information could potentially be used to create a larger attack.
+As mentioned in the privacy section, information in the `traceparent` and `tracestate` headers may carry information that can be considered sensitive. For example, `traceparent` may allow one request to be correlated to the data sent with another request, or the `tracestate` header may imply the version of monitoring software used by the caller. This information could potentially be used to create a larger attack.
 
 Application owners should either ensure that no proprietary or confidential information is stored in `tracestate`, or they should ensure that `tracestate` isn't present in requests to external systems.
 
