@@ -11,7 +11,7 @@ which specifies a distributed tracing context propagation format.
 
 The next version of specification is being developed in this repository.
 
-- Trace Context [Report](https://w3c.github.io/trace-context/).
+The current draft of the Trace Context Specification from this repository's master branch is published to  https://w3c.github.io/trace-context/.
 - Rationale [document](http_header_format_rationale.md)
 
 ## Team Communication
