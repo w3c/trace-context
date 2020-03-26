@@ -9,7 +9,7 @@ which specifies a distributed tracing context propagation format.
 
 [Trace Context v1](https://www.w3.org/TR/trace-context-1/) has [W3C Recommendation](https://www.w3.org/2019/Process-20190301/#rec-publication) status.
 
-The next version of specification is being developed in this repositoy. Specification for distributed tracing context propagation format:
+The next version of specification is being developed in this repository.
 
 - Trace Context [Report](https://w3c.github.io/trace-context/).
 - Rationale [document](http_header_format_rationale.md)
