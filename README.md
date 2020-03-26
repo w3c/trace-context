@@ -4,7 +4,8 @@ Status](https://img.shields.io/travis/w3c/trace-context/master.svg?label=validat
 # Trace Context Specification
 
 This repository is associated with the [Trace
-Context](https://www.w3.org/TR/trace-context/) specification.
+Context](https://www.w3.org/TR/trace-context/) specification,
+which specifies a distributed tracing context propagation format.
 
 [Trace Context v1](https://www.w3.org/TR/trace-context-1/) has [W3C Recommendation](https://www.w3.org/2019/Process-20190301/#rec-publication) status.
 
