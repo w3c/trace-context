@@ -235,7 +235,7 @@ In order to increase interoperability across multiple protocols and encourage su
 
 Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
 
-##### tracestate Header Field Values
+### tracestate Header Field Values
 
 The `tracestate` field may contain any opaque value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC7230#field.order'>RFC7230 Section 3.2.2 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC7230#field.order'>RFC7230</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC7230#field.order'>RFC7230</a>.
 
@@ -251,7 +251,7 @@ The `tracestate` field value is a `list` of `list-members` separated by commas (
 
 Empty and whitespace-only list members are allowed. Vendors MUST accept empty `tracestate` headers but SHOULD avoid sending them. Empty list members are allowed in `tracestate` because it is difficult for a vendor to recognize the empty value when multiple `tracestate` headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.
 
-#### list
+##### list
 
 A simple example of a `list` with two `list-member`s might look like:
 `vendorname1=opaqueValue1,vendorname2=opaqueValue2`.
@@ -264,11 +264,11 @@ list-member = OWS
 
 Identifiers for a `list` are short (up to 256 characters) textual identifiers.
 
-#### list-members
+##### list-members
 
 A `list-member` contains a key/value pair.
 
-##### Key
+###### Key
 
 The key is an identifier that describes the vendor.
 
@@ -283,7 +283,7 @@ lcalpha    = %x61-7A ; a-z
 For multi-tenant vendor scenarios, an at sign (`@`) can be used to prefix the vendor name. Vendors SHOULD set the tenant ID at the beginning of the key. For example, \
 `fw529a3039@dt` - `fw529a3039` is a tenant ID and `@dt` is a vendor name. Searching for `@dt=` is more robust for parsing (for example, searching for all a vendor's keys).
 
-##### Value
+###### Value
 
 The value is an opaque string containing up to 256 printable ASCII [[!RFC0020]] characters (i.e., the range 0x20 to 0x7E) except comma (`,`) and (`=`). Note that this also excludes tabs, newlines, carriage returns, etc.
 
@@ -293,7 +293,7 @@ nblk-chr = %x21-2B / %x2D-3C / %x3E-7E
 chr      = %x20 / nblk-chr
 ```
 
-#### Combined Header Value
+### Combined Header Value
 
 The `tracestate` value is the concatenation of trace graph key/value pairs
 
