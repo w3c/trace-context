@@ -45,6 +45,13 @@ Java
 [Go](https://github.com/lightstep/tracecontext.go)
 
 
+## New Relic
+**Website:** [newrelic.com](https://newrelic.com/)
+
+**Implementations:**
+All agents will support W3C Trace Context, see the list of compatible agents [here](https://docs.newrelic.com/docs/understand-dependencies/distributed-tracing/enable-configure/enable-distributed-tracing#compatibility-requirements)
+
+
 ## OpenCensus
 **Website:** [opencensus.io](https://opencensus.io)
 
