@@ -270,31 +270,16 @@ A `list-member` contains a key/value pair.
 
 ##### Key
 
-The key is an identifier that describes the vendor. There are two formats allowed, Basic and Tenant format. Both have a maximum length of 256 characters.
+The key is an identifier that describes the vendor.
 
 
 ``` abnf
-basic-key = lcalpha 0*255( keychar )
-tenant-key = ( lcalpha / DIGIT ) 0*240( keychar ) "@" lcalpha 0*13( keychar )
-keychar    = lcalpha / DIGIT / "_" / "-"/ "*" / "/"
+key = lcalpha 0*255( keychar )
+keychar    = lcalpha / DIGIT / "_" / "-"/ "*" / "/" / "@"
 lcalpha    = %x61-7A ; a-z
 ```
 
-###### Basic format
-
-Basic format MUST begin with a lowercase letter and contain lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), and forward slashes (`/`).
-
-###### Tenant format
-
-Tenant format uses an at sign (`@`) to separate a tenant ID from a vendor name. For example, the key `fw529a3039@dt` implies a tenant ID `fw529a3039` and vendor name `dt`.
-
-Tenant format MUST contain a single at sign (`@`). Characters before and after the at sign (`@`) MUST be defined in the Basic format. The up to 241 characters before the at sign (`@`) MUST begin with a lowercase letter or number. The up to 14 characters after the sign (`@`) MUST begin with a lowercase letter.
-
-Vendors SHOULD consider characters before the at sign (`@`) the tenant ID and characters after, the vendor name. Otherwise, a valid tenant ID in one system could be mistaken for the vendor name of another, leading to misinterpretation.
-
-This format was designed to ease locating all keys from the same vendor. For example, the vendor `dt` could use the index of `@dt=` to locate multiple values corresponding to tenants in their system.
-
-Note: The vendor name in Tenant format is the same as Basic format, except it is shorter (maximum 14 instead of 256 characters).
+A `key` MUST begin with a lowercase letter and contain up to 256 characters including lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), forward slashes (`/`), and at signs (`@`).
 
 ##### Value
 
