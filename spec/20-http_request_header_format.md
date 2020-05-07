@@ -278,7 +278,7 @@ keychar    = lcalpha / DIGIT / "_" / "-"/ "*" / "/" / "@"
 lcalpha    = %x61-7A ; a-z
 ```
 
-A `key` MUST begin with a lowercase letter and contain up to 256 characters including lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), forward slashes (`/`), and at signs (`@`).
+A `key` MUST begin with a lowercase letter or a digit and contain up to 256 characters including lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), forward slashes (`/`), and at signs (`@`).
 
 ##### Value
 
