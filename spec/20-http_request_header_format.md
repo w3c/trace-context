@@ -273,7 +273,7 @@ A `list-member` contains a key/value pair.
 The key is an identifier that describes the vendor.
 
 ``` abnf
-key = lcalpha 0*255( keychar )
+key = ( lcalpha / DIGIT ) 0*255 ( keychar )
 keychar    = lcalpha / DIGIT / "_" / "-"/ "*" / "/" / "@"
 lcalpha    = %x61-7A ; a-z
 ```
