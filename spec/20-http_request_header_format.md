@@ -273,15 +273,12 @@ A `list-member` contains a key/value pair.
 The key is an identifier that describes the vendor.
 
 ``` abnf
-key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
-key = ( lcalpha / DIGIT ) 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" ) "@" lcalpha 0*13( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+key = ( lcalpha / DIGIT ) 0*255 ( keychar )
+keychar    = lcalpha / DIGIT / "_" / "-"/ "*" / "/" / "@"
 lcalpha    = %x61-7A ; a-z
 ```
 
-**Note**: Identifiers MUST begin with a lowercase letter or a digit, and can only contain lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), and forward slashes (`/`).
-
-For multi-tenant vendor scenarios, an at sign (`@`) can be used to prefix the vendor name. Vendors SHOULD set the tenant ID at the beginning of the key. For example, \
-`fw529a3039@dt` - `fw529a3039` is a tenant ID and `@dt` is a vendor name. Searching for `@dt=` is more robust for parsing (for example, searching for all a vendor's keys).
+A `key` MUST begin with a lowercase letter or a digit and contain up to 256 characters including lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), forward slashes (`/`), and at signs (`@`).
 
 ##### Value
 
