@@ -235,7 +235,7 @@ In order to increase interoperability across multiple protocols and encourage su
 
 Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
 
-### tracestate Header Field Values
+### Header Values
 
 The `tracestate` field may contain any opaque value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC7230#field.order'>RFC7230 Section 3.2.2 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC7230#field.order'>RFC7230</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC7230#field.order'>RFC7230</a>.
 
