@@ -4,15 +4,15 @@ Status](https://img.shields.io/travis/w3c/trace-context/master.svg?label=validat
 # Trace Context Specification
 
 This repository is associated with the [Trace
-Context](https://w3c.github.io/trace-context/) specification.
+Context](https://www.w3.org/TR/trace-context/) specification,
+which specifies a distributed tracing context propagation format.
 
-Specification for distributed tracing context propagation format:
+[Trace Context v1](https://www.w3.org/TR/trace-context-1/) has [W3C Recommendation](https://www.w3.org/2019/Process-20190301/#rec-publication) status.
 
-- Trace Context [Report](https://w3c.github.io/trace-context/).
-Status: [Candidate Recommendation](https://www.w3.org/Consortium/Process#candidate-rec).
-  - Rationale [document](spec/21-http_header_format_rationale.md)
-  - Changes are tracked on GitHub, communicated in meetings and e-mails
-    distribution list.
+The next version of specification is being developed in this repository.
+
+The current draft of the Trace Context Specification from this repository's master branch is published to  https://w3c.github.io/trace-context/.
+Explanations and justification for decisions made in this specification are written down in the [Rationale document](http_header_format_rationale.md).
 
 ## Team Communication
 
