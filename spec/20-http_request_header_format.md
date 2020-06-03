@@ -282,7 +282,7 @@ A `key` MUST begin with a lowercase letter or a digit and contain up to 256 char
 
 ##### Value
 
-The value is an opaque string containing up to 256 printable ASCII [RFC0020] characters (i.e., the range 0x20 to 0x7E) except comma (,) and (=) which must end with a character which is not a space (0x20). Note that this also excludes tabs, newlines, carriage returns, etc. This effectively means that all leading spaces MUST be preserved as part of the value and all trailing spaces MUST not be preserved.
+The value is an opaque string containing up to 256 printable ASCII [RFC0020] characters (i.e., the range 0x20 to 0x7E) except comma (,) and (=) which must end with a character which is not a space (0x20). Note that this also excludes tabs, newlines, carriage returns, etc. This means that all leading spaces MUST be preserved as part of the value and all trailing spaces are considered to be optional whitespace characters not part of the value.
 
 ``` abnf
 value    = 0*255(chr) nblk-chr
