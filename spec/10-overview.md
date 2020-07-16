@@ -17,7 +17,7 @@ This transformation of modern applications calls for a distributed tracing conte
 
 The trace context specification defines a universally agreed-upon format for the exchange of trace context propagation data - referred to as *trace context*. Trace context solves the problems described above by
 
-- providing an unique identifier for individual traces and requests, allowing trace data of multiple providers to be linked together.
+- providing a unique identifier for individual traces and requests, allowing trace data of multiple providers to be linked together.
 - providing an agreed-upon mechanism to forward vendor-specific trace data and avoid broken traces when multiple tracing tools participate in a single transaction.
 - providing an industry standard that intermediaries, platforms, and hardware providers can support.
 
