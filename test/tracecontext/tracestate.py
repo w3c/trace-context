@@ -9,7 +9,7 @@ class Tracestate(object):
 	_DELIMITER_FORMAT_RE = re.compile('[ \t]*,[ \t]*')
 	_KEY_VALIDATION_RE = re.compile('^(' + _KEY_FORMAT + ')$')
 	_VALUE_VALIDATION_RE = re.compile('^(' + _VALUE_FORMAT + ')$')
-	_MEMBER_FORMAT_RE = re.compile('^(%s)(=)(%s)$'%(_KEY_FORMAT, _VALUE_FORMAT))
+	_MEMBER_FORMAT_RE = re.compile('^(%s)(=)(%s)$' % (_KEY_FORMAT, _VALUE_FORMAT))
 
 	def __init__(self, *args, **kwds):
 		if len(args) == 1 and not kwds:
@@ -21,6 +21,9 @@ class Tracestate(object):
 				self._traits = OrderedDict(args[0]._traits)
 				return
 		self._traits = OrderedDict(*args, **kwds)
+
+	def __contains__(self, key):
+		return key in self._traits
 
 	def __len__(self):
 		return len(self._traits)

@@ -445,6 +445,8 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=1,bar=2'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertIn("foo", tracestate)
+		self.assertIn("bar", tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 		self.assertEqual(tracestate['bar'], '2')
 
@@ -474,29 +476,33 @@ class TraceContextTest(TestBase):
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['TraceState', 'foo=1'],
 		])
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['TrAcEsTaTe', 'foo=1'],
 		])
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['TRACESTATE', 'foo=1'],
 		])
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 	def test_tracestate_empty_header(self):
 		'''
 		harness sends a request with empty tracestate header
-		expects the tracestate to be discarded
+		expects the empty tracestate to be discarded
 		'''
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', ''],
 		])
+		self.assertTrue(not tracestate)
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -505,6 +511,7 @@ class TraceContextTest(TestBase):
 			['tracestate', ''],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -513,6 +520,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=1'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 	def test_tracestate_multiple_headers_different_keys(self):
@@ -527,6 +535,11 @@ class TraceContextTest(TestBase):
 			['tracestate', 'baz=3'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertTrue('foo=1' in str(tracestate))
+		self.assertTrue('bar=2' in str(tracestate))
+		self.assertTrue('rojo=1' in str(tracestate))
+		self.assertTrue('congo=2' in str(tracestate))
+		self.assertTrue('baz=3' in str(tracestate))
 		self.assertTrue(str(tracestate).index('foo=1') < str(tracestate).index('bar=2'))
 		self.assertTrue(str(tracestate).index('bar=2') < str(tracestate).index('rojo=1'))
 		self.assertTrue(str(tracestate).index('rojo=1') < str(tracestate).index('congo=2'))
@@ -592,12 +605,14 @@ class TraceContextTest(TestBase):
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', key_without_vendor + '=' + value],
 		])
+		self.assertIn(key_without_vendor, tracestate)
 		self.assertEqual(tracestate[key_without_vendor], value)
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', key_with_vendor + '=' + value],
 		])
+		self.assertIn(key_with_vendor, tracestate)
 		self.assertEqual(tracestate[key_with_vendor], value)
 
 	def test_tracestate_ows_handling(self):
@@ -609,6 +624,9 @@ class TraceContextTest(TestBase):
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo=1 \t , \t bar=2, \t baz=3'],
 		])
+		self.assertIn('foo', tracestate)
+		self.assertIn('bar', tracestate)
+		self.assertIn('baz', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 		self.assertEqual(tracestate['bar'], '2')
 		self.assertEqual(tracestate['baz'], '3')
@@ -617,6 +635,9 @@ class TraceContextTest(TestBase):
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo=1\t \t,\t \tbar=2,\t \tbaz=3'],
 		])
+		self.assertIn('foo', tracestate)
+		self.assertIn('bar', tracestate)
+		self.assertIn('baz', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 		self.assertEqual(tracestate['bar'], '2')
 		self.assertEqual(tracestate['baz'], '3')
@@ -626,6 +647,7 @@ class TraceContextTest(TestBase):
 			['tracestate', ' foo=1'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -633,6 +655,7 @@ class TraceContextTest(TestBase):
 			['tracestate', '\tfoo=1'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -640,6 +663,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=1 '],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -647,6 +671,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=1\t'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -654,6 +679,7 @@ class TraceContextTest(TestBase):
 			['tracestate', '\t foo=1 \t'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
@@ -726,6 +752,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'bar21=21,bar22=22,bar23=23,bar24=24,bar25=25,bar26=26,bar27=27,bar28=28,bar29=29,bar30=30'],
 			['tracestate', 'bar31=31,bar32=32'],
 		])
+		self.assertIn('bar01', tracestate)
 		self.assertEqual(tracestate['bar01'], '01')
 		self.assertEqual(len(tracestate), 32)
 
@@ -750,6 +777,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=1'],
 			['tracestate', 'z' * 256 + '=1'],
 		])
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
@@ -764,6 +792,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=1'],
 			['tracestate', 't' * 241 + '@' + 'v' * 14 + '=1'],
 		])
+		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
