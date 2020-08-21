@@ -68,8 +68,9 @@ All agents will support W3C Trace Context, see the list of compatible agents [he
 **Website:** [opentelemetry.io](https://opentelemetry.io)
 
 **Implementations:**
-[Python](https://github.com/open-telemetry/opentelemetry-python/blob/dbb3be802bae8e4e5c36748869dbc789e50de217/opentelemetry-api/src/opentelemetry/trace/__init__.py),
+[.NET](https://github.com/open-telemetry/opentelemetry-dotnet/blob/dcaea5bd456ba9c3515a578fb9645c5a9ae4af0d/src/OpenTelemetry.Api/Context/Propagation/TraceContextFormat.cs#L29),
 [Go](https://github.com/open-telemetry/opentelemetry-go/blob/3362421c9b41feb586ab003857894d470be57169/plugin/httptrace/httptrace.go),
-[Ruby](https://github.com/open-telemetry/opentelemetry-ruby/blob/741ca61a934b05ecbaedffa56a830dc1821ca9a1/api/lib/opentelemetry/distributed_context/propagation/trace_parent.rb),
+[Java](https://github.com/open-telemetry/opentelemetry-java/blob/63109827ea3ceba7aa099d1d0a612741a887dbac/api/src/main/java/io/opentelemetry/trace/propagation/HttpTraceContext.java),
 [JavaScript](https://github.com/open-telemetry/opentelemetry-js/blob/a49e7abdab3e313ad2b50a9445a885b3fd0d4783/packages/opentelemetry-core/src/context/propagation/HttpTraceContext.ts),
-[Java](https://github.com/open-telemetry/opentelemetry-java/blob/63109827ea3ceba7aa099d1d0a612741a887dbac/api/src/main/java/io/opentelemetry/trace/propagation/HttpTraceContext.java)
+[Python](https://github.com/open-telemetry/opentelemetry-python/blob/dbb3be802bae8e4e5c36748869dbc789e50de217/opentelemetry-api/src/opentelemetry/trace/__init__.py),
+[Ruby](https://github.com/open-telemetry/opentelemetry-ruby/blob/741ca61a934b05ecbaedffa56a830dc1821ca9a1/api/lib/opentelemetry/distributed_context/propagation/trace_parent.rb)
