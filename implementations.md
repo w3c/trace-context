@@ -2,6 +2,17 @@
 
 This page contains an alphabetical list of projects and vendors that currently implement Trace Context.
 
+## Azure Monitor
+**Website:** [Azure Monitor](https://azure.microsoft.com/en-us/services/monitor/)
+ 
+**Implementations:**
+.NET,
+Java,
+Javascript,
+Node.JS,
+Python
+
+
 ## Elastic
 
 **Website:** [https://elastic.co/products/apm](https://elastic.co/products/apm)
