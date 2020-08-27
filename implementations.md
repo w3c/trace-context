@@ -3,7 +3,7 @@
 This page contains an alphabetical list of projects and vendors that currently implement Trace Context.
 
 ## Azure Monitor
-**Website:** [Azure Monitor](https://azure.microsoft.com/en-us/services/monitor/)
+**Website:** [Azure Monitor](https://azure.microsoft.com/services/monitor/)
  
 **Implementations:**
 .NET,
