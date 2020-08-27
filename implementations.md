@@ -6,11 +6,11 @@ This page contains an alphabetical list of projects and vendors that currently i
 **Website:** [Azure Monitor](https://azure.microsoft.com/services/monitor/)
  
 **Implementations:**
-.NET,
+[.NET](https://github.com/Azure/azure-sdk-for-net/tree/master/sdk/monitor/OpenTelemetry.Exporter.AzureMonitor),
 Java,
-Javascript,
-Node.JS,
-Python
+[Javascript](https://github.com/microsoft/opentelemetry-azure-monitor-js),
+Node.js,
+[Python](https://github.com/microsoft/opentelemetry-azure-monitor-python)
 
 
 ## Elastic
