@@ -176,6 +176,8 @@ There are two additional options that vendors MAY follow:
 - A component that makes a deferred or delayed recording decision may communicate the priority of a recording by setting `sampled` flag to `1` for a subset of requests.
 - A component may also fall back to probability sampling and set the `sampled` flag to `1` for the subset of requests.
 
+**Note**: Communicating the recording decision downstream via the `sampled` flag obviously requires adding the `traceparent` header to outgoing requests in the first place. In cases where the incoming request did not have the `traceparent` header and the tracing tool decides not to record trace data and to communicate that decision downstream, this still entails generating a `trace-id` and `parent-id` (that is, starting a trace), even if those id values are not associated with any actual trace data. It is also valid behavior to not start a new trace (that is, not adding the traceparent headers to outgoing requests), and accept the fact that the decision to not record trace data cannot be communicated downstream.
+
 ##### Other Flags
 
 The behavior of other flags, such as (`00000100`) is not defined and is reserved for future use. Vendors MUST set those to zero.
