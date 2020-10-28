@@ -33,6 +33,6 @@ Trace context is split into two individual propagation fields supporting interop
 Tracing tools can provide two levels of compliant behavior interacting with trace context:
 
 - At a minimum they MUST propagate the `traceparent` and `tracestate` headers and guarantee traces are not broken. This behavior is also referred to as forwarding a trace.
-- In addition they CAN also choose to participate in a trace by modifying the `traceparent` header and relevant parts of the `tracestate` header containing their proprietary information. This is also referred to as participating in a trace.
+- In addition they MAY also choose to participate in a trace by modifying the `traceparent` header and relevant parts of the `tracestate` header containing their proprietary information. This is also referred to as participating in a trace.
 
 A tracing tool can choose to change this behavior for each individual request to a component it is monitoring.
