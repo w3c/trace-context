@@ -114,7 +114,7 @@ Url encoding is low-overhead way to encode unicode characters for non-latin char
 
 ## Vendor name in a key
 
-Sign `@` is allowed in a key for easy parsing of vendor name out of the tracestate key. The idea is that with the registry of tracing vendors one can easily understand the vendor name and how to parse it's trace state. Without `@` sign parsing will be more complicated. Also `@` sign has known semantics in addressing for protocols like ftp and e-mails.
+Sign `@` is allowed in a key for easy parsing of vendor name out of the tracestate key. The idea is that with the registry of tracing vendors one can easily understand the vendor name and how to parse it's tracestate. Without `@` sign parsing will be more complicated. Also `@` sign has known semantics in addressing for protocols like ftp and e-mails.
 
 ## Versioning
 
