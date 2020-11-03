@@ -6,7 +6,7 @@ interoperability between different systems.
 
 ### Uniqueness of `span-id`
 
-The value of `span-id` MUST be unique within a <a>distributed trace</a>.
+The value of `span-id` SHOULD be unique within a <a>distributed trace</a>.
 If the value of `span-id` is not unique within a distributed trace,
 parent-child relationships between spans within the distributed trace
 may be ambiguous.
