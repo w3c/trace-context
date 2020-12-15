@@ -11,7 +11,7 @@ This processing model describes the behavior of a vendor that modifies and forwa
 If no traceparent header is received:
 
 1. The vendor checks an incoming request for a `traceparent` and a `tracestate` header.
-2. Because the `traceparent` header is not received, the vendor creates a new `trace-id` and `parent-id` that represents the current request. (Note: If the vendor does not sample this request and wants to communicate that sampling decision downstream via the `sampled` flag, it is acceptable to create a `trace-id` and `parent-id` that are not associated with any actual trace data. Not communicating the sampling decision downstream is equally acceptable.)
+2. Because the `traceparent` header is not received, the vendor creates a new `trace-id` and `parent-id` that represents the current request. (Note: If the vendor does not sample this request and wants to communicate that sampling decision downstream via the `sampled` flag, the vendor MAY create a `trace-id` and `parent-id` that are not associated with any actual trace data. The vendor MAY also decide to not communicate the sampling decision downstream.)
 3. If a `tracestate` header is received without an accompanying `traceparent` header, it is invalid and MUST be discarded.
 4. The vendor SHOULD create a new `tracestate` header and add a new key/value pair.
 5. The vendor sets the `traceparent` and `tracestate` header for the outgoing request.
