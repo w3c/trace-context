@@ -136,11 +136,11 @@ traceresponse: 00-1baad25c36c11c1e7fbd6d122bd85db6-cab70b47728a8a99-01
 
 In this example, a participant in a trace with ID `4bf92f3577b34da6a3ce929d0e0e4736` calls a third party system that collects their own internal telemetry using a new trace ID `1baad25c36c11c1e7fbd6d122bd85db6`. When the third party completes its request, it returns the new trace ID, the ID of the operation, and internal sampling decision to the caller. If there is an error with the request, the caller can include the third party's internal trace ID in a support request.
 
-### Tail Sampling Load Balancer
+### Load Balancer Deferred Sampling
 
 When a service that made a negative sampling decision makes a call to another service, there may be some event during the processing of that request that causes the called service to decide to sample the request. In this case, it may return its updated sampling decision to the caller, the caller may also return the updated sampling decision to its caller, and so on. In this way, as much of a trace as possible may be recovered for debugging purposes even if the original sampling decision was negative.
 
-One example of this might be a load balancer which samples a random subset of requests. If the load balancer origin encounters a problem, it may indicate that the request should be sampled by the load balancer anyway by returning a `traceresponse` with the sampled flag set.
+One example of this might be a load balancer which samples a random subset of requests. If the destination service encounters a problem, it may indicate that the request should be sampled by the load balancer anyway by returning a `traceresponse` with the sampled flag set.
 
 Example request and response:
 
