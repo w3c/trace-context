@@ -92,11 +92,11 @@ The current version of this specification (`00`) only supports a single flag cal
 
 When set, the least significant bit (right-most), denotes that the callee may have recorded trace data. When unset, the callee did not record trace data out-of-band.
 
-The `sampled` flag provides interoperability between tracing systems. It allows tracing systems to communicate recording decisions and enable a better experience for the customer. For example, when a SaaS load balancer service participates in a <a>distributed trace</a>, this service has no knowledge of the tracing vendor used by its callee. This service may produce records of incoming requests for monitoring or troubleshooting purposes. The `sampled` flag can be used to ensure that information about requests that were marked for recording by the callee will also be recorded by the SaaS load balancer service upstream so that the callee can troubleshoot the behavior of every recorded request.
+The `sampled` flag provides interoperability between tracing systems. It allows tracing systems to communicate recording decisions and enable a better experience for the customer. For example, when a SaaS load balancer service participates in a <a>distributed trace</a>, this service has no knowledge of the tracing system used by its callee. This service may produce records of incoming requests for monitoring or troubleshooting purposes. The `sampled` flag can be used to ensure that information about requests that were marked for recording by the callee will also be recorded by the SaaS load balancer service upstream so that the callee can troubleshoot the behavior of every recorded request.
 
 The `sampled` flag has no restrictions.
 
-The following are a set of suggestions that tracing systems SHOULD use to increase vendor interoperability.
+The following are a set of suggestions that tracing systems SHOULD use to increase interoperability.
 
 - If a component made definitive recording decision - this decision SHOULD be reflected in the `sampled` flag.
 - If a component needs to make a recording decision - it SHOULD respect the `sampled` flag value.
