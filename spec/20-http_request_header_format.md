@@ -310,7 +310,7 @@ Vendors SHOULD propagate at least 512 characters of a combined header. This leng
 
 There are systems where propagating of 512 characters of `tracestate` may be expensive. In this case, the maximum size of the propagated `tracestate` header SHOULD be documented and explained. The cost of propagating `tracestate` SHOULD be weighted against the value of monitoring scenarios enabled for the end users.
 
-In a situation where `tracestate` needs to be truncated due to size limitations, the vendor MUST truncate whole entries. Entries larger than `128` characters long SHOULD be removed first. Then entries SHOULD be removed starting from the end of `tracestate`. Note that other truncation strategies like safe list entries, blocked list entries, or size-based truncation MAY be used, but are highly discouraged. Those strategies decrease the interoperability of various tracing vendors.
+In a situation where `tracestate` is truncated due to the total size of the header value, the vendor MUST truncate whole entries. Entries larger than `128` characters long SHOULD be removed first. Then entries SHOULD be removed starting from the end of `tracestate`. Other truncation strategies like safe list entries, blocked list entries, or size-based truncation SHOULD NOT be used.
 
 ### Examples of tracestate HTTP Headers
 
