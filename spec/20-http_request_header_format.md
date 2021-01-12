@@ -247,7 +247,7 @@ The `OWS` rule defines an optional whitespace character. To improve readability,
 
 The caller SHOULD generate the optional whitespace as a single space; otherwise, a caller SHOULD NOT generate optional whitespace. See details in the <a data-cite='!RFC7230#whitespace'>corresponding RFC</a>.
 
-The `tracestate` field value is a `list` of `list-members` separated by commas (`,`). A `list-member` is a key/value pair separated by an equals sign (`=`). Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`.
+The `tracestate` field value is a `list` of `list-members` separated by commas (`,`). A `list-member` is a key/value pair separated by an equals sign (`=`). Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`. If adding an entry would cause the `tracestate` list to contain more than 32 `list-members` the right-most `list-member` should be removed from the list.
 
 Empty and whitespace-only list members are allowed. Vendors MUST accept empty `tracestate` headers but SHOULD avoid sending them. Empty list members are allowed in `tracestate` because it is difficult for a vendor to recognize the empty value when multiple `tracestate` headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.
 
