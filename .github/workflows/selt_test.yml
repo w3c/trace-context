@@ -10,5 +10,7 @@ jobs:
           python-version: 3.6
           architecture: x64
       - run: pip install aiohttp
-      - run: ./test/start.sh
+      - run: |
+          cd test
+          python self_test.py
         shell: bash
