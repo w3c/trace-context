@@ -227,7 +227,7 @@ The main purpose of the `tracestate` HTTP header is to provide additional vendor
 
 If the vendor failed to parse `traceparent`, it MUST NOT attempt to parse `tracestate`. Note that the opposite is not true: failure to parse `tracestate` MUST NOT affect the parsing of `traceparent`.
 
-The `tracestate` HTTP header MUST NOT be used for any properties that are not defined by a tracing vendor. [[BAGGAGE]] MAY be used for defining and propagating such application level properties.
+The `tracestate` HTTP header MUST NOT be used for any properties that are not defined by a telemetry system. [[BAGGAGE]] MAY be used for defining and propagating such application level properties.
 
 ### Header Name
 
