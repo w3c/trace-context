@@ -280,8 +280,7 @@ lcalpha    = %x61-7A ; a-z
 
 **Note**: Identifiers MUST begin with a lowercase letter or a digit, and can only contain lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), and forward slashes (`/`).
 
-For multi-tenant vendor scenarios, an at sign (`@`) can be used to prefix the vendor name. Vendors SHOULD set the tenant ID at the beginning of the key. For example, \
-`fw529a3039@dt` - `fw529a3039` is a tenant ID and `@dt` is a vendor name. Searching for `@dt=` is more robust for parsing (for example, searching for all a vendor's keys).
+In a distributed application where different components may be traced by different instances of the same multi-tenant tracing system, the system SHOULD keep the system ID at the end of the key. For example, `001@xyz` where `001` is the ID of the specific tenant within the tracing system and `xyz` is the tracing system identifier. This makes for fast and robust parsing. For example, by searching for all instances of `@xyz=` a tracing system can easily find all keys made by system `xyz`.
 
 ##### Value
 
