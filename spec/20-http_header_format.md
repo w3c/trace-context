@@ -258,8 +258,7 @@ A simple example of a `list` with two `list-member`s might look like:
 
 ``` abnf
 list  = list-member 0*31( OWS "," OWS list-member )
-list-member = key "=" value
-list-member = OWS
+list-member = (key "=" value) / OWS
 ```
 
 Identifiers for a `list` are short (up to 256 characters) textual identifiers.
