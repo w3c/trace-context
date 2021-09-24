@@ -270,17 +270,22 @@ A `list-member` contains a key/value pair.
 
 ##### Key
 
-The key is an identifier that describes the vendor.
+The key identifies the tracestate entry.
 
 ``` abnf
-key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
-key = ( lcalpha / DIGIT ) 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" ) "@" lcalpha 0*13( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+key = simple-key / multi-tenant-key
+simple-key = lcalpha 0*255( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+multi-tenant-key = tenant-id "@" system-id
+tenant-id = ( lcalpha / DIGIT ) 0*240( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
+system-id = lcalpha 0*13( lcalpha / DIGIT / "_" / "-"/ "*" / "/" )
 lcalpha    = %x61-7A ; a-z
 ```
 
 **Note**: Identifiers MUST begin with a lowercase letter or a digit, and can only contain lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), and forward slashes (`/`).
 
-In a distributed application where different components may be traced by different instances of the same multi-tenant tracing system, the system SHOULD keep the system ID at the end of the key. For example, `001@xyz` where `001` is the ID of the specific tenant within the tracing system and `xyz` is the tracing system identifier. This makes for fast and robust parsing. For example, by searching for all instances of `@xyz=` a tracing system can easily find all keys made by system `xyz`.
+There are two different types of tracestate keys. The first type of key is a simple key used by tracing systems which do not have multiple tenants. Simple keys contain only lowercase alphanumeric characters, underscores, dashes, asterisks, and forward slashes. For example: `my-tracing-system`.
+
+The second type of key is used by multi-tenant tracing systems where each tenant requires a unique tracestate entry. Multi-tenant keys consist of a tenant ID followed by the `@` character followed by a system ID. This allows for fast and robust parsing. For example, tracing system `xyz` can easily find all of its tracestate entries by searching for all instances of `@xyz=`.
 
 ##### Value
 
