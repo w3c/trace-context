@@ -7,7 +7,7 @@ This section describes the binding of the <a href="#dfn-distributed-traces">dist
 The `traceparent` request header represents the incoming request in a tracing system in a common format, understood by all vendors. Here’s an example of a `traceparent` header.
 
 ``` http
-traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+traceparent: 01-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01-0602
 ```
 
 The `tracestate` request header includes the parent in a potentially vendor-specific format:
@@ -19,7 +19,7 @@ tracestate: congo=t61rcWkgMzE
 For example, say a client and server in a system use different tracing vendors: Congo and Rojo. A client traced in the Congo system adds the following headers to an outbound HTTP request.
 
 ``` http
-traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+traceparent: 01-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01-0100
 tracestate: congo=t61rcWkgMzE
 ```
 
@@ -28,7 +28,7 @@ tracestate: congo=t61rcWkgMzE
 The receiving server, traced in the Rojo tracing system, carries over the `tracestate` it received and adds a new entry to the left.
 
 ``` http
-traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
+traceparent: 01-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01-0100
 tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
 ```
 
@@ -37,7 +37,7 @@ You'll notice that the Rojo system reuses the value of its `traceparent` for its
 If the next receiving server uses Congo, it carries over the `tracestate` from Rojo and adds a new entry for the parent to the left of the previous entry.
 
 ``` http
-traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
+traceparent: 01-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01-0100
 tracestate: congo=ucfJifl5GOE,rojo=00f067aa0ba902b7
 ```
 
@@ -50,12 +50,13 @@ Finally, you'll see `tracestate` retains an entry for Rojo exactly as it was, ex
 
 ## Traceparent Header
 
-The `traceparent` HTTP header field identifies the incoming request in a tracing system. It has four fields:
+The `traceparent` HTTP header field identifies the incoming request in a tracing system. It has four required fields and one optional field:
 
 * `version`
 * `trace-id`
 * `parent-id`
 * `trace-flags`
+* `sampling-constant` (optional)
 
 
 ### Header Name
@@ -80,22 +81,25 @@ The dash (`-`) character is used as a delimiter between fields.
 #### version
 
 ``` abnf
-version         = 2HEXDIGLC   ; this document assumes version 00. Version ff is forbidden
+version         = 2HEXDIGLC   ; this document assumes version 01. Version ff is forbidden
 ```
 
 The value is US-ASCII encoded (which is UTF-8 compliant).
 
-Version (`version`) is 1 byte representing an 8-bit unsigned integer. Version `ff` is invalid. The current specification assumes the `version` is set to `00`.
+Version (`version`) is 1 byte representing an 8-bit unsigned integer. Version `ff` is invalid. The current specification assumes the `version` is set to `01`.
 
 #### version-format
 
-The following `version-format` definition is used for version `00`.
+The following `version-format` definition is used for version `01`.
 
 ``` abnf
-version-format   = trace-id "-" parent-id "-" trace-flags
-trace-id         = 32HEXDIGLC  ; 16 bytes array identifier. All zeroes forbidden
-parent-id        = 16HEXDIGLC  ; 8 bytes array identifier. All zeroes forbidden
-trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. See below for details
+version-format         = trace-id "-" parent-id "-" trace-flags [ "-" sampling-constant ]
+trace-id               = 32HEXDIGLC  ; 16 bytes array identifier. All zeroes forbidden
+parent-id              = 16HEXDIGLC  ; 8 bytes array identifier. All zeroes forbidden
+trace-flags            = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. See below for details
+sampling-constant      = sampling-random-value parent-sampling-constant
+sampling-random-value  = 2HEXDIGLC   ; geometrically distributed 8-bit random value used for consistent sampling
+parent-sampling-constant = 2HEXDIGLC   ; 8-bit value used to represent the head sampling probability.
 ```
 
 #### trace-id
@@ -180,26 +184,59 @@ There are two additional options that vendors MAY follow:
 
 The behavior of other flags, such as (`00000100`) is not defined and is reserved for future use. Vendors MUST set those to zero.
 
+#### sampling-constant
+
+This optional field is represented by 4 lowercase hex digits.
+It consists of a geometrically distributed random value used to guarantee consistent sampling and a constant which can be used to calculate the sampling probability used by the parent.
+In order to optimize space, sampling probabilities are restricted to values `2^-x` where `x <= 61` and a special case which represents the probability 0.
+
+##### sampling-random-value
+
+This field is a random value less than or equal to 62 taken from the truncated geometric distribution with success probability `a = 1/2`.
+It is represented as an integer using 2 lowercase hex digits.
+It is used to ensure distributed traces are sampled consistently.
+For example, if two components in the same distributed trace have different sampling probability,
+this value may be used to ensure that the component with the lesser probability samples a subset of the traces sampled by the component with the greater probability.
+This ensures the maximum number of possible complete traces are sampled for a given set of sampling probabilities.
+
+It can be efficiently calculated by counting the number of leading zeros in a random binary integer.
+For example, given the random integer `169797692638565684` represented by the 64-bit unsigned binary `0000001001011011001111100001101000010001011001110001010100110100`, there are 6 leading zeros giving a sampling random value of `06`.
+Samplers generating the sampling random value SHOULD use 62 bits of uniformly random binary to calculate the random value.
+
+##### parent-sampling-constant
+
+This value represents the sampling probability used by the parent of the current operation.
+It is represented as an integer using 2 lowercase hex digits.
+The parent sampling probability can be calculated using `2^-x` where `x` is the head sampling constant.
+The special value of `3e` (`62`) is taken to represent a head sampling probability of `0`.
+The special value of `3f` (`63`) is taken to represent an unknown head sampling probability.
+Any value greater than `3f` (`63`) is invalid.
+It is represented as a lowercase hex-encoded 8-bit integer.
+
 ### Examples of HTTP traceparent Headers
 
 *Valid traceparent when caller sampled this request:*
 
 ```
-Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+Value = 01-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-0100
 base16(version) = 00
 base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(parent-id) = 00f067aa0ba902b7
 base16(trace-flags) = 01  // sampled
+base16(sampling-random-value) = 01 // trace sampled by all components using sampling probability 0.5 or greater
+base16(parent-sampling-constant) = 00 // all traces sampled by head of trace
 ```
 
 *Valid traceparent when caller didn’t sample this request:*
 
 ```
-Value = 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00
+Value = 01-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-00-0100
 base16(version) = 00
 base16(trace-id) = 4bf92f3577b34da6a3ce929d0e0e4736
 base16(parent-id) = 00f067aa0ba902b7
 base16(trace-flags) = 00  // not sampled
+base16(sampling-random-value) = 01 // trace sampled by all components using sampling probability 0.5 or greater
+base16(parent-sampling-constant) = 00 // all traces sampled by head of trace
 ```
 
 ### Versioning of traceparent
@@ -215,8 +252,9 @@ Vendors MUST follow these rules when parsing headers with an unexpected format:
     - Parse `trace-id` (from the first dash through the next 32 characters). Vendors MUST check that the 32 characters are hex, and that they are followed by a dash (`-`).
     - Parse `parent-id` (from the second dash at the 35th position through the next 16 characters). Vendors MUST check that the 16 characters are hex and followed by a dash.
     - Parse the `sampled` bit of `flags` (2 characters from the third dash). Vendors MUST check that the 2 characters are either at the end of the string or followed by a dash.
+    - Parse the `sampling-constant` (from the fourth dash at the 55th position through the next 4 characters). Vendors MUST check that the 2 characters are either at the end of the string or followed by a dash.
 
-    If all three values were parsed successfully, the vendor should use them.
+    If all three values required values were parsed successfully, the vendor should use them. If the sampling constant was parsed successfully, the vendor should use it.
 
 
 Vendors MUST NOT parse or assume anything about unknown fields for this version. Vendors MUST use these fields to construct the new `traceparent` field according to the highest version of the specification known to the implementation (in this specification it is `00`).
