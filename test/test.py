@@ -502,7 +502,6 @@ class TraceContextTest(TestBase):
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', ''],
 		])
-		self.assertTrue(not tracestate)
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
