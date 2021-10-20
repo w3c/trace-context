@@ -883,14 +883,14 @@ if __name__ == '__main__':
 Usage: python {0} <service endpoint> [patterns]
 
 Environment Variables:
-	HARNESS_DEBUG	  when set, debug mode will be enabled (default to disabled)
-	HARNESS_HOST	   the public host/address of the test harness (default 127.0.0.1)
-	HARNESS_PORT	   the public port of the test harness (default 7777)
-	HARNESS_TIMEOUT	the timeout (in seconds) used for each test case (default 5)
+	HARNESS_DEBUG      when set, debug mode will be enabled (default to disabled)
+	HARNESS_HOST       the public host/address of the test harness (default 127.0.0.1)
+	HARNESS_PORT       the public port of the test harness (default 7777)
+	HARNESS_TIMEOUT    the timeout (in seconds) used for each test case (default 5)
 	HARNESS_BIND_HOST  the host/address which the test harness binds to (default to HARNESS_HOST)
 	HARNESS_BIND_PORT  the port which the test harness binds to (default to HARNESS_PORT)
 	SERVICE_ENDPOINT   your test service endpoint (no default value)
-	STRICT_LEVEL	   the level of test strictness (default 2)
+	STRICT_LEVEL       the level of test strictness (default 2)
 
 Example:
 	python {0} http://127.0.0.1:5000/test
