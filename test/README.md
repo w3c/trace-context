@@ -1,4 +1,4 @@
-[![Build Status](https://img.shields.io/travis/w3c/trace-context/master.svg?label=self%20test)](https://travis-ci.org/w3c/trace-context)
+[![Build Status](https://img.shields.io/travis/w3c/trace-context/main.svg?label=self%20test)](https://travis-ci.org/w3c/trace-context)
 
 # W3C Distributed Tracing Validation Service
 
