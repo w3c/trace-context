@@ -1,5 +1,5 @@
 [![Build
-Status](https://img.shields.io/travis/w3c/trace-context/master.svg?label=validation%20service)](https://travis-ci.com/w3c/trace-context/)
+Status](https://img.shields.io/travis/w3c/trace-context/main.svg?label=validation%20service)](https://travis-ci.com/w3c/trace-context/)
 
 # Trace Context Specification
 
@@ -11,7 +11,7 @@ which specifies a distributed tracing context propagation format.
 
 The next version of specification is being developed in this repository.
 
-The current draft of the Trace Context Specification from this repository's master branch is published to  https://w3c.github.io/trace-context/.
+The current draft of the Trace Context Specification from this repository's main branch is published to  https://w3c.github.io/trace-context/.
 Explanations and justification for decisions made in this specification are written down in the [Rationale document](http_header_format_rationale.md).
 
 ## Team Communication
