@@ -138,8 +138,6 @@ boolean sampled = (traceFlags & FLAG_SAMPLED) == FLAG_SAMPLED;
 
 ##### Sampled flag
 
-The current version of this specification (`00`) only supports a single flag called `sampled`.
-
 When set, the least significant bit (right-most), denotes that the caller may have recorded trace data. When unset, the caller did not record trace data out-of-band.
 
 There are a number of recording scenarios that may break distributed tracing:
@@ -175,6 +173,28 @@ There are two additional options that vendors MAY follow:
 
 - A component that makes a deferred or delayed recording decision may communicate the priority of a recording by setting `sampled` flag to `1` for a subset of requests.
 - A component may also fall back to probability sampling and set the `sampled` flag to `1` for the subset of requests.
+
+##### Random Trace ID Flag
+
+<!--
+
+TODO: how many random bytes are needed?
+7 was chosen as it can be efficiently represented as a 64-bit signed or unsigned integer.
+8 would require an unsigned long which is not supported by some languages (like Java).
+63 bits would be possible, but would require a more complex description that may be more difficult to understand.
+
+TODO: Which specific bytes should be random?
+The least significant bytes were chosen because some tracing systems are known to use the most significant
+portion of the trace id for non-random data such as a timestamp component.
+
+TODO: Do we want to place any restrictions on the randomness or is saying "MUST be random" enough?
+As an example, RFC4122 (UUID v4) simply states "Set all the other bits to randomly (or pseudo-randomly) chosen values."
+https://datatracker.ietf.org/doc/html/rfc4122#section-4.4
+
+-->
+
+When set, the second least significant bit (second from the right), denotes that the least significant (right-most) 7 bytes of the trace ID MUST be random (or pseudo-random).
+When unset, the trace ID may be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
 
 ##### Other Flags
 
