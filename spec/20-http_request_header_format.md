@@ -180,11 +180,11 @@ There are two additional options that vendors MAY follow:
 
 TODO: how many random bytes are needed?
 7 was chosen as it can be efficiently represented as a 64-bit signed or unsigned integer.
-8 would require an unsigned long which is not supported by some languages (like Java).
+8 would require an unsigned long which is not supported by some languages (like Java and Go).
 63 bits would be possible, but would require a more complex description that may be more difficult to understand.
 
 TODO: Which specific bytes should be random?
-The least significant bytes were chosen because some tracing systems are known to use the most significant
+The right-most bytes were chosen because some tracing systems are known to use the left-most
 portion of the trace id for non-random data such as a timestamp component.
 
 TODO: Do we want to place any restrictions on the randomness or is saying "MUST be random" enough?
@@ -193,7 +193,7 @@ https://datatracker.ietf.org/doc/html/rfc4122#section-4.4
 
 -->
 
-When set, the second least significant bit (second from the right), denotes that the least significant (right-most) 7 bytes of the trace ID MUST be random (or pseudo-random).
+When set, the second least significant bit (second from the right), denotes that the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
 When unset, the trace ID may be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
 
 ##### Other Flags
