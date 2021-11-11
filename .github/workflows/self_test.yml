@@ -1,3 +1,17 @@
+name: Self Test
+on:
+  push:
+    branches:
+    - main
+    paths:
+      - 'test/**.py'
+      - 'test/**.json'
+  pull_request:
+    branches:
+    - main
+    paths:
+      - 'test/**.py'
+      - 'test/**.json'
 jobs:
   build:
     runs-on: ubuntu-latest
