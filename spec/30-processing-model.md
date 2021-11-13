@@ -65,7 +65,7 @@ In this example, a participant in a trace with ID `4bf92f3577b34da6a3ce929d0e0e4
 
 ### Load Balancer Deferred Sampling
 
-When a service that made a negative sampling decision makes a call to another service, there may be some event during the processing of that request that causes the called service to decide to sample the request. In this case, it may return its updated sampling decision to the caller, the caller may also return the updated sampling decision to its caller, and so on. In this way, as much of a trace as possible may be recovered for debugging purposes even if the original sampling decision was negative.
+When a service initially makes the decision to _not_ sample a particular request, and also makes an outbound call to another downstream service, there may be some event during the processing of that request which causes the downstream service to decide to sample after all. In this case, the downstream service may return its updated sampling decision to the caller via the `traceresponse` header. Based on this, the caller may change its sampling decision and in turn also return its updated sampling decision to its caller, and so on. In this way, as much of a trace as possible may be recovered for troubleshooting purposes even if the original sampling decision was negative.
 
 One example of this might be a load balancer which samples a random subset of requests. If the destination service encounters a problem, it may indicate that the request should be sampled by the load balancer anyway by returning a `traceresponse` with the sampled flag set.
 
@@ -80,4 +80,4 @@ Response
 traceresponse: 00-4bf92f3577b34da6a3ce929d0e0e4736-828c5d0d435ba505-01
 ```
 
-In this example, a caller (the load balancer) in a trace with ID `4bf92f3577b34da6a3ce929d0e0e4736` wishes to defer a sampling decision to its callee. When the callee completes the request, it returns the internal sampling decision to the caller.
+In this example, a caller (the load balancer) in a trace with ID `4bf92f3577b34da6a3ce929d0e0e4736` wishes to defer a sampling decision to its callee. When the callee completes the request, it returns its sampling decision to the caller.
