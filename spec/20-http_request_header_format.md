@@ -293,13 +293,11 @@ chr      = %x20 / nblk-chr
 
 ### Combined Header Value
 
-The `tracestate` value is the concatenation of trace graph key/value pairs
+The `tracestate` value is the concatenation of trace graph key/value pairs.
 
 Example: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`
 
-Only one entry per key is allowed. Hence vendors MUST update their entry instead of adding it twice when propagating a modfied `tracestate` header downstream.
-
-For example, if a vendor name is Congo and a trace started in their system and then went through a system named Rojo and later returned to Congo, the `tracestate` value would not be:
+Only one entry per key is allowed. For example, if a vendor name is Congo and a trace started in their system and then went through a system named Rojo and later returned to Congo, the `tracestate` value would not be:
 
 `congo=congosFirstPosition,rojo=rojosFirstPosition,congo=congosSecondPosition`
 
