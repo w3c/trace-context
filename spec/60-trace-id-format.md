@@ -6,7 +6,7 @@ practices will ensure better interoperability of different systems.
 
 ### Uniqueness of `trace-id`
 
-The value of `trace-id` SHOULD be globally unique. This field is typically used
+The value of `trace-id` SHOULD be globally unique. This field is used
 for unique identification of a <a>distributed trace</a>. It is common for
 <a>distributed traces</a> to span various components, including, for example,
 cloud services. Cloud services tend to serve variety of clients and have a very
@@ -15,16 +15,19 @@ even when local uniqueness might seem like a good solution.
 
 ### Randomness of `trace-id`
 
-Randomly generated value of `trace-id` SHOULD be preferred over other
-algorithms of generating a globally unique identifiers. Randomness of `trace-id`
-addresses some [security](#security-considerations) and [privacy
-concerns](#privacy-considerations) of exposing unwanted information. Randomness
-also allows tracing vendors to base sampling decisions on `trace-id` field value
-and avoid propagating an additional sampling context.
+For the interoperability between vendors, `trace-id` value SHOULD contain
+random bytes. With other considerations, random bytes SHOULD be the right most
+characters and at least 6 right most bytes (12 characters) SHOULD be generated
+using random or pseudo-random number generation algorithm.
 
-As shown in the next section, it is important for `trace-id` to carry
-"uniqueness" and "randomness" in the right part of the `trace-id`, for better
-inter-operability with some existing systems.
+Randomness of `trace-id` addresses some [security](#security-considerations)
+and [privacy concerns](#privacy-considerations) of exposing unwanted
+information. Randomness also allows tracing vendors to base various sharding
+and sampling decisions on `trace-id` field value and avoid propagating an
+additional sampling context.
+
+When [[!RFC4122]] is used for `trace-id` value generation, the required 12
+right most characters are generated as random or pseudo-random. Whenever possible fully randomly generated value of `trace-id` SHOULD be preferred.
 
 ### Handling `trace-id` for compliant platforms with shorter internal identifiers
 

@@ -100,13 +100,17 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. S
 
 #### trace-id
 
-This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
+This is the ID that is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`.
 
-If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
+For the interoperability between vendors, the 6 right most bytes of `trace-id` SHOULD be generated using random or pseudo-random number generation algorithm. If [[!RFC4122]] is used, only the <a data-cite='!RFC4122##section-4.4'>Algorithms for Creating a UUID from Truly Random or Pseudo-Random Numbers</a> can be used for `trace-id` value generation to satisfy the randomness requirement.
 
 See [considerations for trace-id field
 generation](#considerations-for-trace-id-field-generation) for recommendations
 on how to operate with `trace-id`.
+
+All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
+
+If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
 
 #### parent-id
 
