@@ -355,7 +355,7 @@ Vendors MUST NOT make any other mutations to the `traceparent` header.
 
 ## Mutating the tracestate Field
 
-Vendors receiving a `tracestate` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests. When mutating `tracestate`, the order of unmodified key/value pairs MUST be preserved. Modified keys MUST be moved to the beginning (left) of the list.
+Vendors receiving a `tracestate` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing to outgoing requests. When mutating `tracestate`, the order of unmodified key/value pairs MUST be preserved. Modified keys SHOULD be moved to the beginning (left) of the list.
 
 Following are allowed mutations:
 
