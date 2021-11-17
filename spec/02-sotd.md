@@ -1,1 +1,2 @@
-This specification is in Candidate Recommendation stage. It was widely viewed and discussed. It satisfies Distributed Tracing working group technical requirements. There are a few implementations of this specification available. We are gathering implementation experience and usage feedback. We recommend the wide deployment and use of this recommendation.
+This specification includes editorial updates since the <a
+href='https://www.w3.org/TR/2020/REC-trace-context-1-20200206/'>6 February 2020</a> W3C Recommendation.
