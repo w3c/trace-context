@@ -334,7 +334,7 @@ The version of `tracestate` is defined by the version prefix of `traceparent` he
 
 ## Mutating the traceparent Field
 
-A vendor receiving a request without a `traceparent` header SHOULD generate `traceparent` headers for outbound requests, effectively starting a new trace. A possible reason to not add `traceparent` to outbound requests is when the vendor decides to not sample this request.
+A vendor receiving a request without a `traceparent` header SHOULD generate `traceparent` headers for outbound requests, effectively starting a new trace. A possible reason for not doing this could be a performance sensitive scenario when the vendor decides to not sample a request. Note that for most scenarios, vendors are expected to generate the header even when not sampling, to propagate the sampling decision downstream.
 
 A vendor receiving a `traceparent` request header MUST send it to outgoing requests. It MAY mutate the value of this header before passing it to outgoing requests.
 
