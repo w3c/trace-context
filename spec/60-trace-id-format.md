@@ -22,9 +22,9 @@ concerns](#privacy-considerations) of exposing unwanted information. Randomness
 also allows tracing vendors to base sampling decisions on `trace-id` field value
 and avoid propagating an additional sampling context.
 
-As shown in the next section, it is important for `trace-id` to carry
-"uniqueness" and "randomness" in the right part of the `trace-id`, for better
-inter-operability with some existing systems.
+As shown in the next section, if part of the `trace-id` is nonrandom,
+it is important for the random part of the `trace-id` to be as far right in the
+`trace-id` as possible for better inter-operability with some existing systems.
 
 ### Handling `trace-id` for compliant platforms with shorter internal identifiers
 
