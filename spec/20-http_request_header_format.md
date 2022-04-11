@@ -100,13 +100,17 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. S
 
 #### trace-id
 
-This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
+This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system.
+It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`.
+All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
+
+The value of `trace-id` SHOULD be globally unique.
+It is RECOMMENDED that implementers randomly (or pseudo-randomly) generate the `trace-id` field, and set the corresponding [random trace id flag](#random-trace-id-flag).
+This ensures, to a reasonable degree, global uniqueness, and addresses some privacy and security considerations.
+Even in cases where it is not possible to randomly (or pseudo-randomly) generate the `trace-id`, it is RECOMMENDED that at least the right-most 7 bytes of the `trace-id` be randomly generated.
+For more details, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
 If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
-
-See [considerations for trace-id field
-generation](#considerations-for-trace-id-field-generation) for recommendations
-on how to operate with `trace-id`.
 
 #### parent-id
 
@@ -175,23 +179,6 @@ There are two additional options that vendors MAY follow:
 - A component may also fall back to probability sampling and set the `sampled` flag to `1` for the subset of requests.
 
 ##### Random Trace ID Flag
-
-<!--
-
-TODO: how many random bytes are needed?
-7 was chosen as it can be efficiently represented as a 64-bit signed or unsigned integer.
-8 would require an unsigned long which is not supported by some languages (like Java and Go).
-63 bits would be possible, but would require a more complex description that may be more difficult to understand.
-
-TODO: Which specific bytes should be random?
-The right-most bytes were chosen because some tracing systems are known to use the left-most
-portion of the trace id for non-random data such as a timestamp component.
-
-TODO: Do we want to place any restrictions on the randomness or is saying "MUST be random" enough?
-As an example, RFC4122 (UUID v4) simply states "Set all the other bits to randomly (or pseudo-randomly) chosen values."
-https://datatracker.ietf.org/doc/html/rfc4122#section-4.4
-
--->
 
 When set, the second least significant bit (second from the right), denotes that the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
 When unset, the trace ID may be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
