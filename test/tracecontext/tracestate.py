@@ -56,9 +56,11 @@ class Tracestate(object):
 				if not match:
 					raise ValueError('illegal key-value format {!r}'.format(member))
 				key, eq, value = match.groups()
-				if key in self._traits:
-					raise ValueError('conflict key {!r}'.format(key))
-				self._traits[key] = value
+				if key not in self._traits:
+					self._traits[key] = value
+					# If key is already in self._traits, the incoming tracestate header contained a duplicated key.
+					# According to the spec, two behaviors are valid: Either pass on the duplicated key as-is or drop
+					# it. We opt for dropping it.
 		return self
 
 	def to_string(self):

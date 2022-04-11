@@ -549,21 +549,22 @@ class TraceContextTest(TestBase):
 	def test_tracestate_duplicated_keys(self):
 		'''
 		harness sends a request with an invalid tracestate header with duplicated keys
-		expects the tracestate to be discarded
+		expects the tracestate to be inherited, and the duplicated keys to be either kept as-is or one of them
+        to be discarded
 		'''
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo=1,foo=1'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
-		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertTrue('foo=1' in str(tracestate))
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo=1,foo=2'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
-		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertTrue('foo=1' in str(tracestate) or 'foo=2' in str(tracestate))
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
@@ -571,7 +572,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=1'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
-		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertTrue('foo=1' in str(tracestate))
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
@@ -579,7 +580,7 @@ class TraceContextTest(TestBase):
 			['tracestate', 'foo=2'],
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
-		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertTrue('foo=1' in str(tracestate) or 'foo=2' in str(tracestate))
 
 	def test_tracestate_all_allowed_characters(self):
 		'''

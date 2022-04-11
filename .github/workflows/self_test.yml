@@ -1,3 +1,15 @@
+name: Self Test
+on:
+  push:
+    paths:
+      - 'test/**.py'
+      - 'test/**.json'
+      - '.github/workflows/self_test.yml'
+  pull_request:
+    paths:
+      - 'test/**.py'
+      - 'test/**.json'
+      - '.github/workflows/self_test.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,7 +22,5 @@ jobs:
           python-version: 3.6
           architecture: x64
       - run: pip install aiohttp
-      - run: |
-          cd test
-          python self_test.py
+      - run: cd test && python self_test.py
         shell: bash
