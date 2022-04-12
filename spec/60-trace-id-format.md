@@ -22,7 +22,7 @@ concerns](#privacy-considerations) of exposing unwanted information. Randomness
 also allows tracing vendors to base sampling decisions on `trace-id` field value
 and avoid propagating an additional sampling context.
 
-If the `random-trace-id` flag is set, the right-most 7 bytes of the
+If the `random-trace-id` flag is set, at least the right-most 7 bytes of the
 `trace-id` MUST be randomly (or pseudo-randomly) generated.
 
 As shown in the next section, if part of the `trace-id` is nonrandom,
