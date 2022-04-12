@@ -120,6 +120,8 @@ Vendors MUST ignore the `traceparent` when the `parent-id` is invalid (for examp
 
 #### trace-flags
 
+The current version of this specification (`00`) supports only two flags: `sampled` and `random-trace-id`.
+
 An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:
 
 1. An untrusted caller may be able to abuse a tracing system by setting these flags maliciously.
