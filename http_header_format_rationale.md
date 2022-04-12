@@ -142,6 +142,10 @@ There are scenarios, however, which may require different behavior. For example,
 
 Scenarios like the one above require careful coding and understanding of what they are trying to achieve, and should be considered an exception. Implementations should discourage this type of restarts. For example, implementations may allow this scenario only by means of restarting the trace WITH `tracestate` clean up and than re-population of `tracestate` can only be implemented as an explicit copy/pasting of `tracestate` entries one by one.
 
+## Response headers
+
+**TL;DR;** There are many scenarios where collaboration between distributed tracing vendors require writing and reading response headers. We can see that this can have value, but don't think right now is the right time to standardize. We decided we would rather wait for individual vendors to start to collaborate over response headers and later decide which scenarios are worth standardizing. Use of `traceparent` and `tracestate` headers is not forbidden in response headers.
+
 ### Use Cases
 
 1. Restart a trace and return new trace identification information to caller.
