@@ -183,7 +183,7 @@ There are two additional options that vendors MAY follow:
 ##### Random Trace ID Flag
 
 The second least significant bit of the trace-flags field denotes the random-trace-id flag.
-If that flag is set, the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
+If that flag is set, at least the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
 If the flag is not set, the trace ID MAY still be randomly (or pseudo-randomly) generated.
 When unset, the trace ID may be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
 
