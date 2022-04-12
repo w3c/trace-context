@@ -188,7 +188,7 @@ If the flag is not set, the trace ID MAY still be randomly (or pseudo-randomly) 
 When unset, the trace ID may be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
 
 When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the random trace ID flag SHOULD be set to `1`.
-This allows downstream consumers know that the right-most 7 bytes of the trace ID are sufficiently random, and enables them to implement features such as trace sampling or database sharding based on these bytes.
+This allows downstream consumers to implement features such as trace sampling or database sharding based on these bytes.
 For additional information, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
 ##### Other Flags
