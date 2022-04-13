@@ -100,13 +100,17 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. S
 
 #### trace-id
 
-This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
+This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system.
+It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`.
+All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
+
+The value of `trace-id` SHOULD be globally unique.
+One recommended method to ensure global uniqueness, as well as to address some privacy and security considerations, to a satisfactory degree of certainty is to randomly (or pseudo-randomly) generate the `trace-id`.
+Implementers SHOULD use a `trace-id` generation method which randomly (or pseudo-randomly) generates at least the right-most 7 bytes of the ID.
+If the right-most 7 bytes are randomly (or pseudo-randomly) generated, the corresponding [random trace id flag](#random-trace-id-flag) SHOULD be set.
+For more details, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
 If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
-
-See [considerations for trace-id field
-generation](#considerations-for-trace-id-field-generation) for recommendations
-on how to operate with `trace-id`.
 
 #### parent-id
 
@@ -115,6 +119,8 @@ This is the ID of this request as known by the caller (in some tracing systems, 
 Vendors MUST ignore the `traceparent` when the `parent-id` is invalid (for example, if it contains non-lowercase hex characters).
 
 #### trace-flags
+
+The current version of this specification (`00`) supports only two flags: `sampled` and `random-trace-id`.
 
 An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a>  that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:
 
@@ -126,19 +132,21 @@ You can find more in the section [Security considerations](#security-considerati
 
 Like other fields, `trace-flags` is hex-encoded. For example, all `8` flags set would be `ff` and no flags set would be `00`.
 
-As this is a bit field, you cannot interpret flags by decoding the hex value and looking at the resulting number. For example, a flag `00000001` could be encoded as `01` in hex, or `09` in hex if present with the flag `00001000`. A common mistake in bit fields is forgetting to mask when interpreting flags.
+As this is a bit field, the flags cannot be interpreted by a simple equality comparison.
+For example, both `01` (`00000001`) and `03` (`00000011`) represent that the trace has been sampled because the sampled flag (`00000001`) is set, and `03` and `02` (`00000010`) both represent that at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated because the random bit (`00000010`) is set.
+A common mistake when interpreting bit-fields is using a comparison of the whole number rather than interpreting a single bit.
 
 Here is an example of properly handling trace flags:
 
 ``` java
 static final byte FLAG_SAMPLED = 1; // 00000001
+static final byte FLAG_RANDOM = 2; // 00000010
 ...
 boolean sampled = (traceFlags & FLAG_SAMPLED) == FLAG_SAMPLED;
+boolean random = (traceFlags & FLAG_RANDOM) == FLAG_RANDOM;
 ```
 
 ##### Sampled flag
-
-The current version of this specification (`00`) only supports a single flag called `sampled`.
 
 When set, the least significant bit (right-most), denotes that the caller may have recorded trace data. When unset, the caller did not record trace data out-of-band.
 
@@ -175,6 +183,17 @@ There are two additional options that vendors MAY follow:
 
 - A component that makes a deferred or delayed recording decision may communicate the priority of a recording by setting `sampled` flag to `1` for a subset of requests.
 - A component may also fall back to probability sampling and set the `sampled` flag to `1` for the subset of requests.
+
+##### Random Trace ID Flag
+
+The second least significant bit of the trace-flags field denotes the random-trace-id flag.
+If that flag is set, at least the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
+If the flag is not set, the trace ID MAY still be randomly (or pseudo-randomly) generated.
+When unset, the trace ID MAY be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
+
+When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the random trace ID flag SHOULD be set to `1`.
+This allows downstream consumers to implement features such as trace sampling or database sharding based on these bytes.
+For additional information, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
 ##### Other Flags
 
