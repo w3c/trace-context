@@ -105,9 +105,9 @@ It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e
 All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
 
 The value of `trace-id` SHOULD be globally unique.
-It is RECOMMENDED that implementers randomly (or pseudo-randomly) generate the `trace-id` field, and set the corresponding [random trace id flag](#random-trace-id-flag).
-This ensures, to a reasonable degree, global uniqueness, and addresses some privacy and security considerations.
-Even in cases where it is not possible to randomly (or pseudo-randomly) generate the `trace-id`, it is RECOMMENDED that at least the right-most 7 bytes of the `trace-id` be randomly generated.
+One recommended method to ensure global uniqueness, as well as to address some privacy and security considerations, to a satisfactory degree of certainty is to randomly (or pseudo-randomly) generate the `trace-id`.
+Implementers SHOULD use a `trace-id` generation method which randomly (or pseudo-randomly) generates at least the right-most 7 bytes of the ID.
+If the right-most 7 bytes are randomly (or pseudo-randomly) generated, the corresponding [random trace id flag](#random-trace-id-flag) SHOULD be set.
 For more details, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
 If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
