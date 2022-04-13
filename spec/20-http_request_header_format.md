@@ -132,14 +132,18 @@ You can find more in the section [Security considerations](#security-considerati
 
 Like other fields, `trace-flags` is hex-encoded. For example, all `8` flags set would be `ff` and no flags set would be `00`.
 
-As this is a bit field, you cannot interpret flags by decoding the hex value and looking at the resulting number. For example, a flag `00000001` could be encoded as `01` in hex, or `09` in hex if present with the flag `00001000`. A common mistake in bit fields is forgetting to mask when interpreting flags.
+As this is a bit field, the flags cannot be interpreted by a simple equality comparison.
+For example, both `01` (`00000001`) and `03` (`00000011`) represent that the trace has been sampled because the sampled flag (`00000001`) is set, and `03` and `02` (`00000010`) both represent that at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated because the random bit (`00000010`) is set.
+A common mistake when interpreting bit-fields is using a comparison of the whole number rather than interpreting a single bit.
 
 Here is an example of properly handling trace flags:
 
 ``` java
 static final byte FLAG_SAMPLED = 1; // 00000001
+static final byte FLAG_RANDOM = 2; // 00000010
 ...
 boolean sampled = (traceFlags & FLAG_SAMPLED) == FLAG_SAMPLED;
+boolean random = (traceFlags & FLAG_RANDOM) == FLAG_RANDOM;
 ```
 
 ##### Sampled flag
@@ -185,7 +189,7 @@ There are two additional options that vendors MAY follow:
 The second least significant bit of the trace-flags field denotes the random-trace-id flag.
 If that flag is set, at least the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
 If the flag is not set, the trace ID MAY still be randomly (or pseudo-randomly) generated.
-When unset, the trace ID may be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
+When unset, the trace ID MAY be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
 
 When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the random trace ID flag SHOULD be set to `1`.
 This allows downstream consumers to implement features such as trace sampling or database sharding based on these bytes.
