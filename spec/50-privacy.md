@@ -21,3 +21,7 @@ The `tracestate` field may contain any <a href="#opaque">opaque</a> value in any
 Vendors MUST NOT include any personally identifiable information in the `tracestate` header.
 
 Vendors extremely sensitive to personal information exposure MAY implement selective removal of values corresponding to the unknown keys. Vendors SHOULD NOT mutate the `tracestate` field, as it defeats the purpose of allowing multiple tracing systems to collaborate.
+
+## Other risks
+
+When vendors include `traceparent` and `tracestate` headers in responses, these values may inadvertently be passed to cross-origin callers. Vendors should ensure that they include only these response headers when responding to systems that participated in the trace.
