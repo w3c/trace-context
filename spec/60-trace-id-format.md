@@ -22,6 +22,9 @@ concerns](#privacy-considerations) of exposing unwanted information. Randomness
 also allows tracing vendors to base sampling decisions on `trace-id` field value
 and avoid propagating an additional sampling context.
 
+If the `random-trace-id` flag is set, at least the right-most 7 bytes of the
+`trace-id` MUST be randomly (or pseudo-randomly) generated.
+
 As shown in the next section, if part of the `trace-id` is nonrandom,
 it is important for the random part of the `trace-id` to be as far right in the
 `trace-id` as possible for better inter-operability with some existing systems.
@@ -50,7 +53,9 @@ systems with these existing systems, the following practices are recommended:
    compliant 16 bytes `trace-id` from a shorter identifier, it SHOULD left pad
    the original identifier with zeroes. For example, the identifier
    `53ce929d0e0e4736`, SHOULD be converted to `trace-id` value
-   `000000000000000053ce929d0e0e4736`.
+   `000000000000000053ce929d0e0e4736`. If the resultant `trace-id` value does
+   not satisfy the constraints of the `random-trace-id` flag, the flag MUST
+   be set to `0`.
 2. When a system receives an inbound message and needs to convert the 16 bytes
    `trace-id` to a shorter identifier, the rightmost part of `trace-id` SHOULD
    be used as this identifier. For instance, if the value of `trace-id` was
