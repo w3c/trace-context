@@ -43,6 +43,12 @@ This page contains an alphabetical list of projects and vendors that currently i
 **Implementations:**
 [Java](https://github.com/jaegertracing/jaeger-client-java/blob/b50aa159e3949461509d451fa1ded91887b680ad/jaeger-core/src/main/java/io/jaegertracing/internal/propagation/TraceContextCodec.java)
 
+## Kamon
+**Website:** [Kamon.io](https://kamon.io/)
+
+**Implementations:**
+[Java](https://github.com/kamon-io/Kamon/blob/4d5ec29df5/core/kamon-core/src/main/scala/kamon/trace/SpanPropagation.scala#L72)
+
 
 ## LightStep
 **Website:** [lightstep.com](https://lightstep.com)
