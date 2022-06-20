@@ -40,7 +40,7 @@ the system is encouraged to utilize the `tracestate` header to propagate the
 additional internal identifier. However, if a system would instead prefer to use
 the internal identifier as the basis for a fully compliant `trace-id`, it SHOULD
 be incorporated at the as rightmost part of a `trace-id`. For example, tracing
-system may receive `234a5bcd543ef3fa53ce929d0e0e4736` as a `trace-id`, hovewer
+system may receive `234a5bcd543ef3fa53ce929d0e0e4736` as a `trace-id`, however
 internally it will use `53ce929d0e0e4736` as an identifier.
 
 ### Interoperating with existing systems which use shorter identifiers
