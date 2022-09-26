@@ -24,4 +24,4 @@ Vendors extremely sensitive to personal information exposure MAY implement selec
 
 ## Other risks
 
-When vendors include `traceparent` and `tracestate` headers in responses, these values may inadvertently be passed to cross-origin callers. Vendors should ensure that they include only these response headers when responding to systems that participated in the trace.
+When vendors include `traceparent` and `tracestate` headers in responses, these values may inadvertently be passed to cross-origin callers. Hence, if vendors include this information in responses, they should ensure that they do so only when responding to systems that participated in the trace.
