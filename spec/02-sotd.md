@@ -1,1 +1,1 @@
-This new version adds considerations for `span-id` field generation.
+This new version adds considerations for the generation of the `trace-id` and `span-id` fields.
