@@ -16,7 +16,7 @@ Services may also define an algorithm and audit mechanism to validate the random
 
 ## Privacy of tracestate field
 
-The `tracestate` field may contain any <a href="#opaque">opaque</a> value in any of the keys. The main purpose of this header is to provide additional vendor-specific trace-identification information across different distributed tracing systems.
+The `tracestate` field may contain any [=opaque=] value in any of the keys. The main purpose of this header is to provide additional vendor-specific trace-identification information across different distributed tracing systems.
 
 Vendors MUST NOT include any personally identifiable information in the `tracestate` header.
 

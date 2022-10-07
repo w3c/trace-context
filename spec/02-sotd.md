@@ -1,1 +1,1 @@
-This specification is in Candidate Recommendation stage. It was widely viewed and discussed. It satisfies Distributed Tracing working group technical requirements. There are a few implementations of this specification available. We are gathering implementation experience and usage feedback. We recommend the wide deployment and use of this recommendation.
+This new version adds considerations for the generation of the `trace-id` and `span-id` fields, and adds the random trace ID flag.
