@@ -70,7 +70,7 @@ class Tracestate(object):
 	# if the tracestate value size is bigger than 512 characters, the tracer
 	# CAN decide to forward the tracestate
 	def is_valid(self):
-		if len(self) is 0:
+		if len(self) == 0:
 			return False
 		# combined header length MUST be less than or equal to 512 bytes
 		if len(self.to_string()) > 512:

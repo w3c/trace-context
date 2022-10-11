@@ -19,7 +19,9 @@ def environ(name, default = None):
 	return os.environ[name]
 
 STRICT_LEVEL = int(environ('STRICT_LEVEL', '2'))
+SPEC_LEVEL = int(environ('SPEC_LEVEL', '2'))
 print('STRICT_LEVEL: {}'.format(STRICT_LEVEL))
+print('SPEC_LEVEL:   {}'.format(SPEC_LEVEL))
 
 def setUpModule():
 	global client
@@ -876,6 +878,20 @@ class AdvancedTest(TestBase):
 		self.assertFalse('00000000000000000000000000000000' in trace_ids)
 		self.assertEqual(len(parent_ids), 3)
 
+@unittest.skipIf(SPEC_LEVEL < 2, "Trace Context Level 2")
+class TraceContext2Test(TestBase):
+	def test_propagates_random_flag(self):
+		'''
+		harness sends a request with a traceparent with the random flag set
+		expects a valid traceparent from the output header, with the random flag set
+		'''
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-02'],
+		])
+		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertNotEqual(traceparent.parent_id.hex(), '1234567890123456')
+		self.assertTrue(traceparent.trace_flags & (1 << 1) == (1 << 1))
+
 if __name__ == '__main__':
 	if len(sys.argv) >= 2:
 		os.environ['SERVICE_ENDPOINT'] = sys.argv[1]
@@ -892,6 +908,7 @@ Environment Variables:
 	HARNESS_BIND_PORT  the port which the test harness binds to (default to HARNESS_PORT)
 	SERVICE_ENDPOINT   your test service endpoint (no default value)
 	STRICT_LEVEL       the level of test strictness (default 2)
+	SPEC_LEVEL         the minimum version of the Trace Context specification being tested (default 2)
 
 Example:
 	python {0} http://127.0.0.1:5000/test
