@@ -6,7 +6,7 @@ Vendors MUST assess the risk of header abuse. This section provides some conside
 
 ## Privacy of traceparent field
 
-The `traceparent` field is comprised of randomly-generated numbers. If a random number generator leverages any user identifiable information like IP address as seed state, this information may be exposed. Random number generators MUST NOT rely on any information that can potentially be user-identifiable.
+The `traceparent` field MUST NOT contain any personally identifiable information. One way to achieve this is to randomly generate all trace IDs using a random number generator that does not expose any personally identifiable information. Any random number generator used for generating trace IDs MUST NOT rely on any information as input or seed state that can potentially be personally identifiable.
 
 Another privacy risk of the `traceparent` field is the ability to correlate requests made as part of a single transaction. A downstream service may track and correlate two or more requests made in a single transaction and may make assumptions about the identity of the caller of a request based on information from another request.
 
