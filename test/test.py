@@ -911,10 +911,26 @@ Environment Variables:
 	SPEC_LEVEL         the minimum version of the Trace Context specification being tested (default 2)
 
 Example:
+	# Run all tests
 	python {0} http://127.0.0.1:5000/test
+	# Run one test
 	python {0} http://127.0.0.1:5000/test TraceContextTest.test_both_traceparent_and_tracestate_missing
+	# Run one test suite
 	python {0} http://127.0.0.1:5000/test AdvancedTest
+	# Run two test suites
+	python {0} http://127.0.0.1:5000/test AdvancedTest TraceContext2Test
+	# Combinations of the above
 	python {0} http://127.0.0.1:5000/test AdvancedTest TraceContextTest.test_both_traceparent_and_tracestate_missing
+	python {0} http://127.0.0.1:5000/test AdvancedTest TraceContextTest.test_both_traceparent_and_tracestate_missing TraceContext2Test.test_propagates_random_flag
+	python {0} http://127.0.0.1:5000/test AdvancedTest TraceContext2Test TraceContextTest.test_both_traceparent_and_tracestate_missing
+
+Available Test Suites:
+	TraceContextTest
+		Trace Context Level 1 support
+	AdvancedTest
+		Advanced Trace Context Level 1 support
+	TraceContext2Test
+		Trace Context Level 2 support
 		'''.strip().format(sys.argv[0]), file = sys.stderr)
 		exit(-1)
 
