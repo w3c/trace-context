@@ -114,6 +114,15 @@ class TestBase(unittest.TestCase):
 		headers = self.make_request(headers)[0]['headers']
 		return (self.get_traceparent(headers), self.get_tracestate(headers))
 
+	def assert_bit_set(self, value, n, message = None):
+		'''
+		assert that the nth position bit of value is set where n == 0 is the least significant bit
+		'''
+		msg = "expected value 0x{:02x} to have #{}th bit set but it did not".format(value, n)
+		if message:
+			msg += " : " + message
+		self.assertEqual(value & (1 << n - 1), (1 << n - 1), msg)
+
 class TraceContextTest(TestBase):
 	def test_both_traceparent_and_tracestate_missing(self):
 		'''
@@ -890,7 +899,7 @@ class TraceContext2Test(TestBase):
 		])
 		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
 		self.assertNotEqual(traceparent.parent_id.hex(), '1234567890123456')
-		self.assertTrue(traceparent.trace_flags & (1 << 1) == (1 << 1))
+		self.assert_bit_set(traceparent.trace_flags, 2, "random flag not set")
 
 if __name__ == '__main__':
 	if len(sys.argv) >= 2:
