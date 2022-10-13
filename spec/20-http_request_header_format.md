@@ -95,7 +95,7 @@ The following `version-format` definition is used for version `00`.
 version-format   = trace-id "-" parent-id "-" trace-flags
 trace-id         = 32HEXDIGLC  ; 16 bytes array identifier. All zeroes forbidden
 parent-id        = 16HEXDIGLC  ; 8 bytes array identifier. All zeroes forbidden
-trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. See below for details
+trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only two bits are used. See below for details.
 ```
 
 #### trace-id
