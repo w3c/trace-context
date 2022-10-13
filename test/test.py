@@ -13,13 +13,16 @@ server = None
 def environ(name, default = None):
 	if not name in os.environ:
 		if default:
-			os.environ[name] = default
+			return default
 		else:
 			raise EnvironmentError('environment variable {} is not defined'.format(name))
 	return os.environ[name]
 
-STRICT_LEVEL = int(environ('STRICT_LEVEL', '2'))
-SPEC_LEVEL = int(environ('SPEC_LEVEL', '2'))
+DEFAULT_SPEC_LEVEL = '1'
+DEFAULT_STRICT_LEVEL = '2'
+
+STRICT_LEVEL = int(environ('STRICT_LEVEL', DEFAULT_STRICT_LEVEL))
+SPEC_LEVEL = int(environ('SPEC_LEVEL', DEFAULT_SPEC_LEVEL))
 print('STRICT_LEVEL: {}'.format(STRICT_LEVEL))
 print('SPEC_LEVEL:   {}'.format(SPEC_LEVEL))
 
@@ -917,7 +920,7 @@ Environment Variables:
 	HARNESS_BIND_PORT  the port which the test harness binds to (default to HARNESS_PORT)
 	SERVICE_ENDPOINT   your test service endpoint (no default value)
 	STRICT_LEVEL       the level of test strictness (default 2)
-	SPEC_LEVEL         the minimum version of the Trace Context specification being tested (default 2)
+	SPEC_LEVEL         the minimum version of the Trace Context specification being tested (default 1)
 
 Example:
 	# Run all tests
@@ -942,6 +945,9 @@ Available Test Suites:
 		Trace Context Level 2 support
 		'''.strip().format(sys.argv[0]), file = sys.stderr)
 		exit(-1)
+
+	if not 'SPEC_LEVEL' in os.environ:
+		print('Warning: The environment variable SPEC_LEVEL has not been set. Defaulting to specification level %s. Consider setting SPEC_LEVEL explicitly if your implementation is based on a different specification level. In the future, the default specification level of this test suite may be raised.' % (DEFAULT_SPEC_LEVEL))
 
 	host = environ('HARNESS_HOST', '127.0.0.1')
 	port = environ('HARNESS_PORT', '7777')
