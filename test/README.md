@@ -79,12 +79,30 @@ Content-Type: application/json
 		HARNESS_BIND_HOST  the host/address which the test harness binds to (default to HARNESS_HOST)
 		HARNESS_BIND_PORT  the port which the test harness binds to (default to HARNESS_PORT)
 		SERVICE_ENDPOINT   your test service endpoint (no default value)
+		STRICT_LEVEL       the level of test strictness (default 2)
+		SPEC_LEVEL         the minimum version of the Trace Context specification being tested (default 2)
 
 	Example:
+		# Run all tests
 		python test.py http://127.0.0.1:5000/test
+		# Run one test
 		python test.py http://127.0.0.1:5000/test TraceContextTest.test_both_traceparent_and_tracestate_missing
+		# Run one test suite
 		python test.py http://127.0.0.1:5000/test AdvancedTest
+		# Run two test suites
+		python test.py http://127.0.0.1:5000/test AdvancedTest TraceContext2Test
+		# Combinations of the above
 		python test.py http://127.0.0.1:5000/test AdvancedTest TraceContextTest.test_both_traceparent_and_tracestate_missing
+		python test.py http://127.0.0.1:5000/test AdvancedTest TraceContextTest.test_both_traceparent_and_tracestate_missing TraceContext2Test.test_propagates_random_flag
+		python test.py http://127.0.0.1:5000/test AdvancedTest TraceContext2Test TraceContextTest.test_both_traceparent_and_tracestate_missing
+
+	Available Test Suites:
+		TraceContextTest
+			Trace Context Level 1 support
+		AdvancedTest
+			Advanced Trace Context Level 1 support
+		TraceContext2Test
+			Trace Context Level 2 support
 	```
 * Alternatively, you can use the Python [unit testing framework](https://docs.python.org/3/library/unittest.html) module to run the test.
 	```

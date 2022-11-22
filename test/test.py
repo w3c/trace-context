@@ -13,13 +13,18 @@ server = None
 def environ(name, default = None):
 	if not name in os.environ:
 		if default:
-			os.environ[name] = default
+			return default
 		else:
 			raise EnvironmentError('environment variable {} is not defined'.format(name))
 	return os.environ[name]
 
-STRICT_LEVEL = int(environ('STRICT_LEVEL', '2'))
+DEFAULT_SPEC_LEVEL = '1'
+DEFAULT_STRICT_LEVEL = '2'
+
+STRICT_LEVEL = int(environ('STRICT_LEVEL', DEFAULT_STRICT_LEVEL))
+SPEC_LEVEL = int(environ('SPEC_LEVEL', DEFAULT_SPEC_LEVEL))
 print('STRICT_LEVEL: {}'.format(STRICT_LEVEL))
+print('SPEC_LEVEL:   {}'.format(SPEC_LEVEL))
 
 def setUpModule():
 	global client
@@ -111,6 +116,15 @@ class TestBase(unittest.TestCase):
 	def make_single_request_and_get_tracecontext(self, headers):
 		headers = self.make_request(headers)[0]['headers']
 		return (self.get_traceparent(headers), self.get_tracestate(headers))
+
+	def assert_bit_set(self, value, n, message = None):
+		'''
+		assert that the nth position bit of value is set where n == 0 is the least significant bit
+		'''
+		msg = "expected value 0x{:02x} to have #{}th bit set but it did not".format(value, n)
+		if message:
+			msg += " : " + message
+		self.assertEqual(value & (1 << n - 1), (1 << n - 1), msg)
 
 class TraceContextTest(TestBase):
 	def test_both_traceparent_and_tracestate_missing(self):
@@ -876,6 +890,20 @@ class AdvancedTest(TestBase):
 		self.assertFalse('00000000000000000000000000000000' in trace_ids)
 		self.assertEqual(len(parent_ids), 3)
 
+@unittest.skipIf(SPEC_LEVEL < 2, "Trace Context Level 2")
+class TraceContext2Test(TestBase):
+	def test_propagates_random_flag(self):
+		'''
+		harness sends a request with a traceparent with the random flag set
+		expects a valid traceparent from the output header, with the random flag set
+		'''
+		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
+			['traceparent', '00-12345678901234567890123456789012-1234567890123456-02'],
+		])
+		self.assertEqual(traceparent.trace_id.hex(), '12345678901234567890123456789012')
+		self.assertNotEqual(traceparent.parent_id.hex(), '1234567890123456')
+		self.assert_bit_set(traceparent.trace_flags, 2, "random flag not set")
+
 if __name__ == '__main__':
 	if len(sys.argv) >= 2:
 		os.environ['SERVICE_ENDPOINT'] = sys.argv[1]
@@ -892,14 +920,34 @@ Environment Variables:
 	HARNESS_BIND_PORT  the port which the test harness binds to (default to HARNESS_PORT)
 	SERVICE_ENDPOINT   your test service endpoint (no default value)
 	STRICT_LEVEL       the level of test strictness (default 2)
+	SPEC_LEVEL         the minimum version of the Trace Context specification being tested (default 1)
 
 Example:
+	# Run all tests
 	python {0} http://127.0.0.1:5000/test
+	# Run one test
 	python {0} http://127.0.0.1:5000/test TraceContextTest.test_both_traceparent_and_tracestate_missing
+	# Run one test suite
 	python {0} http://127.0.0.1:5000/test AdvancedTest
+	# Run two test suites
+	python {0} http://127.0.0.1:5000/test AdvancedTest TraceContext2Test
+	# Combinations of the above
 	python {0} http://127.0.0.1:5000/test AdvancedTest TraceContextTest.test_both_traceparent_and_tracestate_missing
+	python {0} http://127.0.0.1:5000/test AdvancedTest TraceContextTest.test_both_traceparent_and_tracestate_missing TraceContext2Test.test_propagates_random_flag
+	python {0} http://127.0.0.1:5000/test AdvancedTest TraceContext2Test TraceContextTest.test_both_traceparent_and_tracestate_missing
+
+Available Test Suites:
+	TraceContextTest
+		Trace Context Level 1 support
+	AdvancedTest
+		Advanced Trace Context Level 1 support
+	TraceContext2Test
+		Trace Context Level 2 support
 		'''.strip().format(sys.argv[0]), file = sys.stderr)
 		exit(-1)
+
+	if not 'SPEC_LEVEL' in os.environ:
+		print('Warning: The environment variable SPEC_LEVEL has not been set. Defaulting to specification level %s. Consider setting SPEC_LEVEL explicitly if your implementation is based on a different specification level. In the future, the default specification level of this test suite may be raised.' % (DEFAULT_SPEC_LEVEL))
 
 	host = environ('HARNESS_HOST', '127.0.0.1')
 	port = environ('HARNESS_PORT', '7777')
