@@ -300,6 +300,8 @@ lcalpha    = %x61-7A ; a-z
 
 A `key` MUST begin with a lowercase letter or a digit and contain up to 256 characters including lowercase letters (`a`-`z`), digits (`0`-`9`), underscores (`_`), dashes (`-`), asterisks (`*`), forward slashes (`/`), and at signs (`@`).
 
+This restriction ensures that the `tracestate` header can be parsed efficiently into individual list members by splitting the header value at each comma, and splitting the list members an implementation is interested in at the equals sign.
+
 ###### Value
 
 The value is an <a href="#opaque">opaque</a> string containing up to 256 printable ASCII [[!RFC0020]] characters (i.e., the range 0x20 to 0x7E) except comma (,) and (=). The string must end with a character which is not a space (0x20). Note that this also excludes tabs, newlines, carriage returns, etc. All leading spaces MUST be preserved as part of the value. All trailing spaces are considered to be optional whitespace characters not part of the value. Optional trailing whitespace MAY be excluded when propagating the header.
