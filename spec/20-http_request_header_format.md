@@ -83,9 +83,7 @@ The dash (`-`) character is used as a delimiter between fields.
 version         = 2HEXDIGLC   ; this document assumes version 00. Version ff is forbidden
 ```
 
-The value is US-ASCII encoded (which is UTF-8 compliant).
-
-Version (`version`) is 1 byte representing an 8-bit unsigned integer. Version `ff` is invalid. The current specification assumes the `version` is set to `00`.
+Version (`version`) is an 8-bit unsigned integer value, serialized as an ASCII string with two characters. Version 255 (`"ff"`) is invalid. This specification assumes the version is set to 0 (`"00"`).
 
 #### version-format
 
