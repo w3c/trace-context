@@ -62,9 +62,9 @@ The `traceparent` HTTP header field identifies the incoming request in a tracing
 
 Header name: `traceparent`
 
-In order to increase interoperability across multiple protocols and encourage successful integration, by default vendors SHOULD keep the header name lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
+The header name is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `TRACEPARENT`, `TraceParent`, and `traceparent` are considered the same header. The header name is a single word, it does not contain any delimiters such as a hyphen.
 
-Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
+In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems SHOULD encode the header name as [ASCII lowercase](https://infra.spec.whatwg.org/#ascii-lowercase).
 
 ### traceparent Header Field Values
 
@@ -252,9 +252,9 @@ The `tracestate` HTTP header MUST NOT be used for any properties that are not de
 
 Header name: `tracestate`
 
-In order to increase interoperability across multiple protocols and encourage successful integration, by default you SHOULD keep the header name lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
+The header name is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `TRACESTATE`, `TraceState`, and `tracestate` are considered the same header. The header name is a single word, it does not contain any delimiters such as a hyphen.
 
-Vendors MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
+In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems SHOULD encode the header name as [ASCII lowercase](https://infra.spec.whatwg.org/#ascii-lowercase).
 
 ### tracestate Header Field Values
 
