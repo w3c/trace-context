@@ -15,9 +15,9 @@ The `traceresponse` HTTP response header field identifies a completed request in
 
 Header name: `traceresponse`
 
-In order to increase interoperability across multiple protocols and encourage successful integration, the header name SHOULD be lowercase. The header name is a single word without any delimiters, for example, a hyphen (`-`).
+The header name is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `TRACERESPONSE`, `TraceResponse`, and `traceresponse` are considered the same header. The header name is a single word; it does not contain any delimiters such as a hyphen.
 
-Tracing systems MUST expect the header name in any case (upper, lower, mixed), and SHOULD send the header name in lowercase.
+In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems SHOULD encode the header name as [ASCII lowercase](https://infra.spec.whatwg.org/#ascii-lowercase).
 
 ### traceresponse Header Field Values
 
@@ -101,7 +101,7 @@ The following are a set of suggestions that tracing systems SHOULD use to increa
 - If a component made definitive recording decision - this decision SHOULD be reflected in the `sampled` flag.
 - If a component needs to make a recording decision - it SHOULD respect the `sampled` flag value.
   [Security considerations](#security-considerations) SHOULD be applied to protect from abusive or malicious use of this flag.
-- If a component deferred or delayed the decision and only a subset of telemetry will be recorded, the `sampled` flag from the incoming `traceparent` header should be used if it is available. It should be set to `0` as the default option when the trace is initiated by this component. 
+- If a component deferred or delayed the decision and only a subset of telemetry will be recorded, the `sampled` flag from the incoming `traceparent` header should be used if it is available. It should be set to `0` as the default option when the trace is initiated by this component.
 - If a component receives a `0` for the `sampled` flag on an incoming request, it may still decide to record a trace. In this case it SHOULD return a `sampled` flag `1` on the response so that the caller can update its sampling decision if required.
 
 There are two additional options that tracing systems MAY follow:
