@@ -15,7 +15,7 @@ The `traceresponse` HTTP response header field identifies a completed request in
 
 Header name: `traceresponse`
 
-The header name is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `TRACERESPONSE`, `TraceResponse`, and `traceresponse` are considered the same header. The header name is a single word, it does not contain any delimiters such as a hyphen.
+The header name is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `TRACERESPONSE`, `TraceResponse`, and `traceresponse` are considered the same header. The header name is a single word; it does not contain any delimiters such as a hyphen.
 
 In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems SHOULD encode the header name as [ASCII lowercase](https://infra.spec.whatwg.org/#ascii-lowercase).
 
