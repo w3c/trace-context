@@ -254,15 +254,15 @@ In order to increase interoperability across multiple protocols and encourage su
 
 ### tracestate Header Field Values
 
-The `tracestate` field may contain any [=opaque=] value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC7230#field.order'>RFC7230 Section 3.2.2 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC7230#field.order'>RFC7230</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC7230#field.order'>RFC7230</a>.
+The `tracestate` field may contain any [=opaque=] value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC9110#field.order'>RFC9110 Section 5.3 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC9110#field.order'>RFC9110</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC9110#field.order'>RFC9110</a>.
 
-This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule in <a data-cite='!RFC5234#appendix-B.1'>appendix B.1 for RFC5234</a>. It also includes the `OWS` rule from <a data-cite='!RFC7230#whitespace'>RFC7230 section 3.2.3</a>.
+This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule in <a data-cite='!RFC5234#appendix-B.1'>appendix B.1 for RFC5234</a>. It also includes the `OWS` rule from <a data-cite='!RFC9110#whitespace'>RFC9110 section 5.6.3</a>.
 
 The `DIGIT` rule defines numbers `0`-`9`.
 
 The `OWS` rule defines an optional whitespace character. To improve readability, it is used where zero or more whitespace characters might appear.
 
-The caller SHOULD generate the optional whitespace as a single space; otherwise, a caller SHOULD NOT generate optional whitespace. See details in the <a data-cite='!RFC7230#whitespace'>corresponding RFC</a>.
+The caller SHOULD generate the optional whitespace as a single space; otherwise, a caller SHOULD NOT generate optional whitespace. See details in the <a data-cite='!RFC9110#whitespace'>corresponding RFC</a>.
 
 The `tracestate` field value is a `list` of `list-members` separated by commas (`,`). A `list-member` is a key/value pair separated by an equals sign (`=`). Spaces and horizontal tabs surrounding `list-member`s are ignored. There can be a maximum of 32 `list-member`s in a `list`. If adding an entry would cause the `tracestate` list to contain more than 32 `list-members` the right-most `list-member` should be removed from the list.
 
