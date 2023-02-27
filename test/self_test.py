@@ -101,7 +101,7 @@ class DemoServer(HTTPServer):
 
 		def get_header(self, name, commaSeparated = False):
 			headers = self.get_headers(name)
-			# https://tools.ietf.org/html/rfc7230#section-3.2
+			# https://httpwg.org/specs/rfc9110.html#fields.values
 			# remove the leading whitespace and trailing whitespace
 			headers = map(lambda kv: kv[1].strip(' \t'), headers)
 			headers = tuple(headers)
