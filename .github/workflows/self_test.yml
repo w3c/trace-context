@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Run the python tests
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
-          python-version: 3.6
+          python-version: 3.11.2
           architecture: x64
       - run: pip install aiohttp
       - run: cd test && python self_test.py
