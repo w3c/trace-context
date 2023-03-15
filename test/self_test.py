@@ -7,7 +7,7 @@ from urllib.request import HTTPHandler, OpenerDirector, Request
 test_data = []
 
 class DemoServer(HTTPServer):
-	def __init__(self, host = '127.0.0.1', port = None, timeout = 5):
+	def __init__(self, host = 'DO_NOT_MERGE.0.0.1', port = None, timeout = 5):
 		self.host = host
 		self.port = port
 		self.timeout = timeout
