@@ -1,0 +1,1082 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head>
+<meta charset="utf-8">
+<meta name="generator" content="ReSpec 33.0.1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+dfn{cursor:pointer}
+.dfn-panel{position:absolute;z-index:35;min-width:300px;max-width:500px;padding:.5em .75em;margin-top:.6em;font-family:"Helvetica Neue",sans-serif;font-size:small;background:#fff;color:#000;box-shadow:0 1em 3em -.4em rgba(0,0,0,.3),0 0 1px 1px rgba(0,0,0,.05);border-radius:2px}
+.dfn-panel:not(.docked)>.caret{position:absolute;top:-9px}
+.dfn-panel:not(.docked)>.caret::after,.dfn-panel:not(.docked)>.caret::before{content:"";position:absolute;border:10px solid transparent;border-top:0;border-bottom:10px solid #fff;top:0}
+.dfn-panel:not(.docked)>.caret::before{border-bottom:9px solid #a2a9b1}
+.dfn-panel *{margin:0}
+.dfn-panel b{display:block;color:#000;margin-top:.25em}
+.dfn-panel ul a[href]{color:#333}
+.dfn-panel>div{display:flex}
+.dfn-panel a.self-link{font-weight:700;margin-right:auto}
+.dfn-panel .marker{padding:.1em;margin-left:.5em;border-radius:.2em;text-align:center;white-space:nowrap;font-size:90%;color:#040b1c}
+.dfn-panel .marker.dfn-exported{background:#d1edfd;box-shadow:0 0 0 .125em #1ca5f940}
+.dfn-panel .marker.idl-block{background:#8ccbf2;box-shadow:0 0 0 .125em #0670b161}
+.dfn-panel a:not(:hover){text-decoration:none!important;border-bottom:none!important}
+.dfn-panel a[href]:hover{border-bottom-width:1px}
+.dfn-panel ul{padding:0}
+.dfn-panel li{margin-left:1em}
+.dfn-panel.docked{position:fixed;left:.5em;top:unset;bottom:2em;margin:0 auto;max-width:calc(100vw - .75em * 2 - .5em - .2em * 2);max-height:30vh;overflow:auto}
+</style>
+  
+  
+<title>Trace Context Level 2</title>
+  
+  
+
+<style id="respec-mainstyle">
+@keyframes pop{
+0%{transform:scale(1,1)}
+25%{transform:scale(1.25,1.25);opacity:.75}
+100%{transform:scale(1,1)}
+}
+:is(h1,h2,h3,h4,h5,h6,a) abbr{border:none}
+dfn{font-weight:700}
+a.internalDFN{color:inherit;border-bottom:1px solid #99c;text-decoration:none}
+a.externalDFN{color:inherit;border-bottom:1px dotted #ccc;text-decoration:none}
+a.bibref{text-decoration:none}
+.respec-offending-element:target{animation:pop .25s ease-in-out 0s 1}
+.respec-offending-element,a[href].respec-offending-element{text-decoration:red wavy underline}
+@supports not (text-decoration:red wavy underline){
+.respec-offending-element:not(pre){display:inline-block}
+.respec-offending-element{background:url(data:image/gif;base64,R0lGODdhBAADAPEAANv///8AAP///wAAACwAAAAABAADAEACBZQjmIAFADs=) bottom repeat-x}
+}
+#references :target{background:#eaf3ff;animation:pop .4s ease-in-out 0s 1}
+cite .bibref{font-style:normal}
+a[href].orcid{padding-left:4px;padding-right:4px}
+a[href].orcid>svg{margin-bottom:-2px}
+.toc a,.tof a{text-decoration:none}
+a .figno,a .secno{color:#000}
+ol.tof,ul.tof{list-style:none outside none}
+.caption{margin-top:.5em;font-style:italic}
+table.simple{border-spacing:0;border-collapse:collapse;border-bottom:3px solid #005a9c}
+.simple th{background:#005a9c;color:#fff;padding:3px 5px;text-align:left}
+.simple th a{color:#fff;padding:3px 5px;text-align:left}
+.simple th[scope=row]{background:inherit;color:inherit;border-top:1px solid #ddd}
+.simple td{padding:3px 10px;border-top:1px solid #ddd}
+.simple tr:nth-child(even){background:#f0f6ff}
+.section dd>p:first-child{margin-top:0}
+.section dd>p:last-child{margin-bottom:0}
+.section dd{margin-bottom:1em}
+.section dl.attrs dd,.section dl.eldef dd{margin-bottom:0}
+#issue-summary>ul{column-count:2}
+#issue-summary li{list-style:none;display:inline-block}
+details.respec-tests-details{margin-left:1em;display:inline-block;vertical-align:top}
+details.respec-tests-details>*{padding-right:2em}
+details.respec-tests-details[open]{z-index:999999;position:absolute;border:thin solid #cad3e2;border-radius:.3em;background-color:#fff;padding-bottom:.5em}
+details.respec-tests-details[open]>summary{border-bottom:thin solid #cad3e2;padding-left:1em;margin-bottom:1em;line-height:2em}
+details.respec-tests-details>ul{width:100%;margin-top:-.3em}
+details.respec-tests-details>li{padding-left:1em}
+.self-link:hover{opacity:1;text-decoration:none;background-color:transparent}
+aside.example .marker>a.self-link{color:inherit}
+.header-wrapper{display:flex;align-items:baseline}
+:is(h2,h3,h4,h5,h6):not(#toc>h2,#abstract>h2,#sotd>h2,.head>h2){position:relative;left:-.5em}
+:is(h2,h3,h4,h5,h6):not(#toch2)+a.self-link{color:inherit;order:-1;position:relative;left:-1.1em;font-size:1rem;opacity:.5}
+:is(h2,h3,h4,h5,h6)+a.self-link::before{content:"§";text-decoration:none;color:var(--heading-text)}
+:is(h2,h3)+a.self-link{top:-.2em}
+:is(h4,h5,h6)+a.self-link::before{color:#000}
+@media (max-width:767px){
+dd{margin-left:0}
+}
+@media print{
+.removeOnSave{display:none}
+}
+</style>
+<meta name="description" content="This specification defines standard HTTP headers and a value format to propagate context information that enables distributed tracing scenarios. The specification standardizes how context information is sent and modified between services. Context information uniquely identifies individual requests in a distributed system and also defines a means to add and propagate provider-specific context information.">
+<link rel="canonical" href="https://www.w3.org/TR/trace-context-2/">
+<style>
+.hljs{display:block;overflow-x:auto;padding:.5em;color:#383a42;background:#fafafa}
+.hljs-comment,.hljs-quote{color:#717277;font-style:italic}
+.hljs-doctag,.hljs-formula,.hljs-keyword{color:#a626a4}
+.hljs-deletion,.hljs-name,.hljs-section,.hljs-selector-tag,.hljs-subst{color:#ca4706;font-weight:700}
+.hljs-literal{color:#0b76c5}
+.hljs-addition,.hljs-attribute,.hljs-meta-string,.hljs-regexp,.hljs-string{color:#42803c}
+.hljs-built_in,.hljs-class .hljs-title{color:#9a6a01}
+.hljs-attr,.hljs-number,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-pseudo,.hljs-template-variable,.hljs-type,.hljs-variable{color:#986801}
+.hljs-bullet,.hljs-link,.hljs-meta,.hljs-selector-id,.hljs-symbol,.hljs-title{color:#336ae3}
+.hljs-emphasis{font-style:italic}
+.hljs-strong{font-weight:700}
+.hljs-link{text-decoration:underline}
+</style>
+<style>
+var{position:relative;cursor:pointer}
+var[data-type]::after,var[data-type]::before{position:absolute;left:50%;top:-6px;opacity:0;transition:opacity .4s;pointer-events:none}
+var[data-type]::before{content:"";transform:translateX(-50%);border-width:4px 6px 0 6px;border-style:solid;border-color:transparent;border-top-color:#000}
+var[data-type]::after{content:attr(data-type);transform:translateX(-50%) translateY(-100%);background:#000;text-align:center;font-family:"Dank Mono","Fira Code",monospace;font-style:normal;padding:6px;border-radius:3px;color:#daca88;text-indent:0;font-weight:400}
+var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
+</style>
+<script id="initialUserConfig" type="application/json">{
+  "specStatus": "WD",
+  "implementationReportURI": "https://github.com/w3c/trace-context/#reference-implementations",
+  "editors": [
+    {
+      "name": "Sergey Kanzhelev",
+      "company": "Google",
+      "companyURL": "https://google.com",
+      "w3cid": "103966"
+    },
+    {
+      "name": "Daniel Dyla",
+      "company": "Dynatrace",
+      "companyURL": "https://dynatrace.com",
+      "w3cid": "117848"
+    },
+    {
+      "name": "Yuri Shkuro",
+      "company": "Meta",
+      "w3cid": "104074"
+    }
+  ],
+  "formerEditors": [
+    {
+      "name": "Nik Molnar",
+      "company": "Microsoft",
+      "companyURL": "https://microsoft.com",
+      "w3cid": "104238"
+    },
+    {
+      "name": "Alois Reitbauer",
+      "company": "Dynatrace",
+      "companyURL": "https://dynatrace.com",
+      "w3cid": "48276"
+    },
+    {
+      "name": "Morgan McLean",
+      "company": "Google",
+      "companyURL": "https://google.com",
+      "w3cid": "104128"
+    },
+    {
+      "name": "Bogdan Drutu",
+      "company": "Google",
+      "companyURL": "https://google.com",
+      "w3cid": "104091"
+    },
+    {
+      "name": "Daniel Khan",
+      "company": "Dynatrace",
+      "companyURL": "https://dynatrace.com",
+      "w3cid": "90530"
+    }
+  ],
+  "github": {
+    "repoURL": "https://github.com/w3c/trace-context/",
+    "branch": "main"
+  },
+  "edDraftURI": "https://w3c.github.io/trace-context/",
+  "shortName": "trace-context",
+  "level": 2,
+  "format": "markdown",
+  "subjectPrefix": "trace-context",
+  "group": "distributed-tracing",
+  "wgPublicList": "public-trace-context",
+  "otherLinks": [
+    {
+      "key": "Discussions",
+      "data": [
+        {
+          "value": "We are on Slack.",
+          "href": "https://w3cdistributedtracing.slack.com/"
+        }
+      ]
+    }
+  ],
+  "localBiblio": {
+    "BIT-FIELD": {
+      "title": "8-bit field",
+      "href": "https://en.wikipedia.org/wiki/Bit_field",
+      "publisher": "Wikipedia",
+      "id": "bit-field"
+    }
+  },
+  "publishISODate": "2023-04-05T00:00:00.000Z",
+  "generatedSubtitle": "W3C Working Draft 05 April 2023"
+}</script>
+<link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/2021/W3C-WD"></head>
+
+<body class="h-entry toc-inline"><div class="head">
+    <p class="logos"><a class="logo" href="https://www.w3.org/"><img crossorigin="" alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72">
+  </a></p>
+    <h1 id="title" class="title">Trace Context Level 2</h1> 
+    <p id="w3c-state"><a href="https://www.w3.org/standards/types#WD">W3C Working Draft</a> <time class="dt-published" datetime="2023-04-05">05 April 2023</time></p>
+    <details open="">
+      <summary>More details about this document</summary>
+      <dl>
+        <dt>This version:</dt><dd>
+                <a class="u-url" href="https://www.w3.org/TR/2023/WD-trace-context-2-20230405/">https://www.w3.org/TR/2023/WD-trace-context-2-20230405/</a>
+              </dd>
+        <dt>Latest published version:</dt><dd>
+                <a href="https://www.w3.org/TR/trace-context-2/">https://www.w3.org/TR/trace-context-2/</a>
+              </dd>
+        <dt>Latest editor's draft:</dt><dd><a href="https://w3c.github.io/trace-context/">https://w3c.github.io/trace-context/</a></dd>
+        <dt>History:</dt><dd>
+                    <a href="https://www.w3.org/standards/history/trace-context-2">https://www.w3.org/standards/history/trace-context-2</a>
+                  </dd><dd>
+                    <a href="https://github.com/w3c/trace-context/commits/main">Commit history</a>
+                  </dd>
+        
+        <dt>Implementation report:</dt><dd>
+                <a href="https://github.com/w3c/trace-context/#reference-implementations">https://github.com/w3c/trace-context/#reference-implementations</a>
+              </dd>
+        
+        
+        
+        <dt>Editors:</dt><dd class="editor p-author h-card vcard" data-editor-id="103966">
+    <span class="p-name fn">Sergey Kanzhelev</span> (<a class="p-org org h-org" href="https://google.com">Google</a>)
+  </dd><dd class="editor p-author h-card vcard" data-editor-id="117848">
+    <span class="p-name fn">Daniel Dyla</span> (<a class="p-org org h-org" href="https://dynatrace.com">Dynatrace</a>)
+  </dd><dd class="editor p-author h-card vcard" data-editor-id="104074">
+    <span class="p-name fn">Yuri Shkuro</span> (<span class="p-org org h-org">Meta</span>)
+  </dd>
+        <dt>
+                Former editors:
+              </dt><dd class="editor p-author h-card vcard" data-editor-id="104238">
+    <span class="p-name fn">Nik Molnar</span> (<a class="p-org org h-org" href="https://microsoft.com">Microsoft</a>)
+  </dd><dd class="editor p-author h-card vcard" data-editor-id="48276">
+    <span class="p-name fn">Alois Reitbauer</span> (<a class="p-org org h-org" href="https://dynatrace.com">Dynatrace</a>)
+  </dd><dd class="editor p-author h-card vcard" data-editor-id="104128">
+    <span class="p-name fn">Morgan McLean</span> (<a class="p-org org h-org" href="https://google.com">Google</a>)
+  </dd><dd class="editor p-author h-card vcard" data-editor-id="104091">
+    <span class="p-name fn">Bogdan Drutu</span> (<a class="p-org org h-org" href="https://google.com">Google</a>)
+  </dd><dd class="editor p-author h-card vcard" data-editor-id="90530">
+    <span class="p-name fn">Daniel Khan</span> (<a class="p-org org h-org" href="https://dynatrace.com">Dynatrace</a>)
+  </dd>
+        
+        <dt>Feedback:</dt><dd>
+        <a href="https://github.com/w3c/trace-context/">GitHub w3c/trace-context</a>
+        (<a href="https://github.com/w3c/trace-context/pulls/">pull requests</a>,
+        <a href="https://github.com/w3c/trace-context/issues/new/choose">new issue</a>,
+        <a href="https://github.com/w3c/trace-context/issues/">open issues</a>)
+      </dd><dd><a href="mailto:public-trace-context@w3.org?subject=trace-context">public-trace-context@w3.org</a> with subject line <kbd>trace-context</kbd> (<a rel="discussion" href="https://lists.w3.org/Archives/Public/public-trace-context">archives</a>)</dd>
+        
+        <dt>Discussions</dt><dd>
+    <a href="https://w3cdistributedtracing.slack.com/">We are on Slack.</a>
+  </dd>
+      </dl>
+    </details>
+    
+    
+    <p class="copyright">
+    <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>
+    ©
+    2023
+    
+    <a href="https://www.w3.org/">World Wide Web Consortium</a>.
+    <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup>
+    <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+    <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and
+    <a rel="license" href="https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document" title="W3C Software and Document Notice and License">permissive document license</a> rules apply.
+  </p>
+    <hr title="Separator for header">
+  </div>  <section id="abstract" class="introductory"><h2>Abstract</h2><p>This specification defines standard HTTP headers and a value format to propagate context information that enables distributed tracing scenarios. The specification standardizes how context information is sent and modified between services. Context information uniquely identifies individual requests in a distributed system and also defines a means to add and propagate provider-specific context information.</p>
+</section>
+  <section id="sotd" class="introductory"><h2>Status of This Document</h2><p><em>This section describes the status of this
+      document at the time of its publication. A list of current <abbr title="World Wide Web Consortium">W3C</abbr>
+      publications and the latest revision of this technical report can be found
+      in the <a href="https://www.w3.org/TR/"><abbr title="World Wide Web Consortium">W3C</abbr> technical reports index</a> at
+      https://www.w3.org/TR/.</em></p><p>This new version adds considerations for the generation of the <code>trace-id</code> and <code>span-id</code> fields, and adds the random trace ID flag.</p>
+<p>
+    This document was published by the <a href="https://www.w3.org/groups/wg/distributed-tracing">Distributed Tracing Working Group</a> as
+    a Working Draft using the
+        <a href="https://www.w3.org/2021/Process-20211102/#recs-and-notes">Recommendation track</a>. 
+  </p><p>Publication as a Working Draft does not
+  imply endorsement by <abbr title="World Wide Web Consortium">W3C</abbr> and its Members. </p><p>
+    This is a draft document and may be updated, replaced or obsoleted by other
+    documents at any time. It is inappropriate to cite this document as other
+    than work in progress.
+    
+  </p><p>
+    
+        This document was produced by a group
+        operating under the
+        <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/">1 August 2017 <abbr title="World Wide Web Consortium">W3C</abbr> Patent
+          Policy</a>.
+      
+    
+                <abbr title="World Wide Web Consortium">W3C</abbr> maintains a
+                <a rel="disclosure" href="https://www.w3.org/groups/wg/distributed-tracing/ipr">public list of any patent disclosures</a>
+          made in connection with the deliverables of
+          the group; that page also includes
+          instructions for disclosing a patent. An individual who has actual
+          knowledge of a patent which the individual believes contains
+          <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/#def-essential">Essential Claim(s)</a>
+          must disclose the information in accordance with
+          <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/#sec-Disclosure">section 6 of the <abbr title="World Wide Web Consortium">W3C</abbr> Patent Policy</a>.
+        
+  </p><p>
+                  This document is governed by the
+                  <a id="w3c_process_revision" href="https://www.w3.org/2021/Process-20211102/">2 November 2021 <abbr title="World Wide Web Consortium">W3C</abbr> Process Document</a>.
+                </p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a class="tocxref" href="#abstract">Abstract</a></li><li class="tocline"><a class="tocxref" href="#sotd">Status of This Document</a></li><li class="tocline"><a class="tocxref" href="#conformance"><bdi class="secno">1. </bdi>Conformance</a></li><li class="tocline"><a class="tocxref" href="#overview"><bdi class="secno">2. </bdi>Overview</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#problem-statement"><bdi class="secno">2.1 </bdi>Problem Statement</a></li><li class="tocline"><a class="tocxref" href="#solution"><bdi class="secno">2.2 </bdi>Solution</a></li><li class="tocline"><a class="tocxref" href="#design-overview"><bdi class="secno">2.3 </bdi>Design Overview</a></li></ol></li><li class="tocline"><a class="tocxref" href="#trace-context-http-request-headers-format"><bdi class="secno">3. </bdi>Trace Context HTTP Request Headers Format</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#relationship-between-the-headers"><bdi class="secno">3.1 </bdi>Relationship Between the Headers</a></li><li class="tocline"><a class="tocxref" href="#traceparent-header"><bdi class="secno">3.2 </bdi>Traceparent Header</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#header-name"><bdi class="secno">3.2.1 </bdi>Header Name</a></li><li class="tocline"><a class="tocxref" href="#traceparent-header-field-values"><bdi class="secno">3.2.2 </bdi>traceparent Header Field Values</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#version"><bdi class="secno">3.2.2.1 </bdi>version</a></li><li class="tocline"><a class="tocxref" href="#version-format"><bdi class="secno">3.2.2.2 </bdi>version-format</a></li><li class="tocline"><a class="tocxref" href="#trace-id"><bdi class="secno">3.2.2.3 </bdi>trace-id</a></li><li class="tocline"><a class="tocxref" href="#parent-id"><bdi class="secno">3.2.2.4 </bdi>parent-id</a></li><li class="tocline"><a class="tocxref" href="#trace-flags"><bdi class="secno">3.2.2.5 </bdi>trace-flags</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#sampled-flag"><bdi class="secno">3.2.2.5.1 </bdi>Sampled flag</a></li><li class="tocline"><a class="tocxref" href="#random-trace-id-flag"><bdi class="secno">3.2.2.5.2 </bdi>Random Trace ID Flag</a></li><li class="tocline"><a class="tocxref" href="#other-flags"><bdi class="secno">3.2.2.5.3 </bdi>Other Flags</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#examples-of-http-traceparent-headers"><bdi class="secno">3.2.3 </bdi>Examples of HTTP traceparent Headers</a></li><li class="tocline"><a class="tocxref" href="#versioning-of-traceparent"><bdi class="secno">3.2.4 </bdi>Versioning of traceparent</a></li></ol></li><li class="tocline"><a class="tocxref" href="#tracestate-header"><bdi class="secno">3.3 </bdi>Tracestate Header</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#header-name-0"><bdi class="secno">3.3.1 </bdi>Header Name</a></li><li class="tocline"><a class="tocxref" href="#tracestate-header-field-values"><bdi class="secno">3.3.2 </bdi>tracestate Header Field Values</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#list"><bdi class="secno">3.3.2.1 </bdi>list</a></li><li class="tocline"><a class="tocxref" href="#list-members"><bdi class="secno">3.3.2.2 </bdi>list-members</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#key"><bdi class="secno">3.3.2.2.1 </bdi>Key</a></li><li class="tocline"><a class="tocxref" href="#value"><bdi class="secno">3.3.2.2.2 </bdi>Value</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#combined-header-value"><bdi class="secno">3.3.3 </bdi>Combined Header Value</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#tracestate-limits"><bdi class="secno">3.3.3.1 </bdi>tracestate Limits:</a></li></ol></li><li class="tocline"><a class="tocxref" href="#examples-of-tracestate-http-headers"><bdi class="secno">3.3.4 </bdi>Examples of tracestate HTTP Headers</a></li><li class="tocline"><a class="tocxref" href="#versioning-of-tracestate"><bdi class="secno">3.3.5 </bdi>Versioning of tracestate</a></li></ol></li><li class="tocline"><a class="tocxref" href="#mutating-the-traceparent-field"><bdi class="secno">3.4 </bdi>Mutating the traceparent Field</a></li><li class="tocline"><a class="tocxref" href="#mutating-the-tracestate-field"><bdi class="secno">3.5 </bdi>Mutating the tracestate Field</a></li></ol></li><li class="tocline"><a class="tocxref" href="#processing-model"><bdi class="secno">4. </bdi>Processing Model</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#processing-model-for-working-with-trace-context-request-header"><bdi class="secno">4.1 </bdi>Processing Model for Working with Trace Context Request Header</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#no-traceparent-received"><bdi class="secno">4.1.1 </bdi>No traceparent Received</a></li><li class="tocline"><a class="tocxref" href="#a-traceparent-is-received"><bdi class="secno">4.1.2 </bdi>A traceparent is Received</a></li><li class="tocline"><a class="tocxref" href="#alternative-processing"><bdi class="secno">4.1.3 </bdi>Alternative Processing</a></li></ol></li></ol></li><li class="tocline"><a class="tocxref" href="#other-communication-protocols"><bdi class="secno">5. </bdi>Other Communication Protocols</a></li><li class="tocline"><a class="tocxref" href="#privacy-considerations"><bdi class="secno">6. </bdi>Privacy Considerations</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#privacy-of-traceparent-field"><bdi class="secno">6.1 </bdi>Privacy of traceparent field</a></li><li class="tocline"><a class="tocxref" href="#privacy-of-tracestate-field"><bdi class="secno">6.2 </bdi>Privacy of tracestate field</a></li><li class="tocline"><a class="tocxref" href="#other-risks"><bdi class="secno">6.3 </bdi>Other risks</a></li></ol></li><li class="tocline"><a class="tocxref" href="#security-considerations"><bdi class="secno">7. </bdi>Security Considerations</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#information-exposure"><bdi class="secno">7.1 </bdi>Information Exposure</a></li><li class="tocline"><a class="tocxref" href="#denial-of-service"><bdi class="secno">7.2 </bdi>Denial of Service</a></li><li class="tocline"><a class="tocxref" href="#other-risks-0"><bdi class="secno">7.3 </bdi>Other Risks</a></li></ol></li><li class="tocline"><a class="tocxref" href="#considerations-for-trace-id-field-generation"><bdi class="secno">8. </bdi>Considerations for trace-id field generation</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#uniqueness-of-trace-id"><bdi class="secno">8.1 </bdi>Uniqueness of <code>trace-id</code></a></li><li class="tocline"><a class="tocxref" href="#randomness-of-trace-id"><bdi class="secno">8.2 </bdi>Randomness of <code>trace-id</code></a></li><li class="tocline"><a class="tocxref" href="#handling-trace-id-for-compliant-platforms-with-shorter-internal-identifiers"><bdi class="secno">8.3 </bdi>Handling <code>trace-id</code> for compliant platforms with shorter internal identifiers</a></li><li class="tocline"><a class="tocxref" href="#interoperating-with-existing-systems-which-use-shorter-identifiers"><bdi class="secno">8.4 </bdi>Interoperating with existing systems which use shorter identifiers</a></li></ol></li><li class="tocline"><a class="tocxref" href="#considerations-for-span-id-field-generation"><bdi class="secno">9. </bdi>Considerations for <code>span-id</code> field generation</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#uniqueness-of-span-id"><bdi class="secno">9.1 </bdi>Uniqueness of <code>span-id</code></a></li><li class="tocline"><a class="tocxref" href="#randomness-of-span-id"><bdi class="secno">9.2 </bdi>Randomness of <code>span-id</code></a></li></ol></li><li class="tocline"><a class="tocxref" href="#acknowledgments"><bdi class="secno">A. </bdi>Acknowledgments</a></li><li class="tocline"><a class="tocxref" href="#glossary"><bdi class="secno">B. </bdi>Glossary</a></li><li class="tocline"><a class="tocxref" href="#references"><bdi class="secno">C. </bdi>References</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#normative-references"><bdi class="secno">C.1 </bdi>Normative references</a></li></ol></li></ol></nav>
+
+  <section id="conformance"><div class="header-wrapper"><h2 id="x1-conformance"><bdi class="secno">1. </bdi>Conformance</h2><a class="self-link" href="#conformance" aria-label="Permalink for Section 1."></a></div><p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.</p><p>
+        The key words <em class="rfc2119">MAY</em>, <em class="rfc2119">MUST</em>, <em class="rfc2119">MUST NOT</em>, <em class="rfc2119">SHOULD</em>, and <em class="rfc2119">SHOULD NOT</em> in this document
+        are to be interpreted as described in
+        <a href="https://datatracker.ietf.org/doc/html/bcp14">BCP 14</a>
+        [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc2119" title="Key words for use in RFCs to Indicate Requirement Levels">RFC2119</a></cite>] [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc8174" title="Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words">RFC8174</a></cite>]
+        when, and only when, they appear in all capitals, as shown here.
+      </p></section>
+
+  <section id="overview"><div class="header-wrapper"><h2 id="x2-overview"><bdi class="secno">2. </bdi>Overview</h2><a class="self-link" href="#overview" aria-label="Permalink for Section 2."></a></div>
+<section id="problem-statement"><div class="header-wrapper"><h3 id="x2-1-problem-statement"><bdi class="secno">2.1 </bdi>Problem Statement</h3><a class="self-link" href="#problem-statement" aria-label="Permalink for Section 2.1"></a></div>
+<p>Distributed tracing is a methodology implemented by tracing tools to follow, analyze and debug a transaction across multiple software components. Typically, a <a href="#dfn-distributed-traces" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-distributed-traces-1">distributed trace</a> traverses more than one component which requires it to be uniquely identifiable across all participating systems. Trace context propagation passes along this unique identification. Today, trace context propagation is implemented individually by each tracing vendor. In multi-vendor environments, this causes interoperability problems, like:</p>
+<ul>
+<li>Traces that are collected by different tracing vendors cannot be correlated as there is no shared unique identifier.</li>
+<li>Traces that cross boundaries between different tracing vendors can not be propagated as there is no uniformly agreed set of identification that is forwarded.</li>
+<li>Vendor specific metadata might be dropped by intermediaries.</li>
+<li>Cloud platform vendors, intermediaries and service providers, cannot guarantee to support trace context propagation as there is no standard to follow.</li>
+</ul>
+<p>In the past, these problems did not have a significant impact as most applications were monitored by a single tracing vendor and stayed within the boundaries of a single platform provider. Today, an increasing number of applications are highly distributed and leverage multiple middleware services and cloud platforms.</p>
+<p>This transformation of modern applications calls for a distributed tracing context propagation standard.</p>
+</section><section id="solution"><div class="header-wrapper"><h3 id="x2-2-solution"><bdi class="secno">2.2 </bdi>Solution</h3><a class="self-link" href="#solution" aria-label="Permalink for Section 2.2"></a></div>
+<p>The trace context specification defines a universally agreed-upon format for the exchange of trace context propagation data - referred to as <em>trace context</em>. Trace context solves the problems described above by</p>
+<ul>
+<li>providing a unique identifier for individual traces and requests, allowing trace data of multiple providers to be linked together.</li>
+<li>providing an agreed-upon mechanism to forward vendor-specific trace data and avoid broken traces when multiple tracing tools participate in a single transaction.</li>
+<li>providing an industry standard that intermediaries, platforms, and hardware providers can support.</li>
+</ul>
+<p>A unified approach for propagating trace data improves visibility into the behavior of distributed applications, facilitating problem and performance analysis. The interoperability provided by trace context is a prerequisite to manage modern micro-service based applications.</p>
+<p>The current version of the Trace Context specification is targeted for implementations by applications and services, including web applications running within a browser. Web Browsers or User Agents are not currently in scope as a target implementation.</p>
+</section><section id="design-overview"><div class="header-wrapper"><h3 id="x2-3-design-overview"><bdi class="secno">2.3 </bdi>Design Overview</h3><a class="self-link" href="#design-overview" aria-label="Permalink for Section 2.3"></a></div>
+<p>Trace context is split into two individual propagation fields supporting interoperability and vendor-specific extensibility:</p>
+<ul>
+<li><code>traceparent</code> describes the position of the incoming request in its trace graph in a portable, fixed-length format. Its design focuses on fast parsing. Every tracing tool <em class="rfc2119">MUST</em> properly set <code>traceparent</code> even when it only relies on vendor-specific information in <code>tracestate</code></li>
+<li><code>tracestate</code> extends <code>traceparent</code> with vendor-specific data represented by a set of name/value pairs. Storing information in <code>tracestate</code> is optional.</li>
+</ul>
+<p>Tracing tools can provide two levels of compliant behavior interacting with trace context:</p>
+<ul>
+<li>At a minimum they <em class="rfc2119">MUST</em> propagate the <code>traceparent</code> and <code>tracestate</code> headers and guarantee traces are not broken. This behavior is also referred to as forwarding a trace.</li>
+<li>In addition they <em class="rfc2119">MAY</em> also choose to participate in a trace by modifying the <code>traceparent</code> header and relevant parts of the <code>tracestate</code> header containing their proprietary information. This is also referred to as participating in a trace.</li>
+</ul>
+<p>A tracing tool can choose to change this behavior for each individual request to a component it is monitoring.</p>
+</section></section>
+
+  <section id="trace-context-http-request-headers-format"><div class="header-wrapper"><h2 id="x3-trace-context-http-request-headers-format"><bdi class="secno">3. </bdi>Trace Context HTTP Request Headers Format</h2><a class="self-link" href="#trace-context-http-request-headers-format" aria-label="Permalink for Section 3."></a></div>
+<p>This section describes the binding of the <a href="#dfn-distributed-traces" id="ref-for-dfn-distributed-traces-2">distributed trace</a> context to <code>traceparent</code> and <code>tracestate</code> HTTP headers.</p>
+<section id="relationship-between-the-headers"><div class="header-wrapper"><h3 id="x3-1-relationship-between-the-headers"><bdi class="secno">3.1 </bdi>Relationship Between the Headers</h3><a class="self-link" href="#relationship-between-the-headers" aria-label="Permalink for Section 3.1"></a></div>
+<p>The <code>traceparent</code> request header represents the incoming request in a tracing system in a common format, understood by all vendors. Here’s an example of a <code>traceparent</code> header.</p>
+<pre><code class="http hljs" aria-busy="false">traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+</code></pre>
+<p>The <code>tracestate</code> request header includes the parent in a potentially vendor-specific format:</p>
+<pre><code class="http hljs" aria-busy="false">tracestate: congo=t61rcWkgMzE
+</code></pre>
+<p>For example, say a client and server in a system use different tracing vendors: Congo and Rojo. A client traced in the Congo system adds the following headers to an outbound HTTP request.</p>
+<pre><code class="http hljs" aria-busy="false">traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+tracestate: congo=t61rcWkgMzE
+</code></pre>
+<p><strong>Note</strong>: In this case, the <code>tracestate</code> value <code>t61rcWkgMzE</code> is the result of Base64 encoding the parent ID (<code>b7ad6b7169203331</code>), though such manipulations are not required.</p>
+<p>The receiving server, traced in the Rojo tracing system, carries over the <code>tracestate</code> it received and adds a new entry to the left.</p>
+<pre><code class="http hljs" aria-busy="false">traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
+tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
+</code></pre>
+<p>You'll notice that the Rojo system reuses the value of its <code>traceparent</code> for its entry in <code>tracestate</code>. This means it is a generic tracing system (no proprietary information is being passed). Otherwise, <code>tracestate</code> entries are <a data-link-type="dfn" href="#dfn-opaque" class="internalDFN" id="ref-for-dfn-opaque-1">opaque</a> and can be vendor-specific.</p>
+<p>If the next receiving server uses Congo, it carries over the <code>tracestate</code> from Rojo and adds a new entry for the parent to the left of the previous entry.</p>
+<pre><code class="http hljs" aria-busy="false">traceparent: 00-0af7651916cd43dd8448eb211c80319c-b9c7c989f97918e1-01
+tracestate: congo=ucfJifl5GOE,rojo=00f067aa0ba902b7
+</code></pre>
+<p><strong>Note:</strong> <code>ucfJifl5GOE</code> is the Base64 encoded parent ID <code>b9c7c989f97918e1</code>.</p>
+<p>Notice when Congo wrote its <code>traceparent</code> entry, it is not encoded, which helps in consistency for those doing correlation. However, the value of its entry <code>tracestate</code> is encoded and different from <code>traceparent</code>. This is ok.</p>
+<p>Finally, you'll see <code>tracestate</code> retains an entry for Rojo exactly as it was, except pushed to the right. The left-most position lets the next server know which tracing system corresponds with <code>traceparent</code>. In this case, since Congo wrote <code>traceparent</code>, its <code>tracestate</code> entry should be left-most.</p>
+</section><section id="traceparent-header"><div class="header-wrapper"><h3 id="x3-2-traceparent-header"><bdi class="secno">3.2 </bdi>Traceparent Header</h3><a class="self-link" href="#traceparent-header" aria-label="Permalink for Section 3.2"></a></div>
+<p>The <code>traceparent</code> HTTP header field identifies the incoming request in a tracing system. It has four fields:</p>
+<ul>
+<li><code>version</code></li>
+<li><code>trace-id</code></li>
+<li><code>parent-id</code></li>
+<li><code>trace-flags</code></li>
+</ul>
+<section id="header-name"><div class="header-wrapper"><h4 id="x3-2-1-header-name"><bdi class="secno">3.2.1 </bdi>Header Name</h4><a class="self-link" href="#header-name" aria-label="Permalink for Section 3.2.1"></a></div>
+<p>Header name: <code>traceparent</code></p>
+<p>The header name is <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">ASCII case-insensitive</a>. That is, <code>TRACEPARENT</code>, <code>TraceParent</code>, and <code>traceparent</code> are considered the same header. The header name is a single word; it does not contain any delimiters such as a hyphen.</p>
+<p>In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems <em class="rfc2119">SHOULD</em> encode the header name as <a href="https://infra.spec.whatwg.org/#ascii-lowercase">ASCII lowercase</a>.</p>
+</section><section id="traceparent-header-field-values"><div class="header-wrapper"><h4 id="x3-2-2-traceparent-header-field-values"><bdi class="secno">3.2.2 </bdi>traceparent Header Field Values</h4><a class="self-link" href="#traceparent-header-field-values" aria-label="Permalink for Section 3.2.2"></a></div>
+<p>This section uses the Augmented Backus-Naur Form (ABNF) notation of [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc5234" title="Augmented BNF for Syntax Specifications: ABNF">RFC5234</a></cite>], including the DIGIT rule from that document. The <code>DIGIT</code> rule defines a single number character <code>0</code>-<code>9</code>.</p>
+<pre><code class="abnf hljs" aria-busy="false"><span class="hljs-attribute">HEXDIGLC</span> = <span class="hljs-keyword">DIGIT</span> / <span class="hljs-string">"a"</span> / <span class="hljs-string">"b"</span> / <span class="hljs-string">"c"</span> / <span class="hljs-string">"d"</span> / <span class="hljs-string">"e"</span> / <span class="hljs-string">"f"</span> <span class="hljs-comment">; lowercase hex character</span>
+<span class="hljs-attribute">value</span>           = version <span class="hljs-string">"-"</span> version-format
+</code></pre>
+<p>The dash (<code>-</code>) character is used as a delimiter between fields.</p>
+<section id="version"><div class="header-wrapper"><h5 id="x3-2-2-1-version"><bdi class="secno">3.2.2.1 </bdi>version</h5><a class="self-link" href="#version" aria-label="Permalink for Section 3.2.2.1"></a></div>
+<pre><code class="abnf hljs" aria-busy="false"><span class="hljs-attribute">version</span>         = <span class="hljs-number">2</span>HEXDIGLC   <span class="hljs-comment">; this document assumes version 00. Version ff is forbidden</span>
+</code></pre>
+<p>Version (<code>version</code>) is an 8-bit unsigned integer value, serialized as an ASCII string with two characters. Version 255 (<code>"ff"</code>) is invalid. This document specifies version 0 (<code>"00"</code>) of the <code>traceparent</code> header.</p>
+</section><section id="version-format"><div class="header-wrapper"><h5 id="x3-2-2-2-version-format"><bdi class="secno">3.2.2.2 </bdi>version-format</h5><a class="self-link" href="#version-format" aria-label="Permalink for Section 3.2.2.2"></a></div>
+<p>The following <code>version-format</code> definition is used for version <code>00</code>.</p>
+<pre><code class="abnf hljs" aria-busy="false"><span class="hljs-attribute">version-format</span>   = trace-id <span class="hljs-string">"-"</span> parent-id <span class="hljs-string">"-"</span> trace-flags
+<span class="hljs-attribute">trace-id</span>         = <span class="hljs-number">32</span>HEXDIGLC  <span class="hljs-comment">; 16 bytes array identifier. All zeroes forbidden</span>
+<span class="hljs-attribute">parent-id</span>        = <span class="hljs-number">16</span>HEXDIGLC  <span class="hljs-comment">; 8 bytes array identifier. All zeroes forbidden</span>
+<span class="hljs-attribute">trace-flags</span>      = <span class="hljs-number">2</span>HEXDIGLC   <span class="hljs-comment">; 8 bit flags.</span>
+</code></pre>
+</section><section id="trace-id"><div class="header-wrapper"><h5 id="x3-2-2-3-trace-id"><bdi class="secno">3.2.2.3 </bdi>trace-id</h5><a class="self-link" href="#trace-id" aria-label="Permalink for Section 3.2.2.3"></a></div>
+<p>This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces" id="ref-for-dfn-distributed-traces-3">distributed trace</a> through a system.
+It is represented as a 16-byte array, for example, <code>4bf92f3577b34da6a3ce929d0e0e4736</code>.
+All bytes as zero (<code>00000000000000000000000000000000</code>) is considered an invalid value.</p>
+<p>The value of <code>trace-id</code> <em class="rfc2119">SHOULD</em> be globally unique.
+One recommended method to ensure global uniqueness, as well as to address some privacy and security considerations, to a satisfactory degree of certainty is to randomly (or pseudo-randomly) generate the <code>trace-id</code>.
+Implementers <em class="rfc2119">SHOULD</em> use a <code>trace-id</code> generation method which randomly (or pseudo-randomly) generates at least the right-most 7 bytes of the ID.
+If the right-most 7 bytes are randomly (or pseudo-randomly) generated, the corresponding <a href="#random-trace-id-flag">random trace id flag</a> <em class="rfc2119">SHOULD</em> be set.
+For more details, see <a href="#considerations-for-trace-id-field-generation">considerations for trace-id field generation</a>.</p>
+<p>If the <code>trace-id</code> value is invalid (for example if it contains non-allowed characters or all zeros), vendors <em class="rfc2119">MUST</em> ignore the <code>traceparent</code>.</p>
+</section><section id="parent-id"><div class="header-wrapper"><h5 id="x3-2-2-4-parent-id"><bdi class="secno">3.2.2.4 </bdi>parent-id</h5><a class="self-link" href="#parent-id" aria-label="Permalink for Section 3.2.2.4"></a></div>
+<p>This is the ID of this request as known by the caller (in some tracing systems, this is known as the <code>span-id</code>, where a <code>span</code> is the execution of a client request). It is represented as an 8-byte array, for example, <code>00f067aa0ba902b7</code>. All bytes as zero (<code>0000000000000000</code>) is considered an invalid value.</p>
+<p>Vendors <em class="rfc2119">MUST</em> ignore the <code>traceparent</code> when the <code>parent-id</code> is invalid (for example, if it contains non-lowercase hex characters).</p>
+</section><section id="trace-flags"><div class="header-wrapper"><h5 id="x3-2-2-5-trace-flags"><bdi class="secno">3.2.2.5 </bdi>trace-flags</h5><a class="self-link" href="#trace-flags" aria-label="Permalink for Section 3.2.2.5"></a></div>
+<p>This is an <a href="https://en.wikipedia.org/wiki/Bit_field#firstHeading">8-bit field</a> that controls tracing flags such as sampling, trace level, etc. These flags are recommendations given by the caller rather than strict rules to follow for three reasons:</p>
+<ol>
+<li>An untrusted caller may be able to abuse a tracing system by setting these flags maliciously.</li>
+<li>A caller may have a bug which causes the tracing system to have a problem.</li>
+<li>Different load between caller service and callee service might force callee to downsample.</li>
+</ol>
+<p>You can find more in the section <a href="#security-considerations">Security considerations</a> of this specification.</p>
+<p>Like other fields, <code>trace-flags</code> is hex-encoded. For example, all <code>8</code> flags set would be <code>ff</code> and no flags set would be <code>00</code>.</p>
+<p>As this is a bit field, the flags cannot be interpreted by a simple equality comparison.
+For example, both <code>01</code> (<code>00000001</code>) and <code>03</code> (<code>00000011</code>) represent that the trace has been sampled because the sampled flag (<code>00000001</code>) is set, and <code>03</code> and <code>02</code> (<code>00000010</code>) both represent that at least the right-most 7 bytes of the <code>trace-id</code> are randomly (or pseudo-randomly) generated because the random bit (<code>00000010</code>) is set.
+A common mistake when interpreting bit-fields is using a comparison of the whole number rather than interpreting a single bit.</p>
+<p>Here is an example of properly handling trace flags:</p>
+<pre><code class="java hljs" aria-busy="false">static final byte FLAG_SAMPLED = 1; // 00000001
+static final byte FLAG_RANDOM = 2; // 00000010
+...
+boolean sampled = (traceFlags &amp; FLAG_SAMPLED) == FLAG_SAMPLED;
+boolean random = (traceFlags &amp; FLAG_RANDOM) == FLAG_RANDOM;
+</code></pre>
+<section id="sampled-flag"><div class="header-wrapper"><h6 id="x3-2-2-5-1-sampled-flag"><bdi class="secno">3.2.2.5.1 </bdi>Sampled flag</h6><a class="self-link" href="#sampled-flag" aria-label="Permalink for Section 3.2.2.5.1"></a></div>
+<p>When set, the least significant bit (right-most), denotes that the caller may have recorded trace data. When unset, the caller did not record trace data out-of-band.</p>
+<p>There are a number of recording scenarios that may break distributed tracing:</p>
+<ul>
+<li>Only recording a subset of requests results in broken traces.</li>
+<li>Recording information about all incoming and outgoing requests becomes prohibitively expensive, at load.</li>
+<li>Making random or component-specific data collection decisions leads to fragmented data in all traces.</li>
+</ul>
+<p>Because of these issues, tracing vendors make their own recording decisions, and there is no consensus on what is the best algorithm for this job.</p>
+<p>Various techniques include:</p>
+<ul>
+<li>Probability sampling (sample 1 out of 100 <a href="#dfn-distributed-traces" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-distributed-traces-4">distributed traces</a> by flipping a coin)</li>
+<li>Delayed decision (make collection decision based on duration or a result of a request)</li>
+<li>Deferred sampling (let the callee decide whether information about this request needs to be collected)</li>
+</ul>
+<p>How these techniques are implemented can be tracing vendor-specific or application-defined.</p>
+<p>The <code>tracestate</code> field is designed to handle the variety of techniques for making recording decisions (or other specific information) specific for a given vendor. The <code>sampled</code> flag provides better interoperability between vendors. It allows vendors to communicate recording decisions and enable a better experience for the customer.</p>
+<p>For example, when a SaaS service participates in a <a href="#dfn-distributed-traces" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-distributed-traces-5">distributed trace</a>, this service has no knowledge of the tracing vendor used by its caller. This service may produce records of incoming requests for monitoring or troubleshooting purposes. The <code>sampled</code> flag can be used to ensure that information about requests that were marked for recording by the caller will also be recorded by SaaS service downstream so that the caller can troubleshoot the behavior of every recorded request.</p>
+<p>The <code>sampled</code> flag has no restriction on its mutations except that it can only be mutated when <a href="#parent-id">parent-id is updated</a>.</p>
+<p>The following are a set of suggestions that vendors <em class="rfc2119">SHOULD</em> use to increase vendor interoperability.</p>
+<ul>
+<li>If a component made definitive recording decision - this decision <em class="rfc2119">SHOULD</em> be reflected in the <code>sampled</code> flag.</li>
+<li>If a component needs to make a recording decision - it <em class="rfc2119">SHOULD</em> respect the <code>sampled</code> flag value.
+<a href="#security-considerations">Security considerations</a> <em class="rfc2119">SHOULD</em> be applied to protect from abusive or malicious use of this flag.</li>
+<li>If a component deferred or delayed the decision and only a subset of telemetry will be recorded, the <code>sampled</code> flag should be propagated unchanged. It should be set to <code>0</code> as the default option when the trace is initiated by this component.</li>
+</ul>
+<p>There are two additional options that vendors <em class="rfc2119">MAY</em> follow:</p>
+<ul>
+<li>A component that makes a deferred or delayed recording decision may communicate the priority of a recording by setting <code>sampled</code> flag to <code>1</code> for a subset of requests.</li>
+<li>A component may also fall back to probability sampling and set the <code>sampled</code> flag to <code>1</code> for the subset of requests.</li>
+</ul>
+</section><section id="random-trace-id-flag"><div class="header-wrapper"><h6 id="x3-2-2-5-2-random-trace-id-flag"><bdi class="secno">3.2.2.5.2 </bdi>Random Trace ID Flag</h6><a class="self-link" href="#random-trace-id-flag" aria-label="Permalink for Section 3.2.2.5.2"></a></div>
+<p>The second least significant bit of the trace-flags field denotes the random-trace-id flag.
+If that flag is set, at least the right-most 7 bytes of the trace ID <em class="rfc2119">MUST</em> be random (or pseudo-random).
+If the flag is not set, the trace ID <em class="rfc2119">MAY</em> still be randomly (or pseudo-randomly) generated.
+When unset, the trace ID <em class="rfc2119">MAY</em> be generated in any way that satisfies the requirements of the <a href="#trace-id">trace ID format</a>.</p>
+<p>When at least the right-most 7 bytes of the <code>trace-id</code> are randomly (or pseudo-randomly) generated, the random trace ID flag <em class="rfc2119">SHOULD</em> be set to <code>1</code>.
+This allows downstream consumers to implement features such as trace sampling or database sharding based on these bytes.
+For additional information, see <a href="#considerations-for-trace-id-field-generation">considerations for trace-id field generation</a>.</p>
+</section><section id="other-flags"><div class="header-wrapper"><h6 id="x3-2-2-5-3-other-flags"><bdi class="secno">3.2.2.5.3 </bdi>Other Flags</h6><a class="self-link" href="#other-flags" aria-label="Permalink for Section 3.2.2.5.3"></a></div>
+<p>The behavior of other flags, such as (<code>00000100</code>) is not defined and is reserved for future use. Vendors <em class="rfc2119">MUST</em> set those to zero.</p>
+</section></section></section><section id="examples-of-http-traceparent-headers"><div class="header-wrapper"><h4 id="x3-2-3-examples-of-http-traceparent-headers"><bdi class="secno">3.2.3 </bdi>Examples of HTTP traceparent Headers</h4><a class="self-link" href="#examples-of-http-traceparent-headers" aria-label="Permalink for Section 3.2.3"></a></div>
+<p><em>Valid traceparent when caller sampled this request:</em></p>
+<pre><code aria-busy="false" class="hljs abnf"><span class="hljs-attribute">Value</span> = <span class="hljs-number">00</span>-<span class="hljs-number">4</span>bf92f3577b34da6a3ce929d0e0e4736-<span class="hljs-number">00</span>f067aa0ba902b7-<span class="hljs-number">01</span>
+base16(version) = <span class="hljs-number">00</span>
+base16(trace-id) = <span class="hljs-number">4</span>bf92f3577b34da6a3ce929d0e0e4736
+base16(parent-id) = <span class="hljs-number">00</span>f067aa0ba902b7
+base16(trace-flags) = <span class="hljs-number">01</span>  // sampled
+</code></pre>
+<p><em>Valid traceparent when caller didn’t sample this request:</em></p>
+<pre><code aria-busy="false" class="hljs abnf"><span class="hljs-attribute">Value</span> = <span class="hljs-number">00</span>-<span class="hljs-number">4</span>bf92f3577b34da6a3ce929d0e0e4736-<span class="hljs-number">00</span>f067aa0ba902b7-<span class="hljs-number">00</span>
+base16(version) = <span class="hljs-number">00</span>
+base16(trace-id) = <span class="hljs-number">4</span>bf92f3577b34da6a3ce929d0e0e4736
+base16(parent-id) = <span class="hljs-number">00</span>f067aa0ba902b7
+base16(trace-flags) = <span class="hljs-number">00</span>  // not sampled
+</code></pre>
+</section><section id="versioning-of-traceparent"><div class="header-wrapper"><h4 id="x3-2-4-versioning-of-traceparent"><bdi class="secno">3.2.4 </bdi>Versioning of traceparent</h4><a class="self-link" href="#versioning-of-traceparent" aria-label="Permalink for Section 3.2.4"></a></div>
+<p>This specification is opinionated about future versions of trace context. The current version of this specification assumes that future versions of the <code>traceparent</code> header will be additive to the current one.</p>
+<p>Vendors <em class="rfc2119">MUST</em> follow these rules when parsing headers with an unexpected format:</p>
+<ul>
+<li><p>Pass-through services should not analyze the version. They should expect that headers may have larger size limits in the future and only disallow prohibitively large headers.</p>
+</li>
+<li><p>When the version prefix cannot be parsed (it's not 2 hex characters followed by a dash (<code>-</code>)), the implementation should restart the trace.</p>
+</li>
+<li><p>If a higher version is detected, the implementation <em class="rfc2119">SHOULD</em> try to parse it by trying the following:</p>
+<ul>
+<li>If the size of the header is shorter than 55 characters, the vendor should not parse the header and should restart the trace.</li>
+<li>Parse <code>trace-id</code> (from the first dash through the next 32 characters). Vendors <em class="rfc2119">MUST</em> check that the 32 characters are hex, and that they are followed by a dash (<code>-</code>).</li>
+<li>Parse <code>parent-id</code> (from the second dash at the 35th position through the next 16 characters). Vendors <em class="rfc2119">MUST</em> check that the 16 characters are hex and followed by a dash.</li>
+<li>Parse the <code>sampled</code> bit of <code>flags</code> (2 characters from the third dash). Vendors <em class="rfc2119">MUST</em> check that the 2 characters are either at the end of the string or followed by a dash.</li>
+</ul>
+<p>  If all three values were parsed successfully, the vendor should use them.</p>
+</li>
+</ul>
+<p>Vendors <em class="rfc2119">MUST NOT</em> parse or assume anything about unknown fields for this version. Vendors <em class="rfc2119">MUST</em> use these fields to construct the new <code>traceparent</code> field according to the highest version of the specification known to the implementation (in this specification it is <code>00</code>).</p>
+</section></section><section id="tracestate-header"><div class="header-wrapper"><h3 id="x3-3-tracestate-header"><bdi class="secno">3.3 </bdi>Tracestate Header</h3><a class="self-link" href="#tracestate-header" aria-label="Permalink for Section 3.3"></a></div>
+<p>The main purpose of the <code>tracestate</code> HTTP header is to provide additional vendor-specific trace identification information across different distributed tracing systems and is a companion header for the <code>traceparent</code> field. It also conveys information about the request’s position in multiple distributed tracing graphs.</p>
+<p>If the vendor failed to parse <code>traceparent</code>, it <em class="rfc2119">MUST NOT</em> attempt to parse <code>tracestate</code>. Note that the opposite is not true: failure to parse <code>tracestate</code> <em class="rfc2119">MUST NOT</em> affect the parsing of <code>traceparent</code>.</p>
+<p>The <code>tracestate</code> HTTP header <em class="rfc2119">MUST NOT</em> be used for any properties that are not defined by a tracing system. [<cite><a class="bibref" data-link-type="biblio" href="#bib-baggage" title="Propagation format for distributed context: Baggage">BAGGAGE</a></cite>] <em class="rfc2119">MAY</em> be used for defining and propagating such application level properties.</p>
+<section id="header-name-0"><div class="header-wrapper"><h4 id="x3-3-1-header-name"><bdi class="secno">3.3.1 </bdi>Header Name</h4><a class="self-link" href="#header-name-0" aria-label="Permalink for Section 3.3.1"></a></div>
+<p>Header name: <code>tracestate</code></p>
+<p>The header name is <a href="https://infra.spec.whatwg.org/#ascii-case-insensitive">ASCII case-insensitive</a>. That is, <code>TRACESTATE</code>, <code>TraceState</code>, and <code>tracestate</code> are considered the same header. The header name is a single word, it does not contain any delimiters such as a hyphen.</p>
+<p>In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems <em class="rfc2119">SHOULD</em> encode the header name as <a href="https://infra.spec.whatwg.org/#ascii-lowercase">ASCII lowercase</a>.</p>
+</section><section id="tracestate-header-field-values"><div class="header-wrapper"><h4 id="x3-3-2-tracestate-header-field-values"><bdi class="secno">3.3.2 </bdi>tracestate Header Field Values</h4><a class="self-link" href="#tracestate-header-field-values" aria-label="Permalink for Section 3.3.2"></a></div>
+<p>The <code>tracestate</code> field may contain any <a data-link-type="dfn" href="#dfn-opaque" class="internalDFN" id="ref-for-dfn-opaque-2">opaque</a> value in any of the keys. Tracestate <em class="rfc2119">MAY</em> be sent or received as multiple header fields. Multiple tracestate header fields <em class="rfc2119">MUST</em> be handled as specified by <a href="https://www.rfc-editor.org/rfc/rfc9110#field.order">RFC9110 Section 5.3 Field Order</a>. The <code>tracestate</code> header <em class="rfc2119">SHOULD</em> be sent as a single field when possible, but <em class="rfc2119">MAY</em> be split into multiple header fields. When sending <code>tracestate</code> as multiple header fields, it <em class="rfc2119">MUST</em> be split according to <a href="https://www.rfc-editor.org/rfc/rfc9110#field.order">RFC9110</a>. When receiving multiple <code>tracestate</code> header fields, they <em class="rfc2119">MUST</em> be combined into a single header according to <a href="https://www.rfc-editor.org/rfc/rfc9110#field.order">RFC9110</a>.</p>
+<p>This section uses the Augmented Backus-Naur Form (ABNF) notation of [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc5234" title="Augmented BNF for Syntax Specifications: ABNF">RFC5234</a></cite>], including the DIGIT rule in <a href="https://www.rfc-editor.org/rfc/rfc5234#appendix-B.1">appendix B.1 for RFC5234</a>. It also includes the <code>OWS</code> rule from <a href="https://www.rfc-editor.org/rfc/rfc9110#whitespace">RFC9110 section 5.6.3</a>.</p>
+<p>The <code>DIGIT</code> rule defines numbers <code>0</code>-<code>9</code>.</p>
+<p>The <code>OWS</code> rule defines an optional whitespace character. To improve readability, it is used where zero or more whitespace characters might appear.</p>
+<p>The caller <em class="rfc2119">SHOULD</em> generate the optional whitespace as a single space; otherwise, a caller <em class="rfc2119">SHOULD NOT</em> generate optional whitespace. See details in the <a href="https://www.rfc-editor.org/rfc/rfc9110#whitespace">corresponding RFC</a>.</p>
+<p>The <code>tracestate</code> field value is a <code>list</code> of <code>list-members</code> separated by commas (<code>,</code>). A <code>list-member</code> is a key/value pair separated by an equals sign (<code>=</code>). Spaces and horizontal tabs surrounding <code>list-member</code>s are ignored. There can be a maximum of 32 <code>list-member</code>s in a <code>list</code>. If adding an entry would cause the <code>tracestate</code> list to contain more than 32 <code>list-members</code> the right-most <code>list-member</code> should be removed from the list.</p>
+<p>Empty and whitespace-only list members are allowed. Vendors <em class="rfc2119">MUST</em> accept empty <code>tracestate</code> headers but <em class="rfc2119">SHOULD</em> avoid sending them. Empty list members are allowed in <code>tracestate</code> because it is difficult for a vendor to recognize the empty value when multiple <code>tracestate</code> headers are sent. Whitespace characters are allowed for a similar reason, as some vendors automatically inject whitespace after a comma separator, even in the case of an empty header.</p>
+<section id="list"><div class="header-wrapper"><h5 id="x3-3-2-1-list"><bdi class="secno">3.3.2.1 </bdi>list</h5><a class="self-link" href="#list" aria-label="Permalink for Section 3.3.2.1"></a></div>
+<p>A simple example of a <code>list</code> with two <code>list-member</code>s might look like:
+<code>vendorname1=opaqueValue1,vendorname2=opaqueValue2</code>.</p>
+<pre><code class="abnf hljs" aria-busy="false"><span class="hljs-attribute">list</span>  = list-member <span class="hljs-number">0</span>*<span class="hljs-number">31</span>( OWS <span class="hljs-string">","</span> OWS list-member )
+<span class="hljs-attribute">list-member</span> = (key <span class="hljs-string">"="</span> value) / OWS
+</code></pre>
+<p>Identifiers for a <code>list</code> are short (up to 256 characters) textual identifiers.</p>
+</section><section id="list-members"><div class="header-wrapper"><h5 id="x3-3-2-2-list-members"><bdi class="secno">3.3.2.2 </bdi>list-members</h5><a class="self-link" href="#list-members" aria-label="Permalink for Section 3.3.2.2"></a></div>
+<p>A <code>list-member</code> contains a key/value pair.</p>
+<section id="key"><div class="header-wrapper"><h6 id="x3-3-2-2-1-key"><bdi class="secno">3.3.2.2.1 </bdi>Key</h6><a class="self-link" href="#key" aria-label="Permalink for Section 3.3.2.2.1"></a></div>
+<p>The key is an identifier that describes the vendor.</p>
+<pre><code class="abnf hljs" aria-busy="false"><span class="hljs-attribute">key</span> = ( lcalpha / <span class="hljs-keyword">DIGIT</span> ) <span class="hljs-number">0</span>*<span class="hljs-number">255</span> ( keychar )
+<span class="hljs-attribute">keychar</span>    = lcalpha / <span class="hljs-keyword">DIGIT</span> / <span class="hljs-string">"_"</span> / <span class="hljs-string">"-"</span>/ <span class="hljs-string">"*"</span> / <span class="hljs-string">"/"</span> / <span class="hljs-string">"@"</span>
+<span class="hljs-attribute">lcalpha</span>    = <span class="hljs-symbol">%x61-7A</span> <span class="hljs-comment">; a-z</span>
+</code></pre>
+<p>A <code>key</code> <em class="rfc2119">MUST</em> begin with a lowercase letter or a digit and contain up to 256 characters including lowercase letters (<code>a</code>-<code>z</code>), digits (<code>0</code>-<code>9</code>), underscores (<code>_</code>), dashes (<code>-</code>), asterisks (<code>*</code>), forward slashes (<code>/</code>), and at signs (<code>@</code>).</p>
+</section><section id="value"><div class="header-wrapper"><h6 id="x3-3-2-2-2-value"><bdi class="secno">3.3.2.2.2 </bdi>Value</h6><a class="self-link" href="#value" aria-label="Permalink for Section 3.3.2.2.2"></a></div>
+<p>The value is an <a data-link-type="dfn" href="#dfn-opaque" class="internalDFN" id="ref-for-dfn-opaque-3">opaque</a> string containing up to 256 printable ASCII [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc0020" title="ASCII format for network interchange">RFC0020</a></cite>] characters (i.e., the range 0x20 to 0x7E) except comma (,) and (=). The string must end with a character which is not a space (0x20). Note that this also excludes tabs, newlines, carriage returns, etc. All leading spaces <em class="rfc2119">MUST</em> be preserved as part of the value. All trailing spaces are considered to be optional whitespace characters not part of the value. Optional trailing whitespace <em class="rfc2119">MAY</em> be excluded when propagating the header.</p>
+<pre><code class="abnf hljs" aria-busy="false"><span class="hljs-attribute">value</span>    = <span class="hljs-number">0</span>*<span class="hljs-number">255</span>(chr) nblk-chr
+<span class="hljs-attribute">nblk-chr</span> = <span class="hljs-symbol">%x21-2B</span> / <span class="hljs-symbol">%x2D-3C</span> / <span class="hljs-symbol">%x3E-7E</span>
+<span class="hljs-attribute">chr</span>      = <span class="hljs-symbol">%x20</span> / nblk-chr
+</code></pre>
+</section></section></section><section id="combined-header-value"><div class="header-wrapper"><h4 id="x3-3-3-combined-header-value"><bdi class="secno">3.3.3 </bdi>Combined Header Value</h4><a class="self-link" href="#combined-header-value" aria-label="Permalink for Section 3.3.3"></a></div>
+<p>The <code>tracestate</code> value is the concatenation of trace graph key/value pairs.</p>
+<p>Example: <code>vendorname1=opaqueValue1,vendorname2=opaqueValue2</code></p>
+<p>Only one entry per key is allowed. For example, if a vendor name is Congo and a trace started in their system and then went through a system named Rojo and later returned to Congo, the <code>tracestate</code> value would not be:</p>
+<p><code>congo=congosFirstPosition,rojo=rojosFirstPosition,congo=congosSecondPosition</code></p>
+<p>Instead, the entry would be rewritten to only include the most recent position:
+<code>congo=congosSecondPosition,rojo=rojosFirstPosition</code></p>
+<p>See <a href="#mutating-the-tracestate-field">Mutating the tracestate Field</a> for details.</p>
+<section id="tracestate-limits"><div class="header-wrapper"><h5 id="x3-3-3-1-tracestate-limits"><bdi class="secno">3.3.3.1 </bdi>tracestate Limits:</h5><a class="self-link" href="#tracestate-limits" aria-label="Permalink for Section 3.3.3.1"></a></div>
+<p>Vendors <em class="rfc2119">SHOULD</em> propagate at least 512 characters of a combined header. This length includes commas required to separate list items and optional white space (<code>OWS</code>) characters.</p>
+<p>There are systems where propagating of 512 characters of <code>tracestate</code> may be expensive. In this case, the maximum size of the propagated <code>tracestate</code> header <em class="rfc2119">SHOULD</em> be documented and explained. The cost of propagating <code>tracestate</code> <em class="rfc2119">SHOULD</em> be weighted against the value of monitoring scenarios enabled for the end users.</p>
+<p>In a situation where <code>tracestate</code> is truncated due to the total size of the header value, the vendor <em class="rfc2119">MUST</em> truncate whole entries. Entries larger than <code>128</code> characters long <em class="rfc2119">SHOULD</em> be removed first. Then entries <em class="rfc2119">SHOULD</em> be removed starting from the end of <code>tracestate</code>. Other truncation strategies like safe list entries, blocked list entries, or size-based truncation <em class="rfc2119">SHOULD NOT</em> be used.</p>
+</section></section><section id="examples-of-tracestate-http-headers"><div class="header-wrapper"><h4 id="x3-3-4-examples-of-tracestate-http-headers"><bdi class="secno">3.3.4 </bdi>Examples of tracestate HTTP Headers</h4><a class="self-link" href="#examples-of-tracestate-http-headers" aria-label="Permalink for Section 3.3.4"></a></div>
+<p>Single tracing system (generic format):</p>
+<pre><code class="http hljs" aria-busy="false">tracestate: rojo=00f067aa0ba902b7
+</code></pre>
+<p>Multiple tracing systems (with different formatting):</p>
+<pre><code class="http hljs" aria-busy="false">tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
+</code></pre>
+</section><section id="versioning-of-tracestate"><div class="header-wrapper"><h4 id="x3-3-5-versioning-of-tracestate"><bdi class="secno">3.3.5 </bdi>Versioning of tracestate</h4><a class="self-link" href="#versioning-of-tracestate" aria-label="Permalink for Section 3.3.5"></a></div>
+<p>The version of <code>tracestate</code> is defined by the version prefix of <code>traceparent</code> header. Vendors need to attempt to parse <code>tracestate</code> if a higher version is detected, to the best of its ability. It is the vendor’s decision whether to use partially-parsed <code>tracestate</code> key/value pairs or not.</p>
+</section></section><section id="mutating-the-traceparent-field"><div class="header-wrapper"><h3 id="x3-4-mutating-the-traceparent-field"><bdi class="secno">3.4 </bdi>Mutating the traceparent Field</h3><a class="self-link" href="#mutating-the-traceparent-field" aria-label="Permalink for Section 3.4"></a></div>
+<p>A vendor receiving a request without a <code>traceparent</code> header <em class="rfc2119">SHOULD</em> generate <code>traceparent</code> headers for outbound requests, effectively starting a new trace. A possible reason for not doing this could be a performance sensitive scenario when the vendor decides to not sample a request. Note that for most scenarios, vendors are expected to generate the header even when not sampling, to propagate the sampling decision downstream.</p>
+<p>A vendor receiving a <code>traceparent</code> request header <em class="rfc2119">MUST</em> send it to outgoing requests. It <em class="rfc2119">MAY</em> mutate the value of this header before passing it to outgoing requests.</p>
+<p>If the value of the <code>traceparent</code> field wasn't changed before propagation, <code>tracestate</code> <em class="rfc2119">MUST NOT</em> be modified as well. Unmodified header propagation is typically implemented in pass-through services like proxies. This behavior may also be implemented in a service which currently does not collect distributed tracing information.</p>
+<p>Following is the list of allowed mutations:</p>
+<ul>
+<li><strong>Update <code>parent-id</code></strong>: The value of <a href="#parent-id">the  parent-id field</a> can be set to the new value representing the ID of the current operation. This is the most typical mutation and should be considered a default.</li>
+<li><strong>Update <code>sampled</code></strong>: The value of <a href="#trace-flags">the sampled field</a> reflects the caller's recording behavior: either trace data was dropped or may have been recorded out-of-band. This can be indicated by toggling the flag in both directions. This mutation gives the downstream vendor information about the likelihood that its parent's information was recorded. The <code>parent-id</code> field <em class="rfc2119">MUST</em> be set to a new value with the <code>sampled</code> flag update.</li>
+<li><strong>Restart trace</strong>: All properties (<code>trace-id</code>, <code>parent-id</code>, <code>trace-flags</code>) are regenerated. This mutation is used in services that are defined as a front gate into secure networks and eliminates a potential denial-of-service attack surface. Vendors <em class="rfc2119">SHOULD</em> clean up <code>tracestate</code> collection on <code>traceparent</code> restart. There are rare cases when the original <code>tracestate</code> entries must be preserved after a restart. This typically happens when the <code>trace-id</code> is reverted back at some point of the trace flow, for instance, when it leaves the secure network. However, it <em class="rfc2119">SHOULD</em> be an explicit decision, and not the default behavior.</li>
+<li><strong>Downgrade the version</strong>: This version of the specification (<code>00</code>) <a href="#version">defines the behavior</a> for a vendor that receives a <code>traceparent</code> header of a higher version. In this case, the first mutation is to downgrade the version of the header. Other mutations are allowed in combination with this one.</li>
+</ul>
+<p>Vendors <em class="rfc2119">MUST NOT</em> make any other mutations to the <code>traceparent</code> header.</p>
+</section><section id="mutating-the-tracestate-field"><div class="header-wrapper"><h3 id="x3-5-mutating-the-tracestate-field"><bdi class="secno">3.5 </bdi>Mutating the tracestate Field</h3><a class="self-link" href="#mutating-the-tracestate-field" aria-label="Permalink for Section 3.5"></a></div>
+<p>Vendors receiving a <code>tracestate</code> request header <em class="rfc2119">MUST</em> send it to outgoing requests. It <em class="rfc2119">MAY</em> mutate the value of this header before passing to outgoing requests. When mutating <code>tracestate</code>, the order of unmodified key/value pairs <em class="rfc2119">MUST</em> be preserved. Modified keys <em class="rfc2119">MUST</em> be moved to the beginning (left) of the list.</p>
+<p>Following are allowed mutations:</p>
+<ul>
+<li><strong>Add a new key/value pair</strong>. The new key/value pair <em class="rfc2119">SHOULD</em> be added to the beginning of the list. Adding a key/value pair <em class="rfc2119">MUST NOT</em> result in the same key being present multiple times.</li>
+<li><strong>Update an existing value</strong>. The value for any given key can be updated. Modified keys <em class="rfc2119">SHOULD</em> be moved to the beginning (left) of the list.</li>
+<li><strong>Delete a key/value pair</strong>. Any key/value pair <em class="rfc2119">MAY</em> be deleted. Vendors <em class="rfc2119">SHOULD NOT</em> delete keys that were not generated by them. The deletion of an unknown key/value pair will break correlation in other systems. This mutation enables three scenarios. The first is that proxies can block certain <code>tracestate</code> keys for privacy and security concerns. The second scenario is a truncation of long <code>tracestate</code>s. Finally, vendors <em class="rfc2119">MAY</em> also discard duplicate keys that were not generated by them.</li>
+</ul>
+</section></section>
+
+  <section class="informative" id="processing-model"><div class="header-wrapper"><h2 id="x4-processing-model"><bdi class="secno">4. </bdi>Processing Model</h2><a class="self-link" href="#processing-model" aria-label="Permalink for Section 4."></a></div><p><em>This section is non-normative.</em></p>
+<p>This section provides a step-by-step example of a tracing vendor receiving a request with trace context headers, processing the request and then potentially forwarding it. This description can be used as a reference when implementing a trace context-compliant tracing system, middleware (like a proxy or messaging bus), or a cloud service.</p>
+<section id="processing-model-for-working-with-trace-context-request-header"><div class="header-wrapper"><h3 id="x4-1-processing-model-for-working-with-trace-context-request-header"><bdi class="secno">4.1 </bdi>Processing Model for Working with Trace Context Request Header</h3><a class="self-link" href="#processing-model-for-working-with-trace-context-request-header" aria-label="Permalink for Section 4.1"></a></div>
+<p>This processing model describes the behavior of a vendor that modifies and forwards trace context headers. How the model works depends on whether or not a <code>traceparent</code> header is received.</p>
+<section id="no-traceparent-received"><div class="header-wrapper"><h4 id="x4-1-1-no-traceparent-received"><bdi class="secno">4.1.1 </bdi>No traceparent Received</h4><a class="self-link" href="#no-traceparent-received" aria-label="Permalink for Section 4.1.1"></a></div>
+<p>If no traceparent header is received:</p>
+<ol>
+<li>The vendor checks an incoming request for a <code>traceparent</code> and a <code>tracestate</code> header.</li>
+<li>Because the <code>traceparent</code> header is not received, the vendor creates a new <code>trace-id</code> and <code>parent-id</code> that represents the current request. (Note: If the vendor does not sample this request and wants to communicate that sampling decision downstream via the <code>sampled</code> flag, the vendor <em class="rfc2119">MAY</em> create a <code>trace-id</code> and <code>parent-id</code> that are not associated with any actual trace data. The vendor <em class="rfc2119">MAY</em> also decide to not communicate the sampling decision downstream.)</li>
+<li>If a <code>tracestate</code> header is received without an accompanying <code>traceparent</code> header, it is invalid and <em class="rfc2119">MUST</em> be discarded.</li>
+<li>The vendor <em class="rfc2119">SHOULD</em> create a new <code>tracestate</code> header and add a new key/value pair.</li>
+<li>The vendor sets the <code>traceparent</code> and <code>tracestate</code> header for the outgoing request.</li>
+</ol>
+</section><section id="a-traceparent-is-received"><div class="header-wrapper"><h4 id="x4-1-2-a-traceparent-is-received"><bdi class="secno">4.1.2 </bdi>A traceparent is Received</h4><a class="self-link" href="#a-traceparent-is-received" aria-label="Permalink for Section 4.1.2"></a></div>
+<p>If a <code>traceparent</code> header is received:</p>
+<ol>
+<li>The vendor checks an incoming request for a <code>traceparent</code> and a <code>tracestate</code> header.</li>
+<li>Because the <code>traceparent</code> header <em>is present</em>, the vendor tries to parse the version of the <code>traceparent</code> header.<ol>
+<li>If the <em>version cannot be parsed</em>, the vendor creates a new <code>traceparent</code> header and deletes <code>tracestate</code>.</li>
+<li>If the <em>version number is higher</em> than supported by the tracer, the vendor uses the format defined in this specification (<code>00</code>) to parse <code>trace-id</code> and <code>parent-id</code>.
+The vendor will only parse the <code>trace-flags</code> values supported by this version of this specification and ignore all other values. If parsing fails, the vendor creates a new <code>traceparent</code> header and deletes the <code>tracestate</code>. Vendors will set all unparsed / unknown <code>trace-flags</code> to 0 on outgoing requests.</li>
+<li>If the vendor <em>supports the version number</em>, it validates <code>trace-id</code> and <code>parent-id</code>. If either <code>trace-id</code>, <code>parent-id</code> or <code>trace-flags</code> are invalid, the vendor creates a new <code>traceparent</code> header and deletes <code>tracestate</code>.</li>
+</ol>
+</li>
+<li>The vendor <em class="rfc2119">MAY</em> validate the <code>tracestate</code> header. If the <code>tracestate</code> header cannot be parsed the vendor <em class="rfc2119">MAY</em> discard the entire header. Invalid <code>tracestate</code> entries <em class="rfc2119">MAY</em> also be discarded.</li>
+<li>For each outgoing request the vendor performs the following steps:<ol>
+<li><p>The vendor <em class="rfc2119">MUST</em> modify the <code>traceparent</code> header:</p>
+<ul>
+<li><strong>Update <code>parent-id</code>:</strong> The value of property <code>parent-id</code> <em class="rfc2119">MUST</em> be set to a value representing the ID of the current operation.</li>
+<li><strong>Update <code>sampled</code>:</strong> The value of <code>sampled</code> reflects the caller's recording behavior. The value of the <code>sampled</code> flag of <code>trace-flags</code> <em class="rfc2119">MAY</em> be set to <code>1</code> if the trace data is likely to be recorded or to <code>0</code> otherwise. Setting the flag is no guarantee that the trace will be recorded but increases the likeliness of end-to-end recorded traces.</li>
+</ul>
+</li>
+<li><p>The vendor <em class="rfc2119">MAY</em> modify the <code>tracestate</code> header:</p>
+<ul>
+<li><strong>Update a key value:</strong> The value of any key can be updated. Modified keys <em class="rfc2119">MUST</em> be moved to the beginning (left) of the list.</li>
+<li><strong>Add a new key/value pair:</strong> The new key-value pair <em class="rfc2119">MUST</em> be added to the beginning (left) of the list.</li>
+<li><strong>Delete a key/value pair:</strong> Any key/value pair <em class="rfc2119">MAY</em> be deleted. Vendors <em class="rfc2119">SHOULD NOT</em> delete keys that weren't generated by themselves. Deletion of any key/value pair <em class="rfc2119">MAY</em> break correlation in other systems.</li>
+</ul>
+</li>
+<li><p>The vendor sets the <code>traceparent</code> and <code>tracestate</code> header for the outgoing request.</p>
+</li>
+</ol>
+</li>
+</ol>
+</section><section id="alternative-processing"><div class="header-wrapper"><h4 id="x4-1-3-alternative-processing"><bdi class="secno">4.1.3 </bdi>Alternative Processing</h4><a class="self-link" href="#alternative-processing" aria-label="Permalink for Section 4.1.3"></a></div>
+<p>The processing model above describes the complete set of steps for processing trace context headers. There are, however, situations when a vendor might only support a subset of the steps described above. Proxies or messaging middleware <em class="rfc2119">MAY</em> decide not to modify the <code>traceparent</code> headers but remove invalid headers or add additional information to <code>tracestate</code>.</p>
+</section></section></section>
+
+  <section id="other-communication-protocols"><div class="header-wrapper"><h2 id="x5-other-communication-protocols"><bdi class="secno">5. </bdi>Other Communication Protocols</h2><a class="self-link" href="#other-communication-protocols" aria-label="Permalink for Section 5."></a></div>
+<p>While trace context is defined for HTTP, the authors acknowledge it is also relevant for other communication protocols. Extensions of this specification, as well as specifications produced by external organizations, define the format of trace context serialization and deserialization for other protocols. Note that these extensions may be at a different maturity level than this specification.</p>
+<p>Please refer to the [<cite><a class="bibref" data-link-type="biblio" href="#bib-trace-context-protocols-registry" title="Trace Context Protocols Registry">trace-context-protocols-registry</a></cite>] for the details of trace context implementation for other protocols.</p>
+</section>
+
+  <section id="privacy-considerations"><div class="header-wrapper"><h2 id="x6-privacy-considerations"><bdi class="secno">6. </bdi>Privacy Considerations</h2><a class="self-link" href="#privacy-considerations" aria-label="Permalink for Section 6."></a></div>
+<p>Requirements to propagate headers to downstream services, as well as storing values of these headers, open up potential privacy concerns. Tracing vendors <em class="rfc2119">MUST NOT</em> use <code>traceparent</code> and <code>tracestate</code> fields for any personally identifiable or otherwise sensitive information. The only purpose of these fields is to enable trace correlation.</p>
+<p>Vendors <em class="rfc2119">MUST</em> assess the risk of header abuse. This section provides some considerations and initial assessment of the risk associated with storing and propagating these headers. Tracing vendors may choose to inspect and remove sensitive information from the fields before allowing the tracing system to execute code that can potentially propagate or store these fields. All mutations should, however, conform to the list of mutations defined in this specification.</p>
+<section id="privacy-of-traceparent-field"><div class="header-wrapper"><h3 id="x6-1-privacy-of-traceparent-field"><bdi class="secno">6.1 </bdi>Privacy of traceparent field</h3><a class="self-link" href="#privacy-of-traceparent-field" aria-label="Permalink for Section 6.1"></a></div>
+<p>The <code>traceparent</code> field <em class="rfc2119">MUST NOT</em> contain any personally identifiable information. One way to achieve this is to randomly generate all trace IDs using a random number generator that does not expose any personally identifiable information. Any random number generator used for generating trace IDs <em class="rfc2119">MUST NOT</em> rely on any information as input or seed state that can potentially be personally identifiable.</p>
+<p>Another privacy risk of the <code>traceparent</code> field is the ability to correlate requests made as part of a single transaction. A downstream service may track and correlate two or more requests made in a single transaction and may make assumptions about the identity of the caller of a request based on information from another request.</p>
+<p>Note that these privacy concerns of the <code>traceparent</code> field are theoretical rather than practical. Some services initiating or receiving a request <em class="rfc2119">MAY</em> choose to restart a <code>traceparent</code> field to eliminate those risks completely. Vendors <em class="rfc2119">SHOULD</em> find a way to minimize the number of <a href="#dfn-distributed-traces" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-distributed-traces-6">distributed trace</a> restarts to promote interoperability of tracing vendors. Instead of restarts, different techniques may be used. For example, services may define trust boundaries of upstream and downstream connections and the level of exposure that any requests may bring. For instance, a vendor might only restart <code>traceparent</code> for authentication requests from or to external services.</p>
+<p>Services may also define an algorithm and audit mechanism to validate the randomness of incoming or outgoing random numbers in the <code>traceparent</code> field. Note that this algorithm is services-specific and not a part of this specification. One example might be a temporal algorithm where a reversible hash function is applied to the current clock time. The receiver can validate that the time is within agreed upon boundaries, meaning the random number was generated with the required algorithm and in fact doesn't contain any personally identifiable information.</p>
+</section><section id="privacy-of-tracestate-field"><div class="header-wrapper"><h3 id="x6-2-privacy-of-tracestate-field"><bdi class="secno">6.2 </bdi>Privacy of tracestate field</h3><a class="self-link" href="#privacy-of-tracestate-field" aria-label="Permalink for Section 6.2"></a></div>
+<p>The <code>tracestate</code> field may contain any <a data-link-type="dfn" href="#dfn-opaque" class="internalDFN" id="ref-for-dfn-opaque-4">opaque</a> value in any of the keys. The main purpose of this header is to provide additional vendor-specific trace-identification information across different distributed tracing systems.</p>
+<p>Vendors <em class="rfc2119">MUST NOT</em> include any personally identifiable information in the <code>tracestate</code> header.</p>
+<p>Vendors extremely sensitive to personal information exposure <em class="rfc2119">MAY</em> implement selective removal of values corresponding to the unknown keys. Vendors <em class="rfc2119">SHOULD NOT</em> mutate the <code>tracestate</code> field, as it defeats the purpose of allowing multiple tracing systems to collaborate.</p>
+</section><section id="other-risks"><div class="header-wrapper"><h3 id="x6-3-other-risks"><bdi class="secno">6.3 </bdi>Other risks</h3><a class="self-link" href="#other-risks" aria-label="Permalink for Section 6.3"></a></div>
+<p>When vendors include <code>traceparent</code> and <code>tracestate</code> headers in responses, these values may inadvertently be passed to cross-origin callers. Vendors should ensure that they include only these response headers when responding to systems that participated in the trace.</p>
+</section></section>
+  <section id="security-considerations"><div class="header-wrapper"><h2 id="x7-security-considerations"><bdi class="secno">7. </bdi>Security Considerations</h2><a class="self-link" href="#security-considerations" aria-label="Permalink for Section 7."></a></div>
+<p>There are two types of potential security risks associated with this specification: information exposure and denial-of-service attacks against the vendor.</p>
+<p>Vendors relying on <code>traceparent</code> and <code>tracestate</code> headers should also follow all best practices for parsing potentially malicious headers, including checking for header length and content of header values. These practices help to avoid buffer overflow and HTML injection attacks.</p>
+<section id="information-exposure"><div class="header-wrapper"><h3 id="x7-1-information-exposure"><bdi class="secno">7.1 </bdi>Information Exposure</h3><a class="self-link" href="#information-exposure" aria-label="Permalink for Section 7.1"></a></div>
+<p>As mentioned in the privacy section, information in the <code>traceparent</code> and <code>tracestate</code> headers may carry information that can be considered sensitive. For example, <code>traceparent</code> may allow one request to be correlated to the data sent with another request, or the <code>tracestate</code> header may imply the version of monitoring software used by the caller. This information could potentially be used to create a larger attack.</p>
+<p>Application owners should either ensure that no proprietary or confidential information is stored in <code>tracestate</code>, or they should ensure that <code>tracestate</code> isn't present in requests to external systems.</p>
+</section><section id="denial-of-service"><div class="header-wrapper"><h3 id="x7-2-denial-of-service"><bdi class="secno">7.2 </bdi>Denial of Service</h3><a class="self-link" href="#denial-of-service" aria-label="Permalink for Section 7.2"></a></div>
+<p>When distributed tracing is enabled on a service with a public API and naively continues any trace with the <code>sampled</code> flag set, a malicious attacker could overwhelm an application with tracing overhead, forge <code>trace-id</code> collisions that make monitoring data unusable, or run up your tracing bill with your SaaS tracing vendor.</p>
+<p>Tracing vendors and platforms should account for these situations and make sure that checks and balances are in place to protect denial of monitoring by malicious or badly authored callers.</p>
+<p>One example of such protection may be different tracing behavior for authenticated and unauthenticated requests. Various rate limiters for data recording can also be implemented.</p>
+</section><section id="other-risks-0"><div class="header-wrapper"><h3 id="x7-3-other-risks"><bdi class="secno">7.3 </bdi>Other Risks</h3><a class="self-link" href="#other-risks-0" aria-label="Permalink for Section 7.3"></a></div>
+<p>Application owners need to make sure to test all code paths leading to the sending of <code>traceparent</code> and <code>tracestate</code> headers. For example, in single page browser applications, it is typical to make cross-origin requests. If one of these code paths leads to <code>traceparent</code> and <code>tracestate</code> headers being sent by cross-origin calls that are restricted using <a href="https://fetch.spec.whatwg.org/#http-access-control-request-headers"><code>Access-Control-Allow-Headers</code></a> [<cite><a class="bibref" data-link-type="biblio" href="#bib-fetch" title="Fetch Standard">FETCH</a></cite>], it may fail.</p>
+</section></section>
+
+  <section class="informative" id="considerations-for-trace-id-field-generation"><div class="header-wrapper"><h2 id="x8-considerations-for-trace-id-field-generation"><bdi class="secno">8. </bdi>Considerations for trace-id field generation</h2><a class="self-link" href="#considerations-for-trace-id-field-generation" aria-label="Permalink for Section 8."></a></div><p><em>This section is non-normative.</em></p>
+<p>This section suggests some best practices to consider when platform or tracing
+vendor implement <code>trace-id</code> generation and propagation algorithms. These
+practices will ensure better interoperability of different systems.</p>
+<section id="uniqueness-of-trace-id"><div class="header-wrapper"><h3 id="x8-1-uniqueness-of-trace-id"><bdi class="secno">8.1 </bdi>Uniqueness of <code>trace-id</code></h3><a class="self-link" href="#uniqueness-of-trace-id" aria-label="Permalink for Section 8.1"></a></div>
+<p>The value of <code>trace-id</code> <em class="rfc2119">SHOULD</em> be globally unique. This field is typically used
+for unique identification of a <a href="#dfn-distributed-traces" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-distributed-traces-7">distributed trace</a>. It is common for
+<a href="#dfn-distributed-traces" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-distributed-traces-8">distributed traces</a> to span various components, including, for example,
+cloud services. Cloud services tend to serve variety of clients and have a very
+high throughput of requests. So global uniqueness of <code>trace-id</code> is important,
+even when local uniqueness might seem like a good solution.</p>
+</section><section id="randomness-of-trace-id"><div class="header-wrapper"><h3 id="x8-2-randomness-of-trace-id"><bdi class="secno">8.2 </bdi>Randomness of <code>trace-id</code></h3><a class="self-link" href="#randomness-of-trace-id" aria-label="Permalink for Section 8.2"></a></div>
+<p>Randomly generated value of <code>trace-id</code> <em class="rfc2119">SHOULD</em> be preferred over other
+algorithms of generating a globally unique identifiers. Randomness of <code>trace-id</code>
+addresses some <a href="#security-considerations">security</a> and <a href="#privacy-considerations">privacy
+concerns</a> of exposing unwanted information. Randomness
+also allows tracing vendors to base sampling decisions on <code>trace-id</code> field value
+and avoid propagating an additional sampling context.</p>
+<p>If the <code>random-trace-id</code> flag is set, at least the right-most 7 bytes of the
+<code>trace-id</code> <em class="rfc2119">MUST</em> be randomly (or pseudo-randomly) generated.</p>
+<p>As shown in the next section, if part of the <code>trace-id</code> is nonrandom,
+it is important for the random part of the <code>trace-id</code> to be as far right in the
+<code>trace-id</code> as possible for better inter-operability with some existing systems.</p>
+</section><section id="handling-trace-id-for-compliant-platforms-with-shorter-internal-identifiers"><div class="header-wrapper"><h3 id="x8-3-handling-trace-id-for-compliant-platforms-with-shorter-internal-identifiers"><bdi class="secno">8.3 </bdi>Handling <code>trace-id</code> for compliant platforms with shorter internal identifiers</h3><a class="self-link" href="#handling-trace-id-for-compliant-platforms-with-shorter-internal-identifiers" aria-label="Permalink for Section 8.3"></a></div>
+<p>There are tracing systems which use a <code>trace-id</code> that is shorter than 16 bytes,
+which are still willing to adopt this specification.</p>
+<p>If such a system is capable of propagating a fully compliant <code>trace-id</code>, even
+while still requiring a shorter, non-compliant identifier for internal purposes,
+the system is encouraged to utilize the <code>tracestate</code> header to propagate the
+additional internal identifier. However, if a system would instead prefer to use
+the internal identifier as the basis for a fully compliant <code>trace-id</code>, it <em class="rfc2119">SHOULD</em>
+be incorporated at the as rightmost part of a <code>trace-id</code>. For example, tracing
+system may receive <code>234a5bcd543ef3fa53ce929d0e0e4736</code> as a <code>trace-id</code>, hovewer
+internally it will use <code>53ce929d0e0e4736</code> as an identifier.</p>
+</section><section id="interoperating-with-existing-systems-which-use-shorter-identifiers"><div class="header-wrapper"><h3 id="x8-4-interoperating-with-existing-systems-which-use-shorter-identifiers"><bdi class="secno">8.4 </bdi>Interoperating with existing systems which use shorter identifiers</h3><a class="self-link" href="#interoperating-with-existing-systems-which-use-shorter-identifiers" aria-label="Permalink for Section 8.4"></a></div>
+<p>There are tracing systems which are not capable of propagating the entire 16
+bytes of a <code>trace-id</code>. For better interoperability between a fully compliant
+systems with these existing systems, the following practices are recommended:</p>
+<ol>
+<li>When a system creates an outbound message and needs to generate a fully
+compliant 16 bytes <code>trace-id</code> from a shorter identifier, it <em class="rfc2119">SHOULD</em> left pad
+the original identifier with zeroes. For example, the identifier
+<code>53ce929d0e0e4736</code>, <em class="rfc2119">SHOULD</em> be converted to <code>trace-id</code> value
+<code>000000000000000053ce929d0e0e4736</code>. If the resultant <code>trace-id</code> value does
+not satisfy the constraints of the <code>random-trace-id</code> flag, the flag <em class="rfc2119">MUST</em>
+be set to <code>0</code>.</li>
+<li>When a system receives an inbound message and needs to convert the 16 bytes
+<code>trace-id</code> to a shorter identifier, the rightmost part of <code>trace-id</code> <em class="rfc2119">SHOULD</em>
+be used as this identifier. For instance, if the value of <code>trace-id</code> was
+<code>234a5bcd543ef3fa53ce929d0e0e4736</code> on an incoming request, tracing system
+<em class="rfc2119">SHOULD</em> use identifier with the value of <code>53ce929d0e0e4736</code>.</li>
+</ol>
+<p>Similar transformations are expected when tracing system converts other
+distributed trace context propagation formats to <abbr title="World Wide Web Consortium">W3C</abbr> Trace Context. Shorter
+identifiers <em class="rfc2119">SHOULD</em> be left padded with zeros when converted to 16 bytes
+<code>trace-id</code> and rightmost part of <code>trace-id</code> <em class="rfc2119">SHOULD</em> be used as a shorter
+identifier.</p>
+<p>Note, many existing systems that are not capable of propagating the whole
+<code>trace-id</code> will not propagate <code>tracestate</code> header either. However, such system
+can still use <code>tracestate</code> header to propagate additional data that is known by
+this system. For example, some systems use two flags indicating whether
+distributed trace needs to be recorded or not. In this case one flag can be send
+as <code>sampled</code> flag of <code>traceparent</code> header and <code>tracestate</code> can be used to send
+and receive an additional flag. Compliant systems will propagate this flag along
+all other key/value pairs. Existing systems which are not capable of
+<code>tracestate</code> propagation will truncate all additional values from <code>tracestate</code>
+and only pass along that flag.</p>
+</section></section>
+  <section class="informative" id="considerations-for-span-id-field-generation"><div class="header-wrapper"><h2 id="x9-considerations-for-span-id-field-generation"><bdi class="secno">9. </bdi>Considerations for <code>span-id</code> field generation</h2><a class="self-link" href="#considerations-for-span-id-field-generation" aria-label="Permalink for Section 9."></a></div><p><em>This section is non-normative.</em></p>
+<p>This section suggests some practices to consider when implementing
+<code>span-id</code> generation algorithms to ensure
+interoperability between different systems.</p>
+<section id="uniqueness-of-span-id"><div class="header-wrapper"><h3 id="x9-1-uniqueness-of-span-id"><bdi class="secno">9.1 </bdi>Uniqueness of <code>span-id</code></h3><a class="self-link" href="#uniqueness-of-span-id" aria-label="Permalink for Section 9.1"></a></div>
+<p>The value of <code>span-id</code> <em class="rfc2119">SHOULD</em> be unique within a <a href="#dfn-distributed-traces" class="internalDFN" data-link-type="dfn" id="ref-for-dfn-distributed-traces-9">distributed trace</a>.
+If the value of <code>span-id</code> is not unique within a distributed trace,
+parent-child relationships between spans within the distributed trace
+may be ambiguous.</p>
+</section><section id="randomness-of-span-id"><div class="header-wrapper"><h3 id="x9-2-randomness-of-span-id"><bdi class="secno">9.2 </bdi>Randomness of <code>span-id</code></h3><a class="self-link" href="#randomness-of-span-id" aria-label="Permalink for Section 9.2"></a></div>
+<p>Values of <code>span-id</code> <em class="rfc2119">SHOULD</em> be randomly generated. Randomness of <code>span-id</code>
+addresses some <a href="#security-considerations">security</a> and <a href="#privacy-considerations">privacy
+concerns</a> of exposing unwanted information.
+Randomness also ensures a high probability, though not a guarantee, of
+uniqueness within a distributed trace.</p>
+</section></section>
+
+  <section class="appendix" id="acknowledgments"><div class="header-wrapper"><h2 id="a-acknowledgments"><bdi class="secno">A. </bdi>Acknowledgments</h2><a class="self-link" href="#acknowledgments" aria-label="Permalink for Appendix A."></a></div>
+<p>Thanks to Adrian Cole, Christoph Neumüller, Daniel Khan, Erika Arnold, Fabian Lange, Matthew Wear, Reiley Yang, Ted Young, Tyler Benson, Victor Soares for their contributions to this work.</p>
+</section>
+
+  <section class="informative" id="glossary"><div class="header-wrapper"><h2 id="b-glossary"><bdi class="secno">B. </bdi>Glossary</h2><a class="self-link" href="#glossary" aria-label="Permalink for Section B."></a></div><p><em>This section is non-normative.</em></p>
+    
+    <dl>
+    <dt><dfn data-lt="distributed traces|Distributed trace" id="dfn-distributed-traces" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">Distributed trace</dfn></dt>
+    <dd>
+      A distributed trace is a set of events, triggered as a result
+      of a single logical operation, consolidated across various
+      components of an application. A distributed trace contains
+      events that cross process, network and security boundaries.
+      A distributed trace may be initiated when someone presses a
+      button to start an action on a website - in this example, the
+      trace will represent calls made between the downstream services
+      that handled the chain of requests initiated by this button
+      being pressed.
+    </dd>
+    </dl>
+    <dl>
+    <dt><dfn data-lt="opaque|Opaque value" id="dfn-opaque" tabindex="0" aria-haspopup="dialog" data-dfn-type="dfn">Opaque value</dfn></dt>
+    <dd>
+      An opaque value refers to a value that can only be understood
+      or processed in any way by the distributed trace participant that generated
+      this value. Any other participant must treat it as a blob of bytes.
+    </dd>
+    </dl>
+  </section><section id="references" class="appendix"><div class="header-wrapper"><h2 id="c-references"><bdi class="secno">C. </bdi>References</h2><a class="self-link" href="#references" aria-label="Permalink for Appendix C."></a></div><section id="normative-references"><div class="header-wrapper"><h3 id="c-1-normative-references"><bdi class="secno">C.1 </bdi>Normative references</h3><a class="self-link" href="#normative-references" aria-label="Permalink for Appendix C.1"></a></div>
+    
+    <dl class="bibliography"><dt id="bib-baggage">[BAGGAGE]</dt><dd>
+      <a href="https://www.w3.org/TR/baggage/"><cite>Propagation format for distributed context: Baggage</cite></a>. Sergey Kanzhelev; Yuri Shkuro.  W3C. 28 September 2022. W3C Working Draft. URL: <a href="https://www.w3.org/TR/baggage/">https://www.w3.org/TR/baggage/</a>
+    </dd><dt id="bib-bit-field">[BIT-FIELD]</dt><dd>
+      <a href="https://en.wikipedia.org/wiki/Bit_field"><cite>8-bit field</cite></a>.  Wikipedia. URL: <a href="https://en.wikipedia.org/wiki/Bit_field">https://en.wikipedia.org/wiki/Bit_field</a>
+    </dd><dt id="bib-fetch">[FETCH]</dt><dd>
+      <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Anne van Kesteren.  WHATWG. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
+    </dd><dt id="bib-rfc0020">[RFC0020]</dt><dd>
+      <a href="https://www.rfc-editor.org/rfc/rfc20"><cite>ASCII format for network interchange</cite></a>. V.G. Cerf.  IETF. October 1969. Internet Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc20">https://www.rfc-editor.org/rfc/rfc20</a>
+    </dd><dt id="bib-rfc2119">[RFC2119]</dt><dd>
+      <a href="https://www.rfc-editor.org/rfc/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. S. Bradner.  IETF. March 1997. Best Current Practice. URL: <a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>
+    </dd><dt id="bib-rfc5234">[RFC5234]</dt><dd>
+      <a href="https://www.rfc-editor.org/rfc/rfc5234"><cite>Augmented BNF for Syntax Specifications: ABNF</cite></a>. D. Crocker, Ed.; P. Overell.  IETF. January 2008. Internet Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc5234">https://www.rfc-editor.org/rfc/rfc5234</a>
+    </dd><dt id="bib-rfc8174">[RFC8174]</dt><dd>
+      <a href="https://www.rfc-editor.org/rfc/rfc8174"><cite>Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</cite></a>. B. Leiba.  IETF. May 2017. Best Current Practice. URL: <a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>
+    </dd><dt id="bib-rfc9110">[RFC9110]</dt><dd>
+      <a href="https://www.rfc-editor.org/rfc/rfc9110"><cite>HTTP Semantics</cite></a>. R. Fielding, Ed.; M. Nottingham, Ed.; J. Reschke, Ed..  IETF. June 2022. Internet Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc9110">https://www.rfc-editor.org/rfc/rfc9110</a>
+    </dd><dt id="bib-trace-context-protocols-registry">[trace-context-protocols-registry]</dt><dd>
+      <a href="https://www.w3.org/TR/trace-context-protocols-registry/"><cite>Trace Context Protocols Registry</cite></a>. Sergey Kanzhelev; Philippe Le Hegaret.  W3C. 19 November 2019. W3C Working Group Note. URL: <a href="https://www.w3.org/TR/trace-context-protocols-registry/">https://www.w3.org/TR/trace-context-protocols-registry/</a>
+    </dd></dl>
+  </section></section><p role="navigation" id="back-to-top">
+    <a href="#title"><abbr title="Back to Top">↑</abbr></a>
+  </p><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-distributed-traces" aria-label="Links in this document to definition: Distributed trace">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-distributed-traces" aria-label="Permalink for definition: Distributed trace. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-distributed-traces-1" title="§ 2.1 Problem Statement">§ 2.1 Problem Statement</a> 
+  </li><li>
+    <a href="#ref-for-dfn-distributed-traces-2" title="§ 3. Trace Context HTTP Request Headers Format">§ 3. Trace Context HTTP Request Headers Format</a> 
+  </li><li>
+    <a href="#ref-for-dfn-distributed-traces-3" title="§ 3.2.2.3 trace-id">§ 3.2.2.3 trace-id</a> 
+  </li><li>
+    <a href="#ref-for-dfn-distributed-traces-4" title="§ 3.2.2.5.1 Sampled flag">§ 3.2.2.5.1 Sampled flag</a> <a href="#ref-for-dfn-distributed-traces-5" title="Reference 2">(2)</a> 
+  </li><li>
+    <a href="#ref-for-dfn-distributed-traces-6" title="§ 6.1 Privacy of traceparent field">§ 6.1 Privacy of traceparent field</a> 
+  </li><li>
+    <a href="#ref-for-dfn-distributed-traces-7" title="§ 8.1 Uniqueness of trace-id">§ 8.1 Uniqueness of trace-id</a> <a href="#ref-for-dfn-distributed-traces-8" title="Reference 2">(2)</a> 
+  </li><li>
+    <a href="#ref-for-dfn-distributed-traces-9" title="§ 9.1 Uniqueness of span-id">§ 9.1 Uniqueness of span-id</a> 
+  </li>
+  </ul>
+    </div><div class="dfn-panel" hidden="" role="dialog" aria-modal="true" id="dfn-panel-for-dfn-opaque" aria-label="Links in this document to definition: Opaque value">
+      <span class="caret"></span>
+      <div>
+        <a class="self-link" href="#dfn-opaque" aria-label="Permalink for definition: Opaque value. Activate to close this dialog.">Permalink</a>
+         
+      </div>
+      <p><b>Referenced in:</b></p>
+      <ul>
+    <li>
+    <a href="#ref-for-dfn-opaque-1" title="§ 3.1 Relationship Between the Headers">§ 3.1 Relationship Between the Headers</a> 
+  </li><li>
+    <a href="#ref-for-dfn-opaque-2" title="§ 3.3.2 tracestate Header Field Values">§ 3.3.2 tracestate Header Field Values</a> 
+  </li><li>
+    <a href="#ref-for-dfn-opaque-3" title="§ 3.3.2.2.2 Value">§ 3.3.2.2.2 Value</a> 
+  </li><li>
+    <a href="#ref-for-dfn-opaque-4" title="§ 6.2 Privacy of tracestate field">§ 6.2 Privacy of tracestate field</a> 
+  </li>
+  </ul>
+    </div><script id="respec-dfn-panel">(() => {
+// @ts-check
+if (document.respec) {
+  document.respec.ready.then(setupPanel);
+} else {
+  setupPanel();
+}
+
+function setupPanel() {
+  const listener = panelListener();
+  document.body.addEventListener("keydown", listener);
+  document.body.addEventListener("click", listener);
+}
+
+function panelListener() {
+  /** @type {HTMLElement} */
+  let panel = null;
+  return event => {
+    const { target, type } = event;
+
+    if (!(target instanceof HTMLElement)) return;
+
+    // For keys, we only care about Enter key to activate the panel
+    // otherwise it's activated via a click.
+    if (type === "keydown" && event.key !== "Enter") return;
+
+    const action = deriveAction(event);
+
+    switch (action) {
+      case "show": {
+        hidePanel(panel);
+        /** @type {HTMLElement} */
+        const dfn = target.closest("dfn, .index-term");
+        panel = document.getElementById(`dfn-panel-for-${dfn.id}`);
+        const coords = deriveCoordinates(event);
+        displayPanel(dfn, panel, coords);
+        break;
+      }
+      case "dock": {
+        panel.style.left = null;
+        panel.style.top = null;
+        panel.classList.add("docked");
+        break;
+      }
+      case "hide": {
+        hidePanel(panel);
+        panel = null;
+        break;
+      }
+    }
+  };
+}
+
+/**
+ * @param {MouseEvent|KeyboardEvent} event
+ */
+function deriveCoordinates(event) {
+  const target = /** @type HTMLElement */ (event.target);
+
+  // We prevent synthetic AT clicks from putting
+  // the dialog in a weird place. The AT events sometimes
+  // lack coordinates, so they have clientX/Y = 0
+  const rect = target.getBoundingClientRect();
+  if (
+    event instanceof MouseEvent &&
+    event.clientX >= rect.left &&
+    event.clientY >= rect.top
+  ) {
+    // The event probably happened inside the bounding rect...
+    return { x: event.clientX, y: event.clientY };
+  }
+
+  // Offset to the middle of the element
+  const x = rect.x + rect.width / 2;
+  // Placed at the bottom of the element
+  const y = rect.y + rect.height;
+  return { x, y };
+}
+
+/**
+ * @param {Event} event
+ */
+function deriveAction(event) {
+  const target = /** @type {HTMLElement} */ (event.target);
+  const hitALink = !!target.closest("a");
+  if (target.closest("dfn:not([data-cite]), .index-term")) {
+    return hitALink ? "none" : "show";
+  }
+  if (target.closest(".dfn-panel")) {
+    if (hitALink) {
+      return target.classList.contains("self-link") ? "hide" : "dock";
+    }
+    const panel = target.closest(".dfn-panel");
+    return panel.classList.contains("docked") ? "hide" : "none";
+  }
+  if (document.querySelector(".dfn-panel:not([hidden])")) {
+    return "hide";
+  }
+  return "none";
+}
+
+/**
+ * @param {HTMLElement} dfn
+ * @param {HTMLElement} panel
+ * @param {{ x: number, y: number }} clickPosition
+ */
+function displayPanel(dfn, panel, { x, y }) {
+  panel.hidden = false;
+  // distance (px) between edge of panel and the pointing triangle (caret)
+  const MARGIN = 20;
+
+  const dfnRects = dfn.getClientRects();
+  // Find the `top` offset when the `dfn` can be spread across multiple lines
+  let closestTop = 0;
+  let minDiff = Infinity;
+  for (const rect of dfnRects) {
+    const { top, bottom } = rect;
+    const diffFromClickY = Math.abs((top + bottom) / 2 - y);
+    if (diffFromClickY < minDiff) {
+      minDiff = diffFromClickY;
+      closestTop = top;
+    }
+  }
+
+  const top = window.scrollY + closestTop + dfnRects[0].height;
+  const left = x - MARGIN;
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
+
+  // Find if the panel is flowing out of the window
+  const panelRect = panel.getBoundingClientRect();
+  const SCREEN_WIDTH = Math.min(window.innerWidth, window.screen.width);
+  if (panelRect.right > SCREEN_WIDTH) {
+    const newLeft = Math.max(MARGIN, x + MARGIN - panelRect.width);
+    const newCaretOffset = left - newLeft;
+    panel.style.left = `${newLeft}px`;
+    /** @type {HTMLElement} */
+    const caret = panel.querySelector(".caret");
+    caret.style.left = `${newCaretOffset}px`;
+  }
+
+  // As it's a dialog, we trap focus.
+  // TODO: when <dialog> becomes a implemented, we should really
+  // use that.
+  trapFocus(panel, dfn);
+}
+
+/**
+ * @param {HTMLElement} panel
+ * @param {HTMLElement} dfn
+ * @returns
+ */
+function trapFocus(panel, dfn) {
+  /** @type NodeListOf<HTMLAnchorElement> elements */
+  const anchors = panel.querySelectorAll("a[href]");
+  // No need to trap focus
+  if (!anchors.length) return;
+
+  // Move focus to first anchor element
+  const first = anchors.item(0);
+  first.focus();
+
+  const trapListener = createTrapListener(anchors, panel, dfn);
+  panel.addEventListener("keydown", trapListener);
+
+  // Hiding the panel releases the trap
+  const mo = new MutationObserver(records => {
+    const [record] = records;
+    const target = /** @type HTMLElement */ (record.target);
+    if (target.hidden) {
+      panel.removeEventListener("keydown", trapListener);
+      mo.disconnect();
+    }
+  });
+  mo.observe(panel, { attributes: true, attributeFilter: ["hidden"] });
+}
+
+/**
+ *
+ * @param {NodeListOf<HTMLAnchorElement>} anchors
+ * @param {HTMLElement} panel
+ * @param {HTMLElement} dfn
+ * @returns
+ */
+function createTrapListener(anchors, panel, dfn) {
+  const lastIndex = anchors.length - 1;
+  let currentIndex = 0;
+  return event => {
+    switch (event.key) {
+      // Hitting "Tab" traps us in a nice loop around elements.
+      case "Tab": {
+        event.preventDefault();
+        currentIndex += event.shiftKey ? -1 : +1;
+        if (currentIndex < 0) {
+          currentIndex = lastIndex;
+        } else if (currentIndex > lastIndex) {
+          currentIndex = 0;
+        }
+        anchors.item(currentIndex).focus();
+        break;
+      }
+
+      // Hitting "Enter" on an anchor releases the trap.
+      case "Enter":
+        hidePanel(panel);
+        break;
+
+      // Hitting "Escape" returns focus to dfn.
+      case "Escape":
+        hidePanel(panel);
+        dfn.focus();
+        return;
+    }
+  };
+}
+
+/** @param {HTMLElement} panel */
+function hidePanel(panel) {
+  if (!panel) return;
+  panel.hidden = true;
+  panel.classList.remove("docked");
+}
+})()</script><script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script></body></html>
