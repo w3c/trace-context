@@ -32,7 +32,7 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
 ```
 
-You'll notice that the Rojo system reuses the value of its `traceparent` for its entry in `tracestate`. This means it is a generic tracing system (no proprietary information is being passed). Otherwise, `tracestate` entries are <a href="#opaque">opaque</a> and can be vendor-specific.
+You'll notice that the Rojo system reuses the value of its `traceparent` for its entry in `tracestate`. This means it is a generic tracing system (no proprietary information is being passed). Otherwise, `tracestate` entries are [=opaque=] and can be vendor-specific.
 
 If the next receiving server uses Congo, it carries over the `tracestate` from Rojo and adds a new entry for the parent to the left of the previous entry.
 
