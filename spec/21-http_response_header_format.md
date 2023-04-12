@@ -21,7 +21,6 @@ In order to increase interoperability across multiple protocols and encourage su
 
 ### traceresponse Header Field Values
 
-
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule from that document. The `DIGIT` rule defines a single number character `0`-`9`.
 
 ``` abnf
@@ -52,17 +51,27 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. Currently, only one bit is used. S
 
 #### trace-id
 
-This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system. It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`. All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
+This is the ID of the whole trace forest and is used to uniquely identify a <a href="#dfn-distributed-traces">distributed trace</a> through a system.
+It is represented as a 16-byte array, for example, `4bf92f3577b34da6a3ce929d0e0e4736`.
+All bytes as zero (`00000000000000000000000000000000`) is considered an invalid value.
 
-If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), tracing systems MUST ignore the `traceresponse`.
+The value of `trace-id` SHOULD be globally unique.
+One recommended method to ensure global uniqueness, as well as to address some privacy and security considerations, to a satisfactory degree of certainty is to randomly (or pseudo-randomly) generate the `trace-id`.
+Implementers SHOULD use a `trace-id` generation method which randomly (or pseudo-randomly) generates at least the right-most 7 bytes of the ID.
+If the right-most 7 bytes are randomly (or pseudo-randomly) generated, the corresponding [random trace id flag](#random-trace-id-flag) SHOULD be set.
+For more details, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
-See [considerations for trace-id field generation](#considerations-for-trace-id-field-generation) for recommendations on how to operate with `trace-id`.
+If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
 
 #### child-id
 
-This is the ID of the operation of the callee (in some systems known as the span id) and is used to uniquely identify an operation within a trace. It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes as zero (`0000000000000000`) is considered an invalid value.
+This is the ID of the operation of the callee (in some tracing systems, this is known as the `span-id`, where a `span` is the execution of a client request) and is used to uniquely identify an operation within a trace. It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes as zero (`0000000000000000`) is considered an invalid value.
+
+Vendors MUST ignore the `traceresponse` when the `child-id` is invalid (for example, if it contains non-lowercase hex characters).
 
 #### trace-flags
+
+The current version of this specification (`00`) supports only two flags: `sampled` and `random-trace-id`.
 
 An <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a> that provides additional information about how the callee handled the trace such as sampling, trace level, etc. These flags are recommendations given by the callee rather than strict rules to follow for three reasons:
 
@@ -106,6 +115,17 @@ There are two additional options that tracing systems MAY follow:
 
 - A component that makes a deferred or delayed recording decision may communicate the priority of a recording by setting `sampled` flag to `1` for a subset of requests.
 - A component may also fall back to probability sampling and set the `sampled` flag to `1` for the subset of requests.
+
+##### Random Trace ID Flag
+
+The second least significant bit of the trace-flags field denotes the random-trace-id flag.
+If that flag is set, at least the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
+If the flag is not set, the trace ID MAY still be randomly (or pseudo-randomly) generated.
+When unset, the trace ID MAY be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
+
+When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the random trace ID flag SHOULD be set to `1`.
+This allows upstream consumers to implement features such as trace sampling or database sharding based on these bytes.
+For additional information, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
 ##### Other Flags
 
