@@ -53,13 +53,13 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. See below for details
 
 The format and requirements for this are the same as those of the trace-id field in the `traceparent` request header.
 
-For details, see the trace-id section under [traceparent Header Field Values](#traceparent Header Field Values).
+For details, see the trace-id section under [traceparent Header Field Values](#traceparent-Header-Field-Values).
 
 #### child-id
 
 This is the ID of the operation of the callee (in some tracing systems, this is known as the `span-id`, where a `span` is the execution of a client request) and is used to uniquely identify an operation within a trace. It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes as zero (`0000000000000000`) is considered an invalid value.
 
-Vendors MUST ignore the `traceresponse` when the `child-id` is invalid (for example, if it contains non-lowercase hex characters).
+Vendors MUST ignore the `traceresponse` header when the `child-id` is invalid (for example, if it contains non-lowercase hex characters).
 
 #### trace-flags
 
@@ -102,7 +102,7 @@ The second least significant bit of the trace-flags field denotes the random-tra
 
 The format and requirements for this are the same as those of the random-trace-id flag in the trace-flags field in the `traceparent` request header.
 
-For details, see the trace-flags section under [traceparent Header Field Values](#traceparent Header Field Values).
+For details, see the trace-flags section under [traceparent Header Field Values](#traceparent-Header-Field-Values).
 
 
 ##### Other Flags
