@@ -182,12 +182,18 @@ There are two additional options that vendors MAY follow:
 
 ##### Random Trace ID Flag
 
-The second least significant bit of the trace-flags field denotes the random-trace-id flag.
-If that flag is set, at least the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
-If the flag is not set, the trace ID MAY still be randomly (or pseudo-randomly) generated.
-When unset, the trace ID MAY be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
+The second least significant bit of the trace-flags field denotes the `random-trace-id` flag.
 
-When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the random trace ID flag SHOULD be set to `1`.
+When starting or restarting a trace (that is, when the participant generates a new `trace-id`), the following rules apply:
+* If that flag is set, at least the right-most 7 bytes of the `trace-id` MUST be random (or pseudo-random).
+* If the flag is not set, the `trace-id` MAY still be randomly (or pseudo-randomly) generated.
+* When unset, the `trace-id` MAY be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
+* When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the `random-trace-id` flag SHOULD be set to `1`.
+
+When continuing a trace (that is, the incoming HTTP request had the `traceparent` header and the participant uses the same `trace-id` in the `traceparent` header on outgoing requests), the following rules apply:
+* If the flag is set in the incoming `traceparent` header, it MUST also be set in all outgoing `traceparent` headers which use the same `trace-id`.
+* If the flag is unset in the incoming `traceparent` header, it MUST also be unset in any outgoing `traceparent` headers which use the same `trace-id`.
+
 This allows downstream consumers to implement features such as trace sampling or database sharding based on these bytes.
 For additional information, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
