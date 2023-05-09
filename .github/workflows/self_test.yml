@@ -1,15 +1,8 @@
 name: Self Test
 on:
   push:
-    paths:
-      - 'test/**.py'
-      - 'test/**.json'
-      - '.github/workflows/self_test.yml'
   pull_request:
-    paths:
-      - 'test/**.py'
-      - 'test/**.json'
-      - '.github/workflows/self_test.yml'
+
 jobs:
   build:
     runs-on: ubuntu-latest
