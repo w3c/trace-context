@@ -30,11 +30,11 @@ This page contains an alphabetical list of projects and vendors that currently i
 [All technologies supported by Dynatrace OneAgent](https://www.dynatrace.com/news/blog/distributed-tracing-with-w3c-trace-context-for-improved-end-to-end-visibility-eap/).
 
 
-## Instana
+## IBM Observability by Instana
 **Website:** [instana.com](https://www.instana.com)
 
 **Implementations:**
-.NET Core, [Node.js](https://github.com/instana/nodejs-sensor), [Go](https://github.com/instana/go-sensor), Java, PHP
+[.NET Core](https://www.nuget.org/packages/Instana.Tracing.Core), [Node.js](https://www.npmjs.com/package/@instana/collector), [Go](https://github.com/instana/go-sensor), [Java/Clojure/Kotlin/Scala](https://www.ibm.com/docs/en/SSE1JP5_current/src/pages/ecosystem/jvm/index.html#instana-autotrace), [PHP](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-php), [Apache Httpd Tracing](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-apache-httpd), [Haskell](https://hackage.haskell.org/package/instana-haskell-trace-sdk), [Python](https://pypi.org/project/instana/), [Ruby](https://rubygems.org/gems/instana/)
 
 
 ## Jaeger
