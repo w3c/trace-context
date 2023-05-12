@@ -42,9 +42,9 @@ This page contains an alphabetical list of projects and vendors that currently i
 | [Apache Httpd Tracing](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-apache-httpd) | [1](https://www.w3.org/TR/trace-context-1/) |
 | [.NET Core](https://www.nuget.org/packages/Instana.Tracing.Core) | [1](https://www.w3.org/TR/trace-context-1/) |
 | [Go](https://github.com/instana/go-sensor) | [1](https://www.w3.org/TR/trace-context-1/) |
-| [Haskell](https://hackage.haskell.org/package/instana-haskell-trace-sdk) | [1](https://www.w3.org/TR/trace-context-1/) |
+| [Haskell](https://hackage.haskell.org/package/instana-haskell-trace-sdk) | [2](https://www.w3.org/TR/trace-context-2/) |
 | [Java/Clojure/Kotlin/Scala](https://www.ibm.com/docs/en/SSE1JP5_current/src/pages/ecosystem/jvm/index.html#instana-autotrace) | [1](https://www.w3.org/TR/trace-context-1/) |
-| [Node.js](https://www.npmjs.com/package/@instana/collector) | [1](https://www.w3.org/TR/trace-context-1/) |
+| [Node.js](https://www.npmjs.com/package/@instana/collector) | [2](https://www.w3.org/TR/trace-context-2/) |
 | [PHP](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-php) | [1](https://www.w3.org/TR/trace-context-1/) |
 | [Python](https://pypi.org/project/instana/) | [1](https://www.w3.org/TR/trace-context-1/) |
 | [Ruby](https://rubygems.org/gems/instana/) | [1](https://www.w3.org/TR/trace-context-1/) |
