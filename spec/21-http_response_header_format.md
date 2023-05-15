@@ -100,6 +100,9 @@ There are two additional options that tracing systems MAY follow:
 
 The second least significant bit of the trace-flags field denotes the random-trace-id flag.
 
+If a trace was started by a downstream participant and it responds with the `traceresponse` HTTP header, an upstream participant can use this flag to determine if the `trace-id` was generated as per
+the specification for this flag.
+
 The format and requirements for this are the same as those of the random-trace-id flag in the trace-flags field in the `traceparent` request header.
 
 For details, see the trace-flags section under [traceparent Header Field Values](#traceparent-Header-Field-Values).
