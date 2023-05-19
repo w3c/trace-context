@@ -32,7 +32,7 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-00f067aa0ba902b7-01
 tracestate: rojo=00f067aa0ba902b7,congo=t61rcWkgMzE
 ```
 
-You'll notice that the Rojo system reuses the value of its `traceparent` for its entry in `tracestate`. This means it is a generic tracing system (no proprietary information is being passed). Otherwise, `tracestate` entries are <a href="#opaque">opaque</a> and can be vendor-specific.
+You'll notice that the Rojo system reuses the value of its `traceparent` for its entry in `tracestate`. This means it is a generic tracing system (no proprietary information is being passed). Otherwise, `tracestate` entries are [=opaque=] and can be vendor-specific.
 
 If the next receiving server uses Congo, it carries over the `tracestate` from Rojo and adds a new entry for the parent to the left of the previous entry.
 
@@ -260,7 +260,7 @@ In order to increase interoperability across multiple protocols and encourage su
 
 ### tracestate Header Field Values
 
-The `tracestate` field may contain any <a href="#opaque">opaque</a> value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC9110#field.order'>RFC9110 Section 5.3 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC9110#field.order'>RFC9110</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC9110#field.order'>RFC9110</a>.
+The `tracestate` field may contain any [=opaque=] value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC9110#name-field-order'>RFC9110 Section 5.3 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC9110#name-field-order'>RFC9110</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC9110#name-field-order'>RFC9110</a>.
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule in <a data-cite='!RFC5234#appendix-B.1'>appendix B.1 for RFC5234</a>. It also includes the `OWS` rule from <a data-cite='!RFC9110#whitespace'>RFC9110 section 5.6.3</a>.
 
