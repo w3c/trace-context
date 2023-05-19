@@ -108,7 +108,7 @@ Implementers SHOULD use a `trace-id` generation method which randomly (or pseudo
 If the right-most 7 bytes are randomly (or pseudo-randomly) generated, the corresponding [random trace id flag](#random-trace-id-flag) SHOULD be set.
 For more details, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
-If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the `traceparent`.
+If the `trace-id` value is invalid (for example if it contains non-allowed characters or all zeros), vendors MUST ignore the entire header.
 
 #### parent-id
 
