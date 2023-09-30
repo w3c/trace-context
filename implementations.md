@@ -3,12 +3,22 @@
 This page contains an alphabetical list of projects and vendors that currently implement Trace Context.
 
 ## Azure Monitor
+
 **Website:** [Azure Monitor](https://azure.microsoft.com/services/monitor/)
 
 **Implementations:**
 | Implementations | Specification Level |
 | --------------- | :-----------------: |
 | [All technologies supported by Azure Monitor](https://docs.microsoft.com/azure/azure-monitor/) | [1](https://www.w3.org/TR/trace-context-1/) |
+
+## Dynatrace
+
+**Website:** [dynatrace.com](https://www.dynatrace.com)
+
+**Implementations:**
+| Implementations | Specification Level |
+| --------------- | :-----------------: |
+| [All technologies supported by Dynatrace OneAgent](https://www.dynatrace.com/news/blog/distributed-tracing-with-w3c-trace-context-for-improved-end-to-end-visibility-eap/) | [1](https://www.w3.org/TR/trace-context-1/) |
 
 ## Elastic
 
@@ -25,15 +35,8 @@ This page contains an alphabetical list of projects and vendors that currently i
 | [Ruby](https://github.com/elastic/apm-agent-ruby/blob/b68f1f12ae48a5c6e757241c65de97a98488ee6a/lib/elastic_apm/trace_context.rb) | [1](https://www.w3.org/TR/trace-context-1/) |
 | [JavaScript - Real User Monitoring](https://github.com/elastic/apm-agent-rum-js) | [1](https://www.w3.org/TR/trace-context-1/) |
 
-## Dynatrace
-**Website:** [dynatrace.com](https://www.dynatrace.com)
-
-**Implementations:**
-| Implementations | Specification Level |
-| --------------- | :-----------------: |
-| [All technologies supported by Dynatrace OneAgent](https://www.dynatrace.com/news/blog/distributed-tracing-with-w3c-trace-context-for-improved-end-to-end-visibility-eap/) | [1](https://www.w3.org/TR/trace-context-1/) |
-
 ## IBM Observability by Instana
+
 **Website:** [instana.com](https://www.instana.com)
 
 **Implementations:**
@@ -50,6 +53,7 @@ This page contains an alphabetical list of projects and vendors that currently i
 | [Ruby](https://rubygems.org/gems/instana/) | [1](https://www.w3.org/TR/trace-context-1/) |
 
 ## Jaeger
+
 **Website:** [jaegertracing.io](https://www.jaegertracing.io)
 
 **Implementations:**
@@ -58,6 +62,7 @@ This page contains an alphabetical list of projects and vendors that currently i
 | [Java](https://github.com/jaegertracing/jaeger-client-java/blob/b50aa159e3949461509d451fa1ded91887b680ad/jaeger-core/src/main/java/io/jaegertracing/internal/propagation/TraceContextCodec.java) | [1](https://www.w3.org/TR/trace-context-1/) |
 
 ## Kamon
+
 **Website:** [Kamon.io](https://kamon.io/)
 
 **Implementations:**
@@ -66,6 +71,7 @@ This page contains an alphabetical list of projects and vendors that currently i
 | [Java](https://github.com/kamon-io/Kamon/blob/4d5ec29df5/core/kamon-core/src/main/scala/kamon/trace/SpanPropagation.scala#L72) | [1](https://www.w3.org/TR/trace-context-1/) |
 
 ## LightStep
+
 **Website:** [lightstep.com](https://lightstep.com)
 
 **Implementations:**
@@ -74,6 +80,7 @@ This page contains an alphabetical list of projects and vendors that currently i
 | [Go](https://github.com/lightstep/tracecontext.go) | [1](https://www.w3.org/TR/trace-context-1/) |
 
 ## New Relic
+
 **Website:** [newrelic.com](https://newrelic.com/)
 
 **Implementations:**
@@ -82,6 +89,7 @@ This page contains an alphabetical list of projects and vendors that currently i
 | All agents will support W3C Trace Context, see the list of compatible agents [here](https://docs.newrelic.com/docs/understand-dependencies/distributed-tracing/enable-configure/enable-distributed-tracing#compatibility-requirements) | [1](https://www.w3.org/TR/trace-context-1/) |
 
 ## OpenCensus
+
 **Website:** [opencensus.io](https://opencensus.io)
 
 **Implementations:**
@@ -96,6 +104,7 @@ This page contains an alphabetical list of projects and vendors that currently i
 | [Ruby](https://github.com/census-instrumentation/opencensus-ruby/blob/8cb9771b218e440e825c99981ea405d40f735926/lib/opencensus/trace/formatters/trace_context.rb) | [1](https://www.w3.org/TR/trace-context-1/) |
 
 ## OpenTelemetry
+
 **Website:** [opentelemetry.io](https://opentelemetry.io)
 
 **Implementations:**
