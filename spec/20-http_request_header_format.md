@@ -318,7 +318,7 @@ The `tracestate` value is the concatenation of trace graph key/value pairs.
 
 Example: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`
 
-Only one entry per key is allowed. For example, if a vendor name is Congo and a trace started in their system and then went through a system named Rojo and later returned to Congo, the `tracestate` value would not be:
+Tracing tools are not supposed to add the same header multiple times. For example, if a vendor name is Congo and a trace started in their system and then went through a system named Rojo and later returned to Congo, the `tracestate` value would not be:
 
 `congo=congosFirstPosition,rojo=rojosFirstPosition,congo=congosSecondPosition`
 
