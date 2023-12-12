@@ -103,10 +103,11 @@ The second least significant bit of the trace-flags field denotes the random-tra
 If a trace was started by a downstream participant and it responds with the `traceresponse` HTTP header, an upstream participant can use this flag to determine if the `trace-id` was generated as per
 the specification for this flag.
 
-The format and requirements for this are the same as those of the random-trace-id flag in the trace-flags field in the `traceparent` request header.
+When a participant starts or restarts a trace (that is, when the participant generates a new `trace-id`), the requirements for this flag are the same as those for the random-trace-id flag in the trace-flags field in the `traceparent` request header. For details, see the section [Random Trace ID Flag](#random-trace-id-flag).
 
-For details, see the trace-flags section under [traceparent Header Field Values](#traceparent-header-field-values).
+A participant that continues a trace started upstream &mdash; that is, if the participant uses the `trace-id` value from an incoming `traceparent` header in its own `traceresponse` header &mdash; MUST set the `random-trace-id` flag in the `traceresponse` header to the same value that was found in the incoming `traceparent` header.
 
+A participant that continues a trace started downstream &mdash; that is, if the participant uses the `trace-id` value from a `traceresponse` header it has receieved &mdash; MUST set the `random-trace-id` flag in its own `traceresponse` header to the same value that was found in the `traceresponse` header from which the `trace-id` was taken.
 
 ##### Other Flags
 
