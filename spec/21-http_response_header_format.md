@@ -63,7 +63,7 @@ Vendors MUST ignore the `traceresponse` header when the `child-id` is invalid (f
 
 #### trace-flags
 
-Similar to the `trace-flags` field in the `traceparent` request header, this is a hex-encoded <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a> that provides information about how a callee handled the trace. The same requirement to properly mask the bit field value when interpreting it applies here as well.
+Similar to the [`trace-flags` field](#trace-flags) in the `traceparent` request header, this is a hex-encoded <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a> that provides information about how a callee handled the trace. The same requirement to properly mask the bit field value when interpreting it applies here as well.
 
 The current version of this specification (`00`) supports only two flags: `sampled` and `random-trace-id`.
 
