@@ -53,7 +53,7 @@ trace-flags      = 2HEXDIGLC   ; 8 bit flags. See below for details
 
 The format and requirements for this are the same as those of the trace-id field in the `traceparent` request header.
 
-For details, see the trace-id section under [traceparent Header Field Values](#traceparent-Header-Field-Values).
+For details, see the trace-id section under [traceparent Header Field Values](#traceparent-header-field-values).
 
 #### child-id
 
@@ -105,7 +105,7 @@ the specification for this flag.
 
 The format and requirements for this are the same as those of the random-trace-id flag in the trace-flags field in the `traceparent` request header.
 
-For details, see the trace-flags section under [traceparent Header Field Values](#traceparent-Header-Field-Values).
+For details, see the trace-flags section under [traceparent Header Field Values](#traceparent-header-field-values).
 
 
 ##### Other Flags
