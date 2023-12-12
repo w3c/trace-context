@@ -107,7 +107,7 @@ When a participant starts or restarts a trace (that is, when the participant gen
 
 A participant that continues a trace started upstream &mdash; that is, if the participant uses the `trace-id` value from an incoming `traceparent` header in its own `traceresponse` header &mdash; MUST set the `random-trace-id` flag in the `traceresponse` header to the same value that was found in the incoming `traceparent` header.
 
-A participant that continues a trace started downstream &mdash; that is, if the participant uses the `trace-id` value from a `traceresponse` header it has receieved &mdash; MUST set the `random-trace-id` flag in its own `traceresponse` header to the same value that was found in the `traceresponse` header from which the `trace-id` was taken.
+A participant that continues a trace started downstream &mdash; that is, if the participant uses the `trace-id` value from a `traceresponse` header it has received &mdash; MUST set the `random-trace-id` flag in its own `traceresponse` header to the same value that was found in the `traceresponse` header from which the `trace-id` was taken.
 
 ##### Other Flags
 
