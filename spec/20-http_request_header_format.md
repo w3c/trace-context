@@ -185,7 +185,7 @@ There are two additional options that vendors MAY follow:
 The second least significant bit of the trace-flags field denotes the `random-trace-id` flag.
 
 When starting or restarting a trace (that is, when the participant generates a new `trace-id`), the following rules apply:
-* If that flag is set, at least the right-most 7 bytes of the `trace-id` MUST be random (or pseudo-random).
+* If that flag is set, at least the right-most 7 bytes of the `trace-id` MUST be selected randomly (or pseudo-randomly) from a uniform distribution of all `2^56` possible values.
 * If the flag is not set, the `trace-id` MAY still be randomly (or pseudo-randomly) generated.
 * When unset, the `trace-id` MAY be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
 * When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the `random-trace-id` flag SHOULD be set to `1`.
