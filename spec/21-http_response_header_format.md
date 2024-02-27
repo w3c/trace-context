@@ -1,113 +1,107 @@
-# Trace Context HTTP Response Headers Format
+# Trace Context Server Timing Metric Format
 
-This section describes the binding of the distributed trace context to the `traceresponse` HTTP header.
+This section describes the binding of the distributed trace context to a metric in the Server Timing HTTP header.
 
-## Traceresponse Header
+## Trace Context Metric
 
-The `traceresponse` HTTP response header field identifies a completed request in a tracing system. It has four fields:
+The trace context metric identifies a completed request in a tracing system. It has four params:
 
-* `version`
-* `trace-id`
-* `child-id`
-* `trace-flags`
+* `tid` - required
+* `cid` - required
+* `v` - optional
+* `flags` - optional
 
-### Header Name
+Example server timing header with trace context metric:
 
-Header name: `traceresponse`
+```
+server-timing: trace;tid=0af7651916cd43dd8448eb211c80319c,cid=b7ad6b7169203331
+```
 
-The header name is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `TRACERESPONSE`, `TraceResponse`, and `traceresponse` are considered the same header. The header name is a single word; it does not contain any delimiters such as a hyphen.
+### Metric Name
 
-In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems SHOULD encode the header name as [ASCII lowercase](https://infra.spec.whatwg.org/#ascii-lowercase).
+Metric name: `trace`
 
-### traceresponse Header Field Values
+The metric name is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `trace`, `Trace`, and `TRACE` are considered the same metric.
+
+In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems SHOULD encode the metric name as [ASCII lowercase](https://infra.spec.whatwg.org/#ascii-lowercase).
+
+### Trace Context Metric Param Values
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule from that document. The `DIGIT` rule defines a single number character `0`-`9`.
 
-``` abnf
+```abnf
 HEXDIGLC = DIGIT / "a" / "b" / "c" / "d" / "e" / "f" ; lowercase hex character
-value           = version "-" version-format
+tid      = 32HEXDIGLC
+cid      = 16HEXDIGLC
+flags    = 2HEXDIGLC
+v        = 2HEXDIGLC ; this document assumes version 00. Version ff is forbidden
 ```
 
-The dash (`-`) character is used as a delimiter between fields.
+#### Trace ID (`tid`)
 
-#### version
+The format and requirements for this are the same as those of the `trace-id` field in the `traceparent` request header. This is a required parameter.
 
-``` abnf
-version         = 2HEXDIGLC   ; this document assumes version 00. Version ff is forbidden
-```
+For details, see the `trace-id` section under [traceparent Header Field Values](#traceparent-header-field-values).
 
-Version (`version`) is an 8-bit unsigned integer value, serialized as an ASCII string with two characters. Version 255 (`"ff"`) is invalid. This document specifies version 0 (`"00"`) of the `traceresponse` header.
+#### Child ID (`cid`)
 
-#### version-format
+This is the span ID of the server operation. It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. An all-zero child ID (`0000000000000000`) is an invalid value. Tracing systems MUST ignore the trace context metric when the child id is invalid (for example, if it contains non-lowercase hex characters).
 
-The following `version-format` definition is used for version `00`.
+For details, see the `span-id` section under [traceparent Header Field Values](#traceparent-header-field-values).
 
-``` abnf
-version-format   = trace-id "-" child-id "-" trace-flags
-trace-id         = 32HEXDIGLC  ; 16 bytes array identifier. All zeroes forbidden
-child-id         = 16HEXDIGLC  ; 8 bytes array identifier. All zeroes forbidden
-trace-flags      = 2HEXDIGLC   ; 8 bit flags. See below for details
-```
+#### Version (`v`)
 
-#### trace-id
+Version (`v`) is an 8-bit unsigned integer value, serialized as an ASCII string with two hexadecimal characters. Version 255 (`ff`) is invalid. This document specifies version 0 (`00`) of the trace context metric. The version field is optional; if omitted, the version is `00`.
 
-The format and requirements for this are the same as those of the trace-id field in the `traceparent` request header.
+#### Trace Flags (`flags`)
 
-For details, see the trace-id section under [traceparent Header Field Values](#traceparent-header-field-values).
-
-#### child-id
-
-This is the ID of the operation of the callee (in some tracing systems, this is known as the `span-id`, where a `span` is the execution of a client request) and is used to uniquely identify an operation within a trace. It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. All bytes as zero (`0000000000000000`) is considered an invalid value.
-
-Vendors MUST ignore the `traceresponse` header when the `child-id` is invalid (for example, if it contains non-lowercase hex characters).
-
-#### trace-flags
-
-Similar to the [`trace-flags` field](#trace-flags) in the `traceparent` request header, this is a hex-encoded <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a> that provides information about how a callee handled the trace. The same requirement to properly mask the bit field value when interpreting it applies here as well.
+Similar to the [`trace-flags` field](#trace-flags) in the `traceparent` request header, this is a hex-encoded <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a> that provides information about how a child handled the trace. The same requirement to properly mask the bit field value when interpreting it applies here as well.
 
 The current version of this specification (`00`) supports only two flags: `sampled` and `random-trace-id`.
 
-These flags are recommendations given by a callee rather than strict rules to follow for three reasons:
+These flags are recommendations given by a server, rather than strict rules for the client to follow, for three reasons:
 
-1. An untrusted callee may be able to abuse a tracing system by setting these flags maliciously.
-2. A callee may have a bug which causes the tracing system to have a problem.
-3. Different load between calling and called services might force one or more participants to discard part or all of a trace.
+1. An untrusted server may be able to abuse a tracing system by setting these flags maliciously.
+2. A server may have a bug which causes the tracing system to have a problem.
+3. Different load between services might force one or more participants to discard part or all of a trace.
 
 You can find more in the section [Security considerations](#security-considerations) of this specification.
 
+The trace flags param is optional. If it omitted, the value of all flags is unknown.
+
 ##### Sampled flag
 
-When set, the least significant bit (right-most), denotes that the callee may have recorded trace data. When unset, the callee did not record trace data out-of-band.
+When set, the least significant bit (right-most), denotes that the server may have recorded trace data. When unset, the server did not record trace data out-of-band.
 
-The `sampled` flag provides interoperability between tracing systems. It allows tracing systems to communicate recording decisions and enable a better experience for the customer. For example, when a SaaS load balancer service participates in a <a>distributed trace</a>, this service has no knowledge of the tracing system used by its callee. This service may produce records of incoming requests for monitoring or troubleshooting purposes. The `sampled` flag can be used to ensure that information about requests that were marked for recording by the callee will also be recorded by the SaaS load balancer service upstream so that the callee can troubleshoot the behavior of every recorded request.
+The `sampled` flag provides interoperability between tracing systems. It allows tracing systems to communicate recording decisions and enable a better experience for the customer. For example, when a SaaS load balancer service participates in a <a>distributed trace</a>, this service has no knowledge of the tracing system used by the server. This service may produce records of incoming requests for monitoring or troubleshooting purposes. The `sampled` flag can be used to ensure that information about requests that were marked for recording by the server will also be recorded by the SaaS load balancer service upstream, so that the server can troubleshoot the behavior of every recorded request.
 
 The `sampled` flag has no restrictions.
 
 The following are a set of suggestions that tracing systems SHOULD use to increase interoperability.
 
-- If a component made a definitive recording decision, this decision SHOULD be reflected in the `sampled` flag.
-- If a component needs to make a recording decision, it SHOULD respect the `sampled` flag value.
+- If the server made a definitive recording decision, this decision SHOULD be reflected in the `sampled` flag.
+- If the server needs to make a recording decision, it SHOULD respect the `sampled` flag value.
   [Security considerations](#security-considerations) SHOULD be applied to protect from abusive or malicious use of this flag.
-- If a component deferred or delayed the decision and only a subset of telemetry will be recorded, the `sampled` flag from the incoming `traceparent` header should be used if it is available. It should be set to `0` as the default option when the trace is initiated by this component.
-- If a component receives a `0` for the `sampled` flag on an incoming request, it may still decide to record a trace. In this case it SHOULD return a `sampled` flag `1` on the response so that the caller can update its sampling decision if required.
+- If the server deferred or delayed the decision and only a subset of telemetry will be recorded, the `sampled` flag from the incoming `traceparent` header should be used if it is available. It should be set to `0` as the default option when the trace is initiated by this server.
+- If the server receives a `0` for the `sampled` flag on an incoming request, it may still decide to record a trace. In this case it SHOULD return a `sampled` flag `1` on the response so that the client can update its sampling decision if required.
 
 There are two additional options that tracing systems MAY follow:
 
-- A component that makes a deferred or delayed recording decision may communicate the priority of a recording by setting `sampled` flag to `1` for a subset of requests.
-- A component may also fall back to probability sampling and set the `sampled` flag to `1` for the subset of requests.
+- A server that makes a deferred or delayed recording decision may communicate the priority of a recording by setting `sampled` flag to `1` for a subset of requests.
+- A server may also fall back to probability sampling and set the `sampled` flag to `1` for the subset of requests.
 
 ##### Random Trace ID Flag
 
 The second least significant bit of the trace-flags field denotes the random-trace-id flag.
 
-If a trace was started by a downstream participant and it responds with the `traceresponse` HTTP header, an upstream participant can use this flag to determine if the `trace-id` was generated as per
+If a trace was started by a downstream participant and it responds with the trace context server timing metric, an upstream participant can use this flag to determine if the `trace-id` was generated as per
 the specification for this flag.
 
 When a participant starts or restarts a trace (that is, when the participant generates a new `trace-id`), the requirements for this flag are the same as those for the random-trace-id flag in the trace-flags field in the `traceparent` request header. For details, see the section [Random Trace ID Flag](#random-trace-id-flag).
 
-A participant that continues a trace started upstream &mdash; that is, if the participant uses the `trace-id` value from an incoming `traceparent` header in its own `traceresponse` header &mdash; MUST set the `random-trace-id` flag in the `traceresponse` header to the same value that was found in the incoming `traceparent` header.
+A participant that continues a trace started upstream &mdash; that is, if the participant uses the `trace-id` value from an incoming `traceparent` header in its own trace context server timing metric &mdash; MUST set the `random-trace-id` flag in the trace context server timing metric to the same value that was found in the incoming `traceparent` header.
 
-A participant that continues a trace started downstream &mdash; that is, if the participant uses the `trace-id` value from a `traceresponse` header it has received &mdash; MUST set the `random-trace-id` flag in its own `traceresponse` header to the same value that was found in the `traceresponse` header from which the `trace-id` was taken.
+A participant that continues a trace started downstream &mdash; that is, if the participant uses the `trace-id` value from a trace context server timing metric it has received &mdash; MUST set the `random-trace-id` flag in its own trace context server timing metric to the same value that was found in the trace context server timing metric from which the `trace-id` was taken.
 
 ##### Other Flags
 
