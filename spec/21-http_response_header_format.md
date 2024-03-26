@@ -4,56 +4,55 @@ This section describes the binding of the distributed trace context to a metric 
 
 ## Trace Context Metric
 
-The trace context metric identifies a completed request in a tracing system. It has four params:
-
-* `tid` - required
-* `cid` - required
-* `v` - optional
-* `flags` - optional
+The trace context metric identifies a completed request in a tracing system.
+It consists of a {{PerformanceServerTiming/description}}.
+{{PerformanceServerTiming/duration}} is reserved for future use.
 
 Example server timing header with trace context metric:
 
 ```
-server-timing: trace;tid=0af7651916cd43dd8448eb211c80319c,cid=b7ad6b7169203331
+server-timing: trace;desc=00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 ```
 
 ### Metric Name
 
 Metric name: `trace`
 
-The metric name is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `trace`, `Trace`, and `TRACE` are considered the same metric.
+The metric {{PerformanceServerTiming/name}} is [ASCII case-insensitive](https://infra.spec.whatwg.org/#ascii-case-insensitive). That is, `trace`, `Trace`, and `TRACE` are considered the same metric.
 
 In order to increase interoperability across multiple protocols and encourage successful integration, tracing systems SHOULD encode the metric name as [ASCII lowercase](https://infra.spec.whatwg.org/#ascii-lowercase).
 
-### Trace Context Metric Param Values
+### Metric Description Format
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule from that document. The `DIGIT` rule defines a single number character `0`-`9`.
 
 ```abnf
-HEXDIGLC = DIGIT / "a" / "b" / "c" / "d" / "e" / "f" ; lowercase hex character
-tid      = 32HEXDIGLC
-cid      = 16HEXDIGLC
-flags    = 2HEXDIGLC
-v        = 2HEXDIGLC ; this document assumes version 00. Version ff is forbidden
+HEXDIGLC         = DIGIT / "a" / "b" / "c" / "d" / "e" / "f" ; lowercase hex character
+value            = version "-" version-format
+version          = 2HEXDIGLC   ; this document assumes version 00. Version ff is forbidden
+version-format   = trace-id "-" child-id "-" trace-flags
+trace-id         = 32HEXDIGLC  ; 16 bytes array identifier. All zeroes forbidden
+child-id         = 16HEXDIGLC  ; 8 bytes array identifier. All zeroes forbidden
+trace-flags      = 2HEXDIGLC   ; 8 bit flags.
 ```
 
-#### Trace ID (`tid`)
+#### trace-id
 
 The format and requirements for this are the same as those of the `trace-id` field in the `traceparent` request header. This is a required parameter.
 
 For details, see the `trace-id` section under [traceparent Header Field Values](#traceparent-header-field-values).
 
-#### Child ID (`cid`)
+#### child-id
 
 This is the span ID of the server operation. It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. An all-zero child ID (`0000000000000000`) is an invalid value. Tracing systems MUST ignore the trace context metric when the child id is invalid (for example, if it contains non-lowercase hex characters).
 
 For details, see the `span-id` section under [traceparent Header Field Values](#traceparent-header-field-values).
 
-#### Version (`v`)
+#### version
 
-Version (`v`) is an 8-bit unsigned integer value, serialized as an ASCII string with two hexadecimal characters. Version 255 (`ff`) is invalid. This document specifies version 0 (`00`) of the trace context metric. The version field is optional; if omitted, the version is `00`.
+Version is an 8-bit unsigned integer value, serialized as an ASCII string with two hexadecimal characters. Version 255 (`ff`) is invalid. This document specifies version 0 (`00`) of the trace context metric.
 
-#### Trace Flags (`flags`)
+#### trace-flags
 
 Similar to the [`trace-flags` field](#trace-flags) in the `traceparent` request header, this is a hex-encoded <a data-cite='!BIT-FIELD#firstHeading'>8-bit field</a> that provides information about how a child handled the trace. The same requirement to properly mask the bit field value when interpreting it applies here as well.
 
@@ -66,8 +65,6 @@ These flags are recommendations given by a server, rather than strict rules for 
 3. Different load between services might force one or more participants to discard part or all of a trace.
 
 You can find more in the section [Security considerations](#security-considerations) of this specification.
-
-The trace flags param is optional. If it omitted, the value of all flags is unknown.
 
 ##### Sampled flag
 
