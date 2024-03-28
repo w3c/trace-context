@@ -14,5 +14,5 @@ jobs:
           W3C_ECHIDNA_TOKEN: ${{ secrets.W3C_TR_TOKEN_L2 }}
           W3C_WG_DECISION_URL: https://docs.google.com/document/d/12AAIbnkt_AH1YjZwUwxirX_7WA7aWOSXpDweCgfqIiQ/edit#heading=h.jc5tpbau2p7z
           W3C_BUILD_OVERRIDE: |
-             shortName: trace-context-2
+             shortName: trace-context
              specStatus: CRD
