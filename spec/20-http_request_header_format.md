@@ -182,12 +182,18 @@ There are two additional options that vendors MAY follow:
 
 ##### Random Trace ID Flag
 
-The second least significant bit of the trace-flags field denotes the random-trace-id flag.
-If that flag is set, at least the right-most 7 bytes of the trace ID MUST be random (or pseudo-random).
-If the flag is not set, the trace ID MAY still be randomly (or pseudo-randomly) generated.
-When unset, the trace ID MAY be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
+The second least significant bit of the trace-flags field denotes the `random-trace-id` flag.
 
-When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the random trace ID flag SHOULD be set to `1`.
+When starting or restarting a trace (that is, when the participant generates a new `trace-id`), the following rules apply:
+* If that flag is set, at least the right-most 7 bytes of the `trace-id` MUST be selected randomly (or pseudo-randomly) with uniform distribution over the interval [0..2^56-1].
+* If the flag is not set, the `trace-id` MAY still be randomly (or pseudo-randomly) generated.
+* When unset, the `trace-id` MAY be generated in any way that satisfies the requirements of the [trace ID format](#trace-id).
+* When at least the right-most 7 bytes of the `trace-id` are randomly (or pseudo-randomly) generated, the `random-trace-id` flag SHOULD be set to `1`.
+
+When continuing a trace (that is, the incoming HTTP request had the `traceparent` header and the participant uses the same `trace-id` in the `traceparent` header on outgoing requests), the following rules apply:
+* If the flag is set in the incoming `traceparent` header, it MUST also be set in all outgoing `traceparent` headers which use the same `trace-id`.
+* If the flag is unset in the incoming `traceparent` header, it MUST also be unset in any outgoing `traceparent` headers which use the same `trace-id`.
+
 This allows downstream consumers to implement features such as trace sampling or database sharding based on these bytes.
 For additional information, see [considerations for trace-id field generation](#considerations-for-trace-id-field-generation).
 
@@ -254,7 +260,7 @@ In order to increase interoperability across multiple protocols and encourage su
 
 ### tracestate Header Field Values
 
-The `tracestate` field may contain any [=opaque=] value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC9110#field.order'>RFC9110 Section 5.3 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC9110#field.order'>RFC9110</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC9110#field.order'>RFC9110</a>.
+The `tracestate` field may contain any [=opaque=] value in any of the keys. Tracestate MAY be sent or received as multiple header fields. Multiple tracestate header fields MUST be handled as specified by <a data-cite='!RFC9110#name-field-order'>RFC9110 Section 5.3 Field Order</a>. The `tracestate` header SHOULD be sent as a single field when possible, but MAY be split into multiple header fields. When sending `tracestate` as multiple header fields, it MUST be split according to <a data-cite='!RFC9110#name-field-order'>RFC9110</a>. When receiving multiple `tracestate` header fields, they MUST be combined into a single header according to <a data-cite='!RFC9110#name-field-order'>RFC9110</a>.
 
 This section uses the Augmented Backus-Naur Form (ABNF) notation of [[!RFC5234]], including the DIGIT rule in <a data-cite='!RFC5234#appendix-B.1'>appendix B.1 for RFC5234</a>. It also includes the `OWS` rule from <a data-cite='!RFC9110#whitespace'>RFC9110 section 5.6.3</a>.
 
