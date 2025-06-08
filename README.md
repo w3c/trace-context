@@ -1,5 +1,5 @@
 [![Build
-Status](https://img.shields.io/travis/w3c/trace-context/main.svg?label=validation%20service)](https://travis-ci.com/w3c/trace-context/)
+Status](https://github.com/w3c/trace-context/actions/workflows/self_test.yml/badge.svg?branch=main&event=push)](https://github.com/w3c/trace-context/actions?query=workflow%3Aself_test+branch%3Amain+event%3Apush)
 
 # Trace Context Specification
 
