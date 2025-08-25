@@ -1,6 +1,6 @@
 # Trace Context Server Timing Metric Format
 
-This section describes the binding of the distributed trace context to a metric in the Server Timing HTTP header.
+This section describes the binding of the distributed trace context to a metric in the Server Timing HTTP response header.
 
 ## Trace Context Metric
 
@@ -42,9 +42,9 @@ The format and requirements for this are the same as those of the `trace-id` fie
 
 For details, see the `trace-id` section under [traceparent Header Field Values](#traceparent-header-field-values).
 
-#### child-id
+#### span-id
 
-This is the span ID of the server operation. It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. An all-zero child ID (`0000000000000000`) is an invalid value. Tracing systems MUST ignore the trace context metric when the child id is invalid (for example, if it contains non-lowercase hex characters).
+This is the span ID of the server operation. It is represented as an 8-byte array, for example, `00f067aa0ba902b7`. An all-zero child ID (`0000000000000000`) is an invalid value. Tracing systems MUST ignore the trace context metric when the span id is invalid (for example, if it contains non-lowercase hex characters).
 
 For details, see the `span-id` section under [traceparent Header Field Values](#traceparent-header-field-values).
 
