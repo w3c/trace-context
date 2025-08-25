@@ -116,3 +116,12 @@ This page contains an alphabetical list of projects and vendors that currently i
 | [JavaScript](https://github.com/open-telemetry/opentelemetry-js/blob/a49e7abdab3e313ad2b50a9445a885b3fd0d4783/packages/opentelemetry-core/src/context/propagation/HttpTraceContext.ts) | [1](https://www.w3.org/TR/trace-context-1/) |
 | [Python](https://github.com/open-telemetry/opentelemetry-python/blob/dbb3be802bae8e4e5c36748869dbc789e50de217/opentelemetry-api/src/opentelemetry/trace/__init__.py) | [1](https://www.w3.org/TR/trace-context-1/) |
 | [Ruby](https://github.com/open-telemetry/opentelemetry-ruby/blob/741ca61a934b05ecbaedffa56a830dc1821ca9a1/api/lib/opentelemetry/distributed_context/propagation/trace_parent.rb) | [1](https://www.w3.org/TR/trace-context-1/) |
+
+## tctx
+
+**Website:** [github.com/maraisr/tctx](https://github.com/maraisr/tctx)
+
+**Implementations:**
+| Implementations | Specification Level |
+| --------------- | :-----------------: |
+| [JavaScript](https://github.com/maraisr/tctx) | [2](https://www.w3.org/TR/trace-context-2/) |
