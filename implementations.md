@@ -11,6 +11,15 @@ This page contains an alphabetical list of projects and vendors that currently i
 | --------------- | :-----------------: |
 | [All technologies supported by Azure Monitor](https://docs.microsoft.com/azure/azure-monitor/) | [1](https://www.w3.org/TR/trace-context-1/) |
 
+## Datadog
+
+**Website:** [datadoghq.com](https://www.datadoghq.com)
+
+**Implementations:**
+| Implementations | Specification Level |
+| --------------- | :-----------------: |
+| [All technologies supported by Datadog](https://docs.datadoghq.com/tracing/trace_collection/trace_context_propagation/) | [1](https://www.w3.org/TR/trace-context-1/) |
+
 ## Dynatrace
 
 **Website:** [dynatrace.com](https://www.dynatrace.com)
