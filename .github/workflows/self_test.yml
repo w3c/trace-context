@@ -6,13 +6,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14'
+
     name: Run the python tests
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.11.2
+          python-version: ${{ matrix.python-version }}
           architecture: x64
       - run: pip install aiohttp
       - run: cd test && python self_test.py
