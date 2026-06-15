@@ -724,14 +724,18 @@ class TraceContextTest(TestBase):
 	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_key_illegal_vendor_format(self):
 		'''
-		harness sends a request with an invalid tracestate header with illegal vendor format
-		expects the tracestate to be discarded
+		harness sends requests with tracestate keys containing at signs
+		expects keys that follow the key grammar to be inherited
+		expects keys that start with an at sign to be discarded
 		'''
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo@=1,bar=2'],
 		])
-		self.assertRaises(KeyError, lambda: tracestate['bar'])
+		self.assertIn('foo@', tracestate)
+		self.assertEqual(tracestate['foo@'], '1')
+		self.assertIn('bar', tracestate)
+		self.assertEqual(tracestate['bar'], '2')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
@@ -743,13 +747,19 @@ class TraceContextTest(TestBase):
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo@@bar=1,bar=2'],
 		])
-		self.assertRaises(KeyError, lambda: tracestate['bar'])
+		self.assertIn('foo@@bar', tracestate)
+		self.assertEqual(tracestate['foo@@bar'], '1')
+		self.assertIn('bar', tracestate)
+		self.assertEqual(tracestate['bar'], '2')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo@bar@baz=1,bar=2'],
 		])
-		self.assertRaises(KeyError, lambda: tracestate['bar'])
+		self.assertIn('foo@bar@baz', tracestate)
+		self.assertEqual(tracestate['foo@bar@baz'], '1')
+		self.assertIn('bar', tracestate)
+		self.assertEqual(tracestate['bar'], '2')
 
 	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_member_count_limit(self):
@@ -783,17 +793,19 @@ class TraceContextTest(TestBase):
 	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_key_length_limit(self):
 		'''
-		harness sends tracestate header with a key of 256 and 257 characters
-		harness sends tracestate header with a key of 14 and 15 characters in the vendor section
-		harness sends tracestate header with a key of 241 and 242 characters in the tenant section
+		harness sends tracestate header with a key of 256 and 257 total characters
+		harness sends tracestate header with keys containing at signs within the 256 character limit
 		'''
+		key = 'z' * 256
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo=1'],
-			['tracestate', 'z' * 256 + '=1'],
+			['tracestate', key + '=1'],
 		])
 		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
+		self.assertIn(key, tracestate)
+		self.assertEqual(tracestate[key], '1')
 
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
@@ -802,27 +814,38 @@ class TraceContextTest(TestBase):
 		])
 		self.assertRaises(KeyError, lambda: tracestate['foo'])
 
+		key = 't' * 241 + '@' + 'v' * 14
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo=1'],
-			['tracestate', 't' * 241 + '@' + 'v' * 14 + '=1'],
+			['tracestate', key + '=1'],
 		])
 		self.assertIn('foo', tracestate)
 		self.assertEqual(tracestate['foo'], '1')
+		self.assertIn(key, tracestate)
+		self.assertEqual(tracestate[key], '1')
 
+		key = 't' * 242 + '@v'
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo=1'],
-			['tracestate', 't' * 242 + '@v=1'],
+			['tracestate', key + '=1'],
 		])
-		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertIn('foo', tracestate)
+		self.assertEqual(tracestate['foo'], '1')
+		self.assertIn(key, tracestate)
+		self.assertEqual(tracestate[key], '1')
 
+		key = 't@' + 'v' * 15
 		traceparent, tracestate = self.make_single_request_and_get_tracecontext([
 			['traceparent', '00-12345678901234567890123456789012-1234567890123456-00'],
 			['tracestate', 'foo=1'],
-			['tracestate', 't@' + 'v' * 15 + '=1'],
+			['tracestate', key + '=1'],
 		])
-		self.assertRaises(KeyError, lambda: tracestate['foo'])
+		self.assertIn('foo', tracestate)
+		self.assertEqual(tracestate['foo'], '1')
+		self.assertIn(key, tracestate)
+		self.assertEqual(tracestate[key], '1')
 
 	@unittest.skipIf(STRICT_LEVEL < 2, "strict")
 	def test_tracestate_value_illegal_characters(self):

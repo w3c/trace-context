@@ -33,6 +33,7 @@ class TestTracestate(unittest.TestCase):
 			'-',
 			'*',
 			'/',
+			'@',
 			# "="
 			'=',
 			# value
@@ -112,10 +113,15 @@ class TestTracestate(unittest.TestCase):
 		# key SHOULD NOT have uppercase
 		self.assertRaises(ValueError, lambda: state.__setitem__('FOO', 'abc'))
 
-		# key with vendor format
+		# key may contain at signs after the first character
 		state['special@vendor'] = 'abracadabra'
-		self.assertRaises(ValueError, lambda: state.__setitem__('special@', 'abracadabra'))
+		state['special@'] = 'abracadabra'
+		state['special@@vendor'] = 'abracadabra'
+		state['special@vendor@tenant'] = 'abracadabra'
+		state['1special'] = 'abracadabra'
 		self.assertRaises(ValueError, lambda: state.__setitem__('@vendor', 'abracadabra'))
+		self.assertRaises(ValueError, lambda: state.__setitem__('special.vendor', 'abracadabra'))
+		self.assertRaises(ValueError, lambda: state.__setitem__('z' * 257, 'abracadabra'))
 
 		# value SHOULD be string
 		self.assertRaises(ValueError, lambda: state.__setitem__('FOO', 123))
