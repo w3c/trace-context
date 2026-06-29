@@ -16,7 +16,7 @@ jobs:
           - '3.13'
           - '3.14'
 
-    name: Run the python tests
+    name: Self-test with Python ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v6
       - name: Setup python
@@ -36,11 +36,11 @@ jobs:
       TESTS_SUCCESS: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
     runs-on: ubuntu-latest
     steps:
-    - run: |
-        if [ "$TESTS_SUCCESS" == "true" ]
-        then
-          echo 'Self tests successful ✅'
-        else
-          echo 'Self tests failed ❌'
-          exit 1
-        fi
+      - run: |
+          if [ "$TESTS_SUCCESS" == "true" ]
+          then
+            echo 'Self tests successful ✅'
+          else
+            echo 'Self tests failed ❌'
+            exit 1
+          fi
