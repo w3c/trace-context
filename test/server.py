@@ -75,7 +75,8 @@ class TestServer(object):
 	def __init__(self, host, port, timeout = 5):
 		import asyncio
 		from threading import Thread
-		self.loop = asyncio.get_event_loop()
+		self.loop = asyncio.new_event_loop()
+		asyncio.set_event_loop(self.loop)
 		self.server = AsyncTestServer(host, port, timeout)
 		self.thread = Thread(target = self.monitor)
 		self.run = True
