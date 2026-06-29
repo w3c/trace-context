@@ -6,14 +6,42 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Run the python tests
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.11'
+          - '3.12'
+          - '3.13'
+          # Enable once https://github.com/w3c/trace-context/issues/581 is fixed
+          # - '3.14'
+
+    name: Self-test with Python ${{ matrix.python-version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Setup python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.11.2
+          python-version: ${{ matrix.python-version }}
           architecture: x64
       - run: pip install aiohttp
       - run: cd test && python self_test.py
         shell: bash
+
+  self-test:
+    name: Run the python tests
+    needs: [ build ]
+    if: ${{ !cancelled() }}
+    env:
+      TESTS_SUCCESS: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if [ "$TESTS_SUCCESS" == "true" ]
+          then
+            echo 'Self tests successful ✅'
+          else
+            echo 'Self tests failed ❌'
+            exit 1
+          fi
