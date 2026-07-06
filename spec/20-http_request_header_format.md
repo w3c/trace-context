@@ -320,7 +320,7 @@ Example: `vendorname1=opaqueValue1,vendorname2=opaqueValue2`
 
 Tracing tools are not supposed to add the same header multiple times. For example, if a vendor name is Congo and a trace started in their system and then went through a system named Rojo and later returned to Congo, the `tracestate` value would not be:
 
-`congo=congosFirstPosition,rojo=rojosFirstPosition,congo=congosSecondPosition`
+`congo=congosSecondPosition,rojo=rojosFirstPosition,congo=congosFirstPosition`
 
 Instead, the entry would be rewritten to only include the most recent position:
 `congo=congosSecondPosition,rojo=rojosFirstPosition`
